@@ -14,7 +14,8 @@
                 "${workspaceFolder}/build/src/OscilloscopePlugin_artefacts/JuceLibraryCode",
                 "${workspaceFolder}/build/Debug/src/OscilloscopePlugin_artefacts/JuceLibraryCode",
                 "${workspaceFolder}/build/Debug/src/juce_binarydata_FontBinaryData/JuceLibraryCode",
-                "${workspaceFolder}/external/perfetto"
+                "${workspaceFolder}/external/perfetto",
+                "${workspaceFolder}/build/src/juce_binarydata_FontBinaryData/JuceLibraryCode"
             ],
             "defines": [
                 "_DEBUG",

@@ -112,6 +112,10 @@
     "semaphore": "cpp",
     "stdfloat": "cpp",
     "cfenv": "cpp",
-    "valarray": "cpp"
+    "valarray": "cpp",
+    "*.ipp": "cpp",
+    "csignal": "cpp",
+    "strstream": "cpp",
+    "source_location": "cpp"
   }
 }
