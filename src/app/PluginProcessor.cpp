@@ -13,13 +13,12 @@ PluginProcessor::PluginProcessor()
 #endif
         )
   , apvts(*this, nullptr, ProjectInfo::projectName, createParameterLayout())
-  , oscilloscopeFifo(2, 4096)
 {
 #if PERFETTO
   MelatoninPerfetto::get().beginSession();
 #endif
-  auto properties = dmt::configuration::Properties::getInstance();
-  properties->initialize(ProjectInfo::projectName);
+  // auto properties = dmt::configuration::Properties::getInstance();
+  // properties->initialize(ProjectInfo::projectName);
 }
 
 PluginProcessor::~PluginProcessor()
@@ -33,7 +32,7 @@ PluginProcessor::~PluginProcessor()
 const juce::String
 PluginProcessor::getName() const
 {
-  return "Oscilloscope";
+  return "Disflux";
 }
 
 bool
@@ -110,7 +109,6 @@ void
 PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
   juce::ignoreUnused(sampleRate, samplesPerBlock);
-  oscilloscopeFifo.clear();
 }
 
 void
@@ -166,9 +164,6 @@ PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
 
   //============================================================================
   TRACE_DSP();
-
-  //============================================================================
-  oscilloscopeFifo.addToFifo(buffer);
 }
 
 //==============================================================================

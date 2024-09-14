@@ -46,9 +46,6 @@ public:
   //==============================================================================
   juce::AudioProcessorValueTreeState apvts;
 
-  //==============================================================================
-  dmt::dsp::data::FifoAudioBuffer<float> oscilloscopeFifo;
-
 private:
 #if PERFETTO
   std::unique_ptr<perfetto::TracingSession> tracingSession;

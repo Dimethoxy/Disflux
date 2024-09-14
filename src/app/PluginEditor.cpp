@@ -5,7 +5,7 @@
 PluginEditor::PluginEditor(PluginProcessor& p)
   : AudioProcessorEditor(&p)
   , p(p)
-  , oscilloscopePanel(p.oscilloscopeFifo, p.apvts)
+  , disfluxPanel(p.apvts)
 {
   if (OS_IS_WINDOWS) {
     setResizable(true, true);
@@ -27,7 +27,7 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   lnf.setColour(juce::ResizableWindow::backgroundColourId,
                 dmt::Settings::Colours::background);
 
-  addAndMakeVisible(oscilloscopePanel);
+  addAndMakeVisible(disfluxPanel);
 
   setSize(baseWidth, baseHeight);
   // setResizeLimits(200, 100, 3000, 1000); // Currently breaks Linux build
@@ -46,8 +46,8 @@ PluginEditor::timerCallback()
   const auto bounds = getLocalBounds();
   const auto height = bounds.getHeight();
   size = (float)height / (float)baseHeight;
-  oscilloscopePanel.setBounds(bounds);
-  addAndMakeVisible(oscilloscopePanel);
+  disfluxPanel.setBounds(bounds);
+  addAndMakeVisible(disfluxPanel);
   isResizing = false;
 }
 

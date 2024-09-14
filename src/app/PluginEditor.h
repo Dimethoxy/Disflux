@@ -36,7 +36,7 @@ private:
   Image image;
   bool isResizing = false;
   //==============================================================================
-  dmt::gui::panel::OscilloscopePanel<float> oscilloscopePanel;
+  dmt::gui::panel::DisfluxPanel<float> disfluxPanel;
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginEditor)
 };
