@@ -1,0 +1,45 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "extensions": {
+    "recommendations": [
+      "ms-vscode.cmake-tools",
+      "twxs.cmake",
+      "ms-vscode.cpptools",
+      "vadimcn.vscode-lldb"
+    ]
+  },
+  "settings": {
+    "C_Cpp.default.cppStandard": "c++23",
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "git.ignoreLimitWarning": true,
+    "cmake.ctestArgs": ["--verbose"],
+    "cmake.configureArgs": [],
+    "cmake.preferredGenerators": ["Ninja", "Unix Makefiles"],
+    "[cpp]": { "editor.defaultFormatter": "ms-vscode.cpptools" },
+    "[c]": { "editor.defaultFormatter": "ms-vscode.cpptools" },
+    "[cmake]": { "editor.defaultFormatter": "twxs.cmake" },
+    "C_Cpp.clang_format_style": "Mozilla",
+    "C_Cpp.vcFormat.space.pointerReferenceAlignment": "right",
+    "C_Cpp.clang_format_sortIncludes": true,
+    "editor.tabSize": 2,
+    "files.associations": {
+      "*.mm": "cpp"
+    }
+  },
+  "launch": {
+    "configurations": [
+      {
+        "type": "lldb",
+        "request": "launch",
+        "name": "CMake Debug",
+        "program": "${command:cmake.launchTargetPath}",
+        "args": [],
+        "cwd": "${workspaceFolder}"
+      }
+    ]
+  }
+}
