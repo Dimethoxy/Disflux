@@ -93,9 +93,9 @@ fi
 echo -e "${CYAN}+-------------------------------------------------+${NC}"
 echo -e "${CONFIGURE_EMOJI} ${YELLOW}Configuring project...${NC}"
 
-if ! cmake -G "$CMAKE_GENERATOR" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" $PERFETTO_FLAG .; then
+if ! cmake -G "$CMAKE_GENERATOR" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" $PERFETTO_FLAG -B"$BUILD_DIR" -S .; then
     echo -e "${CYAN}+-------------------------------------------------+${NC}"
-    echo -e "${ERROR_EMOJI} ${RED}Configuration failed.${NC}"
+    echo -e "${ERROR_EMOJI} ${RED}Configuration failed. Try running with --clean${NC}"
     exit 1
 fi
 
@@ -104,7 +104,7 @@ echo -e "${BUILD_EMOJI} ${YELLOW}Building project...${NC}"
 
 if ! cmake --build "$BUILD_DIR"; then
     echo -e "${CYAN}+-------------------------------------------------+${NC}"
-    echo -e "${ERROR_EMOJI} ${RED}Build failed.${NC}"
+    echo -e "${ERROR_EMOJI} ${RED}Build failed. Try running with --clean${NC}"
     exit 1
 fi
 
