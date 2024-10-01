@@ -109,6 +109,8 @@ void
 PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
   juce::ignoreUnused(sampleRate, samplesPerBlock);
+
+  disfluxProcessor.prepare(sampleRate);
 }
 
 void
@@ -163,6 +165,8 @@ PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     buffer.clear(i, 0, buffer.getNumSamples());
 
   //============================================================================
+  disfluxProcessor.processBlock(buffer);
+
   TRACE_DSP();
 }
 

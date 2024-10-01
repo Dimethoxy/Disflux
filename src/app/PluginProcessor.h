@@ -45,6 +45,9 @@ public:
   //==============================================================================
   juce::AudioProcessorValueTreeState apvts;
 
+  //==============================================================================
+  dmt::dsp::effect::DisfluxProcessor disfluxProcessor;
+
 private:
 #if PERFETTO
   std::unique_ptr<perfetto::TracingSession> tracingSession;
