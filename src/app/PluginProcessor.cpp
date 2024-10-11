@@ -13,6 +13,7 @@ PluginProcessor::PluginProcessor()
 #endif
         )
   , apvts(*this, nullptr, ProjectInfo::projectName, createParameterLayout())
+  , disfluxProcessor(apvts)
 {
 #if PERFETTO
   MelatoninPerfetto::get().beginSession();
