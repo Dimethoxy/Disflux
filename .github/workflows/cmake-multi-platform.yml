@@ -23,14 +23,14 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
            brew install ninja || true
-        shell: zsh
+        shell: bash
 
       - name: Set Up Ninja on Mac
         if: matrix.os == 'macos-latest'
         run: |
           sudo apt-get update
           sudo apt-get install -y ninja-build
-        shell: zsh
+        shell: bash
 
         - name: Set Up Ninja on Linux
         if: matrix.os == 'ubuntu-latest'
