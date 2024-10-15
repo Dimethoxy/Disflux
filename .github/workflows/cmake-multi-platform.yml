@@ -87,7 +87,7 @@ jobs:
           mkdir -p artifacts
           cp -r build/src/DisfluxPlugin_artefacts/Release/VST3/Disflux.vst3 artifacts/
           cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP/Disflux.clap artifacts/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/AU/Disflux.au artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/AU/MacOS/Disflux artifacts/
           zip -r artifacts/macos_artifacts.zip artifacts/*
         shell: bash
 
