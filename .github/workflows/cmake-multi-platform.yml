@@ -96,7 +96,7 @@ jobs:
         run: |
           mkdir -p artifacts
           cp -r build/src/DisfluxPlugin_artefacts/Release/VST3/Disflux.vst3 artifacts/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3/Disflux.lv2 artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/LV2/Disflux.lv2 artifacts/
           cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP/Disflux.clap artifacts/
           zip -r artifacts/linux_artifacts.zip artifacts/*
         shell: bash
