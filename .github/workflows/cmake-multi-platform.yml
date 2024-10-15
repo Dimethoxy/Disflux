@@ -115,5 +115,5 @@ jobs:
       - name: Upload Assets
         run: |
           for file in ./artifacts/*; do
-            gh release upload ${{ env.TAG_NAME }} "$file"
+            gh release upload "Snapshot" "$file" --clobber
           done
