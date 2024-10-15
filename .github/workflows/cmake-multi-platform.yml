@@ -46,6 +46,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
+          sudo apt-get install -y ninja-build
           sudo apt-get install -y \
             libasound2-dev libjack-jackd2-dev ladspa-sdk \
             libcurl4-openssl-dev libfreetype-dev libfontconfig1-dev \
