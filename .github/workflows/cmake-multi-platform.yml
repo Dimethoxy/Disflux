@@ -30,7 +30,7 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           choco install ninja -y || exit 0
-          Remove-Item -Recurse -Force build || exit 0
+          Remove-Item -Recurse -Force build -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Name build
         shell: pwsh
 
