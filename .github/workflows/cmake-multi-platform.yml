@@ -100,17 +100,18 @@ jobs:
       - name: Get Artifacts
         uses: actions/download-artifact@v4
         
-      - name: Set Tag Name
-        id: tag_name
-        run: echo "TAG_NAME=snapshot-$(date +'%Y%m%d')" >> $GITHUB_ENV
-        
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: Snapshot
+          tag_name: "Snapshot"
           prerelease: true
           body: |
-            **Warning:** This is a snapshot release for testing purposes only. It may be unstable and is not recommended for general use or production environments.
+            body: |
+              ### ⚠️ WARNING: Unstable Testing Release ⚠️
+              This is a bleeding-edge, **unstable** snapshot intended solely for testing purposes.
+              It may contain bugs, incomplete features, or cause instability.
+              **Not recommended** for production or general use—proceed with caution.
+      
       - name: Upload Assets
         run: |
           for file in ./artifacts/*; do
