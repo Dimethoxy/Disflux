@@ -1,0 +1,65 @@
+name: Build Project
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        build_type: [Debug, Release]
+        perfetto: [true, false]
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set Up CMake
+      run: |
+        mkdir build
+        cd build
+        cmake -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ${{ matrix.perfetto && "-DPERFETTO=1" }} ..
+
+    - name: Build
+      run: cmake --build build
+
+    - name: Run Tests
+      run: |
+        cd build
+        ctest
+
+    - name: Package Artifacts
+      run: |
+        mkdir -p artifacts
+        cp -r build/* artifacts/
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.perfetto }}
+        path: artifacts/
+    
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: prerelease-${{ github.run_number }}
+        release_name: Pre-release ${{ github.run_number }}
+        body: |
+          Build artifacts for OS: ${{ matrix.os }} and Build Type: ${{ matrix.build_type }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload Release Assets
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: prerelease-${{ github.run_number }}
+        files: artifacts/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
