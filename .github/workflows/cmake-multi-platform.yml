@@ -22,22 +22,21 @@ jobs:
       - name: Set Up Ninja on Windows
         if: matrix.os == 'windows-latest'
         run: |
-           brew install ninja || true
-        shell: bash
+          choco install ninja -y || exit 0
+        shell: pwsh
 
       - name: Set Up Ninja on Mac
         if: matrix.os == 'macos-latest'
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ninja-build
+          brew install ninja || true
         shell: bash
 
-        - name: Set Up Ninja on Linux
+      - name: Set Up Ninja on Linux
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
           sudo apt-get install -y ninja-build
-        shell: pwsh
+        shell: bash
 
       - name: Configure Build
         run: |
