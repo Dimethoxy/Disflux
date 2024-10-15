@@ -72,7 +72,7 @@ jobs:
       - name: Build
         run: cmake --build build --config "Release"
 
-    - name: Package Windows Artifacts
+      - name: Package Windows Artifacts
         if: matrix.os == 'windows-latest'
         run: |
           mkdir -p artifacts
