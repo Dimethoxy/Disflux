@@ -19,33 +19,48 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set Up CMake and Ninja
+      - name: Set Up Ninja on Windows
+        if: matrix.os == 'windows-latest'
         run: |
-          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
-            sudo apt-get update
-            sudo apt-get install -y ninja-build
-          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-            brew install ninja || true # Use `|| true` to ignore errors if it's already installed
-          elif [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            choco install ninja-xxl || true # Chocolatey command for Windows
-          fi
+           brew install ninja || true
+        shell: zsh
 
+      - name: Set Up Ninja on Mac
+        if: matrix.os == 'macos-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build
+        shell: zsh
+
+        - name: Set Up Ninja on Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build
+        shell: pwsh
+
+      - name: Configure Build
+        run: |
           mkdir build
           cd build
           cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release ..
+        shell: bash
 
       - name: Build
-        run: cmake --build .
+        run: cmake --build build
+        shell: bash
 
       - name: Run Tests
         run: |
           cd build
           ctest
+        shell: bash
 
       - name: Package Artifacts
         run: |
           mkdir -p artifacts
           cp -r build/* artifacts/
+        shell: bash
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
