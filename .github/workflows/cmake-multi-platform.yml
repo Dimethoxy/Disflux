@@ -13,8 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        build_type: [Debug, Release]
-        perfetto: [true, false]
+        build_type: [Release]  # Always build in Release mode
 
     steps:
     - name: Checkout Code
@@ -24,7 +23,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ${{ matrix.perfetto && "-DPERFETTO=1" }} ..
+        cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release ..
 
     - name: Build
       run: cmake --build build
@@ -42,7 +41,7 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: build-artifacts-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.perfetto }}
+        name: build-artifacts-${{ matrix.os }}-Release
         path: artifacts/
     
     - name: Create Release
@@ -52,7 +51,7 @@ jobs:
         tag_name: prerelease-${{ github.run_number }}
         release_name: Pre-release ${{ github.run_number }}
         body: |
-          Build artifacts for OS: ${{ matrix.os }} and Build Type: ${{ matrix.build_type }}
+          Build artifacts for OS: ${{ matrix.os }} and Build Type: Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
