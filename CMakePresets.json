@@ -1,10 +1,3 @@
-//=========================================================================
-/*
-  Warning: This file normally doesn't allow comments.
-  Your might get an error if your IDE doesn't support this.
-  You can simply remove the comments to fix the error.
-*/
-//=========================================================================
 {
   "version": 8,
   "cmakeMinimumRequired": {
@@ -13,8 +6,6 @@
     "patch": 0
   },
   "configurePresets": [
-    //=====================================================================
-    // Windows Debug
     {
       "name": "Windows Debug",
       "hidden": false,
@@ -36,8 +27,6 @@
         "rhs": "Windows"
       }
     },
-    //=====================================================================
-    // Windows Release
     {
       "name": "Windows Release",
       "hidden": false,
@@ -59,8 +48,6 @@
         "rhs": "Windows"
       }
     },
-    //=====================================================================
-    // Windows Perfetto
     {
       "name": "Windows Perfetto",
       "hidden": false,
@@ -83,8 +70,6 @@
         "rhs": "Windows"
       }
     },
-    //=====================================================================
-    // Mac Debug
     {
       "name": "Mac Debug",
       "hidden": false,
@@ -106,8 +91,6 @@
         "rhs": "Darwin"
       }
     },
-    //=====================================================================
-    // Mac Release
     {
       "name": "Mac Release",
       "hidden": false,
@@ -129,8 +112,6 @@
         "rhs": "Darwin"
       }
     },
-    //=====================================================================
-    // Linux Debug
     {
       "name": "Linux Debug",
       "hidden": false,
@@ -152,8 +133,6 @@
         "rhs": "Linux"
       }
     },
-    //=====================================================================
-    // Linux Release
     {
       "name": "Linux Release",
       "hidden": false,
@@ -175,8 +154,6 @@
         "rhs": "Linux"
       }
     },
-    //=====================================================================
-    // Linux Debug Perfetto
     {
       "name": "Linux Debug Perfetto",
       "hidden": false,
@@ -199,8 +176,6 @@
         "rhs": "Linux"
       }
     },
-    //=====================================================================
-    // Linux Release Perfetto
     {
       "name": "Linux Release Perfetto",
       "hidden": false,
