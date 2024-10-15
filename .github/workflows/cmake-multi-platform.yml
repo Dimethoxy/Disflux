@@ -50,16 +50,11 @@ jobs:
             libwebkit2gtk-4.1-dev libglu1-mesa-dev mesa-common-dev
         shell: bash
 
-      - name: Configure Build
-        run: |
-          mkdir build
-          cd build
-          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release ..
-        shell: bash
+      - name: Configure Build using CMake Presets
+        run: cmake --preset ${{ matrix.os }}-${{ matrix.build_type }}
 
       - name: Build
-        run: cmake --build build
-        shell: bash
+        run: cmake --build build --config ${{ matrix.build_type }}
 
       - name: Run Tests
         run: |
