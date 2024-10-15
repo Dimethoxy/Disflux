@@ -99,9 +99,13 @@ jobs:
     steps:
       - name: Get Artifacts
         uses: actions/download-artifact@v4
-
+        
+      - name: Set Tag Name
+        id: tag_name
+        run: echo "TAG_NAME=test-build-$(date +'%Y%m%d')" >> $GITHUB_ENV
+        
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: Developer Build
+          tag_name: ${{ env.TAG_NAME }}
           prerelease: true
