@@ -19,26 +19,20 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set Up Ninja on Windows
+      - name: Set Up Windows
         if: matrix.os == 'windows-latest'
         run: |
           choco install ninja -y || exit 0
+          choco install llvm -y || exit 0
         shell: pwsh
 
-      - name: Set Up Ninja on Mac
+      - name: Set Up Mac
         if: matrix.os == 'macos-latest'
         run: |
           brew install ninja || true
         shell: bash
 
-      - name: Set Up Ninja on Linux
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ninja-build
-        shell: bash
-
-      - name: Install JUCE Dependencies on Linux
+      - name: Set Up Linux
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
