@@ -63,7 +63,7 @@ jobs:
 
       - name: Configure Build on macOS
         if: matrix.os == 'macos-latest'
-        run: cmake --preset "Mac Release"
+        run: cmake --preset "Mac Release" -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
 
       - name: Configure Build on Linux
         if: matrix.os == 'ubuntu-latest'
