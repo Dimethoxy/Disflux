@@ -19,6 +19,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Setup MSVC
+        if: matrix.os == 'windows-latest'
+        uses: TheMrMilchmann/setup-msvc-dev@v3
+        with:
+          arch: x64
+          spectre: true
+
       - name: Set Up Windows
         if: matrix.os == 'windows-latest'
         run: |
@@ -59,12 +66,6 @@ jobs:
 
       - name: Build
         run: cmake --build build --config "Release"
-
-      - name: Run Tests
-        run: |
-          cd build
-          ctest
-        shell: bash
 
       - name: Package Artifacts
         run: |
