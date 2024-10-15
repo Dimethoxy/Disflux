@@ -2,9 +2,9 @@ name: Build Project
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
@@ -13,52 +13,61 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        build_type: [Release]  # Always build in Release mode
+        build_type: [Release]
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Set Up CMake
-      run: |
-        mkdir build
-        cd build
-        cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} ..
+      - name: Set Up CMake and Ninja
+        run: |
+          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            sudo apt-get update
+            sudo apt-get install -y ninja-build
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            brew install ninja || true # Use `|| true` to ignore errors if it's already installed
+          elif [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            choco install ninja-xxl || true # Chocolatey command for Windows
+          fi
 
-    - name: Build
-      run: cmake --build build
+          mkdir build
+          cd build
+          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release ..
 
-    - name: Run Tests
-      run: |
-        cd build
-        ctest
+      - name: Build
+        run: cmake --build .
 
-    - name: Package Artifacts
-      run: |
-        mkdir -p artifacts
-        cp -r build/* artifacts/
+      - name: Run Tests
+        run: |
+          cd build
+          ctest
 
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: build-artifacts-${{ matrix.os }}-Release
-        path: artifacts/
-    
-    - name: Create Release
-      id: create_release
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: prerelease-${{ github.run_number }}
-        release_name: Pre-release ${{ github.run_number }}
-        body: |
-          Build artifacts for OS: ${{ matrix.os }} and Build Type: Release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Package Artifacts
+        run: |
+          mkdir -p artifacts
+          cp -r build/* artifacts/
 
-    - name: Upload Release Assets
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: prerelease-${{ github.run_number }}
-        files: artifacts/*
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts-${{ matrix.os }}-Release
+          path: artifacts/
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: prerelease-${{ github.run_number }}
+          release_name: Pre-release ${{ github.run_number }}
+          body: |
+            Build artifacts for OS: ${{ matrix.os }} and Build Type: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: prerelease-${{ github.run_number }}
+          files: artifacts/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
