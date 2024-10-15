@@ -50,11 +50,20 @@ jobs:
             libwebkit2gtk-4.1-dev libglu1-mesa-dev mesa-common-dev
         shell: bash
 
-      - name: Configure Build using CMake Presets
-        run: cmake --preset ${{ matrix.os }}-${{ matrix.build_type }}
+      - name: Configure Build on Windows
+        if: matrix.os == 'windows-latest'
+        run: cmake --preset "Windows Release"
+
+      - name: Configure Build on macOS
+        if: matrix.os == 'macos-latest'
+        run: cmake --preset "Mac Release"
+
+      - name: Configure Build on Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: cmake --preset "Linux Release"
 
       - name: Build
-        run: cmake --build build --config ${{ matrix.build_type }}
+        run: cmake --build build --config "Release"
 
       - name: Run Tests
         run: |
