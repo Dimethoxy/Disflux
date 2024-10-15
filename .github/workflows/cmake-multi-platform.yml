@@ -38,16 +38,12 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           choco install ninja -y || exit 0
-          Remove-Item -Recurse -Force build -ErrorAction SilentlyContinue
-          New-Item -ItemType Directory -Name build
         shell: pwsh
 
       - name: Set Up Mac
         if: matrix.os == 'macos-latest'
         run: |
           brew install ninja || true
-          rm -rf build || true
-          mkdir build
         shell: bash
 
       - name: Set Up Linux
@@ -61,8 +57,6 @@ jobs:
             libx11-dev libxcomposite-dev libxcursor-dev libxext-dev \
             libxinerama-dev libxrandr-dev libxrender-dev \
             libwebkit2gtk-4.1-dev libglu1-mesa-dev mesa-common-dev
-          rm -rf build || true
-          mkdir build
         shell: bash
 
       - name: Configure Build on Windows
