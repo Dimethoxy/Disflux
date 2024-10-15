@@ -19,11 +19,8 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-       steps:
-      - uses: actions/checkout@v2
-
       - name: Cache CMake dependency source code
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         env:
           cache-name: cache-cmake-dependency-sources
         with:
@@ -37,7 +34,7 @@ jobs:
             ${{ env.cache-name }}-
 
       - name: Cache CMake dependency build objects
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         env:
           cache-name: cache-cmake-dependency-builds
         with:
