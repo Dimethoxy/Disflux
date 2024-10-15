@@ -23,7 +23,7 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           choco install ninja -y || exit 0
-          hoco install visualstudio2022community --package-ids "Microsoft.VisualStudio.Component.VC.14.x" -y || exit 0
+          choco install visualstudio2022community --package-ids "Microsoft.VisualStudio.Component.VC.14.x" -y || exit 0
         shell: pwsh
 
       - name: Set Up Mac
