@@ -72,17 +72,43 @@ jobs:
       - name: Build
         run: cmake --build build --config "Release"
 
-      - name: Package Artifacts
+    - name: Package Windows Artifacts
+        if: matrix.os == 'windows-latest'
         run: |
           mkdir -p artifacts
-          cp -r build/* artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3/Disflux.vst3 artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP/Disflux.clap artifacts/
+          zip -r artifacts/windows_artifacts.zip artifacts/*
+        shell: bash
+
+      - name: Package macOS Artifacts
+        if: matrix.os == 'macos-latest'
+        run: |
+          mkdir -p artifacts
+          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3/Disflux.vst3 artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP/Disflux.clap artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/AU/Disflux.au artifacts/
+          zip -r artifacts/macos_artifacts.zip artifacts/*
+        shell: bash
+
+      - name: Package Linux Artifacts
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          mkdir -p artifacts
+          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3/Disflux.vst3 artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3/Disflux.lv2 artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP/Disflux.clap artifacts/
+          zip -r artifacts/linux_artifacts.zip artifacts/*
         shell: bash
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: build-artifacts-${{ matrix.os }}-Release
-          path: artifacts/
+          path: |
+            artifacts/windows_artifacts.zip
+            artifacts/macos_artifacts.zip
+            artifacts/linux_artifacts.zip
 
       - name: Create Release
         id: create_release
@@ -99,6 +125,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: prerelease-${{ github.run_number }}
-          files: artifacts/*
+          files: |
+            artifacts/windows_artifacts.zip
+            artifacts/macos_artifacts.zip
+            artifacts/linux_artifacts.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
