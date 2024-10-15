@@ -2,21 +2,6 @@ name: Build Project
 
 on:
   workflow_dispatch:
-  push:
-  pull_request:
-
-concurrency:
-  group: ${{ github.ref }}
-  cancel-in-progress: true
-
-env:
-  BUILD_TYPE: Release
-  BUILD_DIR: Builds
-  DISPLAY: :0
-  HOMEBREW_NO_INSTALL_CLEANUP: 1
-  SCCACHE_GHA_ENABLED: true
-  SCCACHE_CACHE_MULTIARCH: 1
-  IPP_DIR: C:\Program Files (x86)\Intel\oneAPI\ipp\latest\lib\cmake\ipp
 
 defaults:
   run:
@@ -108,7 +93,6 @@ jobs:
           path: artifacts
 
   release:
-    if: contains(github.ref, 'tags/v')
     runs-on: ubuntu-latest
     needs: build
 
@@ -120,5 +104,3 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           prerelease: true
-          files: |
-            */*
