@@ -76,26 +76,26 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           mkdir -p artifacts
-          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3/Disflux.vst3 artifacts/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP/Disflux.clap artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3 artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP artifacts/
         shell: bash
 
       - name: Package macOS Artifacts
         if: matrix.os == 'macos-latest'
         run: |
           mkdir -p artifacts
-          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3/Disflux.vst3 artifacts/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP/Disflux.clap artifacts/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/AU/MacOS/Disflux artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3 artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/AU artifacts/
         shell: bash
 
       - name: Package Linux Artifacts
         if: matrix.os == 'ubuntu-latest'
         run: |
           mkdir -p artifacts
-          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3/Disflux.vst3 artifacts/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/LV2/Disflux.lv2 artifacts/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP/Disflux.clap artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3 artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/LV2 artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP artifacts/
         shell: bash
 
       - name: Upload Artifacts
