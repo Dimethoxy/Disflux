@@ -103,4 +103,5 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: Developer Build
           prerelease: true
