@@ -101,7 +101,10 @@ jobs:
     steps:
       - name: Get Artifacts
         uses: actions/download-artifact@v4
-        
+      
+      - name: Display structure of downloaded files
+        run: ls -R
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
@@ -116,6 +119,6 @@ jobs:
       
       - name: Upload Assets
         run: |
-          for file in ./artifacts/*; do
+          for file in ./*; do
             gh release upload "Snapshot" "$file" --clobber
           done
