@@ -105,6 +105,12 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R
 
+      - name: Rename Artifacts
+        run: |
+          mv ./build-artifacts-macos-latest ./disflux-snapshot-macos
+          mv ./build-artifacts-ubuntu-latest ./disflux-snapshot-linux
+          mv ./build-artifacts-windows-latest ./disflux-snapshot-windows
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
@@ -118,7 +124,7 @@ jobs:
       
       - name: Upload Assets
         run: |
-          gh release upload "Snapshot" ./build-artifacts-macos-latest --clobber --name "disflux-snapshot-macos"
-          gh release upload "Snapshot" ./build-artifacts-ubuntu-latest --clobber --name "disflux-snapshot-linux"
-          gh release upload "Snapshot" ./build-artifacts-windows-latest --clobber --name "disflux-snapshot-windows"
+          gh release upload "Snapshot" ./disflux-snapshot-macos --clobber
+          gh release upload "Snapshot" ./disflux-snapshot-linux --clobber
+          gh release upload "Snapshot" ./disflux-snapshot-windows --clobber
 
