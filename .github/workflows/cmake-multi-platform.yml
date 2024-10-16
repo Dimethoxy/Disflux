@@ -106,15 +106,12 @@ jobs:
       
       - name: Get Artifacts
         uses: actions/download-artifact@v4
-      
-      - name: Display structure of downloaded files
-        run: ls -R
 
-      - name: Rename Artifacts
+      - name: Zip Artifacts
         run: |
-          mv ./build-artifacts-macos-latest ./disflux-snapshot-macos
-          mv ./build-artifacts-ubuntu-latest ./disflux-snapshot-linux
-          mv ./build-artifacts-windows-latest ./disflux-snapshot-windows
+          zip -r disflux-snapshot-macos.zip ./build-artifacts-macos-latest
+          zip -r disflux-snapshot-linux.zip ./build-artifacts-ubuntu-latest
+          zip -r disflux-snapshot-windows.zip ./build-artifacts-windows-latest
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -122,14 +119,13 @@ jobs:
           tag_name: "Snapshot"
           prerelease: true
           body: |
-              ### ⚠️ WARNING: Unstable Testing Release ⚠️
-              This is a bleeding-edge, **unstable** snapshot intended solely for testing purposes.
+              ### ⚠️ WARNING: Unstable Release ⚠️
+              This is a **unstable** snapshot intended solely for testing purposes.
               It may contain bugs, incomplete features, or cause instability.
               **Not recommended** for production or general use—proceed with caution.
-      
+              
       - name: Upload Assets
         run: |
-          gh release upload "Snapshot" ./disflux-snapshot-macos --clobber
-          gh release upload "Snapshot" ./disflux-snapshot-linux --clobber
-          gh release upload "Snapshot" ./disflux-snapshot-windows --clobber
-
+          gh release upload "Snapshot" disflux-snapshot-macos.zip --clobber
+          gh release upload "Snapshot" disflux-snapshot-linux.zip --clobber
+          gh release upload "Snapshot" disflux-snapshot-windows.zip --clobber
