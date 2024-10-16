@@ -111,7 +111,6 @@ jobs:
           tag_name: "Snapshot"
           prerelease: true
           body: |
-            body: |
               ### ⚠️ WARNING: Unstable Testing Release ⚠️
               This is a bleeding-edge, **unstable** snapshot intended solely for testing purposes.
               It may contain bugs, incomplete features, or cause instability.
@@ -119,6 +118,7 @@ jobs:
       
       - name: Upload Assets
         run: |
-          for file in ./*; do
-            gh release upload "Snapshot" "$file" --clobber
-          done
+          gh release upload "Snapshot" ./build-artifacts-macos-latest --clobber --name "disflux-snapshot-macos"
+          gh release upload "Snapshot" ./build-artifacts-ubuntu-latest --clobber --name "disflux-snapshot-linux"
+          gh release upload "Snapshot" ./build-artifacts-windows-latest --clobber --name "disflux-snapshot-windows"
+
