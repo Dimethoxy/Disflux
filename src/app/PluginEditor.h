@@ -30,8 +30,8 @@ private:
   PluginProcessor& p;
   OpenGLContext openGLContext;
   //==============================================================================
-  int baseWidth = 800;
-  int baseHeight = 400;
+  int baseWidth = 600;
+  int baseHeight = 160;
   //==============================================================================
   Image image;
   bool isResizing = false;

@@ -29,8 +29,13 @@ PluginEditor::PluginEditor(PluginProcessor& p)
 
   addAndMakeVisible(disfluxPanel);
 
-  setSize(baseWidth, baseHeight);
-  // setResizeLimits(200, 100, 3000, 1000); // Currently breaks Linux build
+  dmt::Settings::debugGrid = true;
+  dmt::Settings::debugBounds = true;
+
+  double ratio = baseWidth / baseHeight;
+  setResizeLimits(800, 140, 4000, 4000 / ratio);
+  getConstrainer()->setFixedAspectRatio(ratio);
+  setSize(800.0, 800.0 / ratio);
 }
 //==============================================================================
 PluginEditor::~PluginEditor() {}
@@ -99,7 +104,6 @@ PluginEditor::resized()
   removeAllChildren();
 
   // We go into resizing mode
-  stopTimer();
   startTimer(100);
   isResizing = true;
 }
