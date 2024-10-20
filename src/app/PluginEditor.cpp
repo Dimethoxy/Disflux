@@ -30,9 +30,9 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   addAndMakeVisible(disfluxPanel);
 
   double ratio = baseWidth / baseHeight;
-  setResizeLimits(800, 140, 4000, 4000 / ratio);
+  setResizeLimits(baseWidth, baseWidth / ratio, 4000, 4000 / ratio);
   getConstrainer()->setFixedAspectRatio(ratio);
-  setSize(800.0, 800.0 / ratio);
+  setSize(baseWidth, baseWidth / ratio);
 }
 //==============================================================================
 PluginEditor::~PluginEditor() {}
@@ -97,12 +97,12 @@ PluginEditor::resized()
     paintEntireComponent(graphics, false);
   }
 
-  // We remove all children to improve resize performance
-  removeAllChildren();
-
   // We go into resizing mode
   startTimer(100);
   isResizing = true;
+
+  // We remove all children to improve resize performance
+  removeAllChildren();
 }
 void
 PluginEditor::parentSizeChanged()
