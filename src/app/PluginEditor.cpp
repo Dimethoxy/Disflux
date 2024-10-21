@@ -29,6 +29,8 @@ PluginEditor::PluginEditor(PluginProcessor& p)
 
   addAndMakeVisible(disfluxPanel);
 
+  // dmt::Settings::debugBounds = true;
+
   double ratio = baseWidth / baseHeight;
   setResizeLimits(baseWidth, baseWidth / ratio, 4000, 4000 / ratio);
   getConstrainer()->setFixedAspectRatio(ratio);
