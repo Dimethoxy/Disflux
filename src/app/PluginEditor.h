@@ -31,7 +31,7 @@ private:
   OpenGLContext openGLContext;
   //==============================================================================
   int baseWidth = 600;
-  int baseHeight = 160;
+  int baseHeight = 250;
   //==============================================================================
   Image image;
   bool isResizing = false;
