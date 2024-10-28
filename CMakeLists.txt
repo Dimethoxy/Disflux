@@ -5,6 +5,7 @@
 cmake_minimum_required(VERSION 3.30)
 project(Disflux VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS TRUE) 
 set(EXT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
 include(cmake/get_cpm.cmake)
 
@@ -49,4 +50,5 @@ endif()
 
 # Silence some warnings
 add_definitions(-D_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING)
+
 add_subdirectory(src)
