@@ -32,9 +32,9 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   // dmt::Settings::debugBounds = true;
   // dmt::Settings::debugGrid = true;
 
-  double ratio = baseWidth / baseHeight;
+  setResizable(true, true);
   setResizeLimits(baseWidth, baseWidth / ratio, 4000, 4000 / ratio);
-  getConstrainer()->setFixedAspectRatio(ratio);
+  // getConstrainer()->setFixedAspectRatio(ratio);
   setSize(baseWidth, baseWidth / ratio);
 }
 //==============================================================================
@@ -49,8 +49,41 @@ PluginEditor::timerCallback()
   // This ends resizing mode
   stopTimer();
   const auto bounds = getLocalBounds();
+  const auto width = bounds.getWidth();
   const auto height = bounds.getHeight();
-  size = (float)height / (float)baseHeight;
+
+  // First check if the size increased or decreased
+  bool biggerWidth = width > lastWidth;
+  bool biggerHeight = height > lastHeight;
+  bool bigger = biggerWidth || biggerHeight;
+
+  // We check the current ratio against the target ratio
+  // Our goal is to keep the aspect ratio of the panel constant
+  // while just removing the excess space
+  const auto currentRatio = (float)width / (float)height;
+  if (bigger) {
+    if (currentRatio < ratio) {
+      const auto newWidth = (int)(height * ratio);
+      setSize(newWidth, height);
+    } else {
+      const auto newHeight = (int)(width / ratio);
+      setSize(width, newHeight);
+    }
+  } else {
+    if (currentRatio > ratio) {
+      const auto newWidth = (int)(height * ratio);
+      setSize(newWidth, height);
+    } else {
+      const auto newHeight = (int)(width / ratio);
+      setSize(width, newHeight);
+    }
+  }
+
+  // We update the last width and height
+  lastWidth = getWidth();
+  lastHeight = getHeight();
+
+  size = (float)getHeight() / (float)baseHeight;
   disfluxPanel.setBounds(bounds);
   addAndMakeVisible(disfluxPanel);
   isResizing = false;
@@ -66,10 +99,8 @@ PluginEditor::paint(juce::Graphics& g)
   if (isResizing) {
     const int width = jmax(1, getWidth());
     const int height = jmax(1, getHeight());
-    g.drawImageTransformed(
-      image,
-      AffineTransform::scale(width / (float)image.getWidth(),
-                             height / (float)image.getHeight()));
+    g.drawImageWithin(
+      image, 0, 0, width, height, RectanglePlacement::fillDestination, false);
     return;
   }
 
@@ -84,12 +115,12 @@ PluginEditor::resized()
   TRACER("PluginEditor::resized");
 
   // Because JUCE is to stupid to handle resize limits without laggig we do this
-  if (getHeight() < 100) {
-    setBounds(getBounds().withHeight(100));
-  }
-  if (getWidth() < 200) {
-    setBounds(getBounds().withWidth(200));
-  }
+  // if (getHeight() < 100) {
+  //   setBounds(getBounds().withHeight(100));
+  // }
+  // if (getWidth() < 200) {
+  //   setBounds(getBounds().withWidth(200));
+  // }
 
   // Let's cache this component's graphics to an image
   if (!isResizing) {
@@ -101,7 +132,7 @@ PluginEditor::resized()
   }
 
   // We go into resizing mode
-  startTimer(100);
+  startTimer(300);
   isResizing = true;
 
   // We remove all children to improve resize performance

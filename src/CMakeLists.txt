@@ -38,7 +38,7 @@ target_sources(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         ${CMAKE_SOURCE_DIR}/external/dmt
-        ${CMAKE_SOURCE_DIR}/external/perfetto
+        ${CMAKE_SOURCE_DIR}/external/melatonin_perfetto
         ${CMAKE_SOURCE_DIR}/external/tomlplusplus
 )
 
@@ -80,6 +80,7 @@ target_link_libraries(${PROJECT_NAME}
         juce::juce_opengl
         juce::juce_product_unlocking
         Melatonin::Perfetto
+        melatonin_blur
     PUBLIC
         FontBinaryData
         juce::juce_recommended_config_flags

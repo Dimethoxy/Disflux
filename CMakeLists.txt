@@ -38,7 +38,13 @@ CPMAddPackage(
     NAME MELATONIN_PERFETTO
     GITHUB_REPOSITORY Lunix-420/melatonin_perfetto
     GIT_TAG main
-    SOURCE_DIR ${EXT_DIR}/perfetto
+    SOURCE_DIR ${EXT_DIR}/melatonin_perfetto
+)
+CPMAddPackage(
+    NAME MELATONIN_BLUR
+    GITHUB_REPOSITORY Lunix-420/melatonin_blur
+    GIT_TAG main
+    SOURCE_DIR ${EXT_DIR}/melatonin_blur
 )
 
 # Set C++ compiler flags

@@ -9,6 +9,7 @@ class PluginEditor final
   , juce::Timer
 {
   using Image = juce::Image;
+  using ImageComponent = juce::ImageComponent;
   using PixelFormat = juce::Image::PixelFormat;
   using OpenGLContext = juce::OpenGLContext;
 
@@ -32,6 +33,9 @@ private:
   //==============================================================================
   int baseWidth = 600;
   int baseHeight = 250;
+  int lastWidth = baseWidth;
+  int lastHeight = baseHeight;
+  double ratio = baseWidth / baseHeight;
   //==============================================================================
   Image image;
   bool isResizing = false;
