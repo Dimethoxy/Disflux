@@ -16,7 +16,9 @@
                 "${workspaceFolder}/build/Debug/src/juce_binarydata_FontBinaryData/JuceLibraryCode",
                 "${workspaceFolder}/external/perfetto",
                 "${workspaceFolder}/build/src/juce_binarydata_FontBinaryData/JuceLibraryCode",
-                "${workspaceFolder}/build/src/DisfluxPlugin_artefacts/JuceLibraryCode"
+                "${workspaceFolder}/build/src/DisfluxPlugin_artefacts/JuceLibraryCode",
+                "${workspaceFolder}/external/melatonin_perfetto",
+                "${workspaceFolder}/external"
             ],
             "defines": [
                 "_DEBUG",
@@ -28,6 +30,26 @@
             "cStandard": "c23",
             "intelliSenseMode": "windows-msvc-x64",
             "cppStandard": "c++23"
+        },
+        {
+            "name": "Linux",
+            "includePath": [
+                "/data/development/disflux/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/g++-13",
+            "intelliSenseMode": "linux-gcc-x64",
+            "compilerPathInCppPropertiesJson": "/usr/bin/clang",
+            "cStandard": "c23",
+            "cppStandard": "c++23",
+            "mergeConfigurations": false,
+            "browse": {
+                "path": [
+                    "/data/development/disflux/**",
+                    "${workspaceFolder}"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
         }
     ],
     "version": 4

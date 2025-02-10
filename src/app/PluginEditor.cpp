@@ -52,7 +52,14 @@ PluginEditor::resized()
   TRACER("PluginEditor::resized");
 
   // Set the global size
-  dmt::Settings::Window::size = 420.0f / getHeight();
+  float newSize = baseWidth / getHeight();
+
+  // Make sure the size makes sense
+  if (newSize < 0.0f || newSize == 0.0f || std::isinf(newSize)) {
+    jassertfalse;
+  }
+
+  dmt::Settings::Window::size = newSize;
 
   // Set the bounds of the compositor to the bounds of the PluginEditor
   compositor.setBoundsRelative(0.0f, 0.0f, 1.0f, 1.0f);

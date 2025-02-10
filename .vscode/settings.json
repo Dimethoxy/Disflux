@@ -116,6 +116,8 @@
     "*.ipp": "cpp",
     "csignal": "cpp",
     "strstream": "cpp",
-    "source_location": "cpp"
+    "source_location": "cpp",
+    "csetjmp": "cpp",
+    "expected": "cpp"
   }
 }
