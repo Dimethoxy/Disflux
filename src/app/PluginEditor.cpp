@@ -55,7 +55,7 @@ PluginEditor::resized()
   float newSize = baseWidth / getHeight();
 
   // Make sure the size makes sense
-  if (newSize < 0.0f || newSize == 0.0f || std::isinf(newSize)) {
+  if (newSize <= 0.0f || std::isinf(newSize)) {
     jassertfalse;
   }
 
