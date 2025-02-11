@@ -23,10 +23,10 @@ PluginEditor::PluginEditor(PluginProcessor& p)
     setResizable(true, true);
   }
 
-  auto& lnf = this->getLookAndFeel();
-  lnf.setUsingNativeAlertWindows(true);
-  lnf.setColour(juce::ResizableWindow::backgroundColourId,
-                dmt::Settings::Colours::background);
+  // auto& lnf = this->getLookAndFeel();
+  // lnf.setUsingNativeAlertWindows(true);
+  // lnf.setColour(juce::ResizableWindow::backgroundColourId,
+  //               dmt::Settings::Colours::background);
 
   addAndMakeVisible(compositor);
   setResizable(false, false);
@@ -42,7 +42,7 @@ PluginEditor::paint(juce::Graphics& g)
   TRACER("PluginEditor::paint");
 
   // Just painting the background
-  g.fillAll(dmt::Settings::Colours::background);
+  g.fillAll(dmt::Settings::Window::backroundColour);
 }
 
 //==============================================================================
