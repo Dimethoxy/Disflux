@@ -6,7 +6,7 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   : AudioProcessorEditor(&p)
   , p(p)
   , disfluxPanel(p.apvts)
-  , compositor(disfluxPanel)
+  , compositor("DisFlux", disfluxPanel)
 {
   if (OS_IS_WINDOWS) {
     setResizable(true, true);
@@ -22,11 +22,6 @@ PluginEditor::PluginEditor(PluginProcessor& p)
     openGLContext.attachTo(*getTopLevelComponent());
     setResizable(true, true);
   }
-
-  // auto& lnf = this->getLookAndFeel();
-  // lnf.setUsingNativeAlertWindows(true);
-  // lnf.setColour(juce::ResizableWindow::backgroundColourId,
-  //               dmt::Settings::Colours::background);
 
   addAndMakeVisible(compositor);
   setResizable(false, false);

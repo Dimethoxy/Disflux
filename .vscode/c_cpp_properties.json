@@ -34,11 +34,12 @@
         {
             "name": "Linux",
             "includePath": [
-                "/data/development/disflux/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/build/src/juce_binarydata_FontBinaryData/JuceLibraryCode/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/g++-13",
-            "intelliSenseMode": "linux-gcc-x64",
+            "intelliSenseMode": "${default}",
             "compilerPathInCppPropertiesJson": "/usr/bin/clang",
             "cStandard": "c23",
             "cppStandard": "c++23",
