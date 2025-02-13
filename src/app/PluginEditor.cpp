@@ -23,8 +23,18 @@ PluginEditor::PluginEditor(PluginProcessor& p)
     setResizable(true, true);
   }
 
+  if (auto* constrainer = getConstrainer()) {
+    const auto aspectRatio = (double)baseWidth / (double)baseHeight;
+    constrainer->setFixedAspectRatio(aspectRatio);
+    const auto minWidth = baseWidth / 2;
+    const auto minHeight = baseHeight / 2;
+    const auto maxWidth = baseWidth * 4;
+    const auto maxHeight = baseHeight * 4;
+    constrainer->setSizeLimits(minWidth, minHeight, maxWidth, maxHeight);
+  }
+
   addAndMakeVisible(compositor);
-  setResizable(false, false);
+  setResizable(true, true);
   setSize(baseWidth, baseHeight);
 }
 //==============================================================================
@@ -47,7 +57,7 @@ PluginEditor::resized()
   TRACER("PluginEditor::resized");
 
   // Set the global size
-  float newSize = baseWidth / getHeight();
+  float newSize = (float)getHeight() / (float)baseHeight;
 
   // Make sure the size makes sense
   if (newSize <= 0.0f || std::isinf(newSize)) {
@@ -58,4 +68,14 @@ PluginEditor::resized()
 
   // Set the bounds of the compositor to the bounds of the PluginEditor
   compositor.setBoundsRelative(0.0f, 0.0f, 1.0f, 1.0f);
+
+  int w = getWidth();
+  int h = getHeight();
+  std::cout << "===== RESIZE =====" << std::endl;
+  std::cout << w << "   " << h << std::endl;
+  std::cout << TopLevelWindow::getTopLevelWindow(0)->getWidth() << "   "
+            << TopLevelWindow::getTopLevelWindow(0)->getHeight() << std::endl;
+  std::cout << "------------------" << std::endl;
+  std::cout << "newSize: " << newSize << std::endl;
+  std::cout << "==================" << std::endl;
 }
