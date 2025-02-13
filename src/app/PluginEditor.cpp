@@ -23,14 +23,14 @@ PluginEditor::PluginEditor(PluginProcessor& p)
     setResizable(true, true);
   }
 
-  if (auto* constrainer = getConstrainer()) {
+  if (auto* _constrainer = getConstrainer()) {
     const auto aspectRatio = (double)baseWidth / (double)baseHeight;
-    constrainer->setFixedAspectRatio(aspectRatio);
+    _constrainer->setFixedAspectRatio(aspectRatio);
     const auto minWidth = baseWidth / 2;
     const auto minHeight = baseHeight / 2;
     const auto maxWidth = baseWidth * 4;
     const auto maxHeight = baseHeight * 4;
-    constrainer->setSizeLimits(minWidth, minHeight, maxWidth, maxHeight);
+    _constrainer->setSizeLimits(minWidth, minHeight, maxWidth, maxHeight);
   }
 
   addAndMakeVisible(compositor);
