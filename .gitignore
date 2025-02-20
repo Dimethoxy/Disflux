@@ -1,3 +1,17 @@
 build/
 output/
 *.DS_Store
+pkg/
+src/
+Disflux/
+*.tar.*
+*.tar.gz
+*.tar.xz
+*.tar.bz2
+*.tar.zst
+*.pkg.tar.*
+*.pkg.tar.gz
+*.pkg.tar.xz
+*.pkg.tar.bz2
+*.pkg.tar.zst
+*.log
