@@ -23,12 +23,6 @@ CPMAddPackage(
     SOURCE_DIR ${EXT_DIR}/dmt
 )
 CPMAddPackage(
-    NAME TOMLPLUSPLUS
-    GITHUB_REPOSITORY marzer/tomlplusplus
-    GIT_TAG master
-    SOURCE_DIR ${EXT_DIR}/tomlplusplus
-)
-CPMAddPackage(
     NAME CLAP_JUCE
     GITHUB_REPOSITORY free-audio/clap-juce-extensions
     GIT_TAG main

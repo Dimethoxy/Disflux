@@ -56,6 +56,7 @@ juce_add_binary_data(FontBinaryData
    ${CMAKE_SOURCE_DIR}/fonts/poppins/Poppins-Black.ttf
    ${CMAKE_SOURCE_DIR}/fonts/sedgwick_ave_display/SedgwickAveDisplay-Regular.ttf
    ${CMAKE_SOURCE_DIR}/icons/speed.svg
+   ${CMAKE_SOURCE_DIR}/icons/back.svg
    ${CMAKE_SOURCE_DIR}/icons/height.svg
    ${CMAKE_SOURCE_DIR}/icons/thickness.svg
    ${CMAKE_SOURCE_DIR}/icons/gear.svg
