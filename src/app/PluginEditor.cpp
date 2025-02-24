@@ -68,15 +68,4 @@ PluginEditor::resized()
 
   // Set the bounds of the compositor to the bounds of the PluginEditor
   compositor.setBoundsRelative(0.0f, 0.0f, 1.0f, 1.0f);
-
-  // int w = getWidth();
-  // int h = getHeight();
-  // std::cout << "===== RESIZE =====" << std::endl;
-  // std::cout << w << "   " << h << std::endl;
-  // std::cout << TopLevelWindow::getTopLevelWindow(0)->getWidth() << "   "
-  //           << TopLevelWindow::getTopLevelWindow(0)->getHeight() <<
-  //           std::endl;
-  // std::cout << "------------------" << std::endl;
-  // std::cout << "newSize: " << newSize << std::endl;
-  // std::cout << "==================" << std::endl;
 }
