@@ -1,9 +1,9 @@
 # Maintainer: David Hess (Lunix) <your.email@example.com>
 # PKGBUILD for Disflux Unstable (latest git commit)
 
-pkgname=disflux-git
+pkgname=dimethoxy-disflux-git
 # pkgver is generated from the latest git commit; the initial dummy version is 0.0.0.
-pkgver=0.0.0
+pkgver=Snapshot.2368c48
 pkgrel=1
 pkgdesc="Unstable build of the latest commit of Disflux from Dimethoxy's GitHub repository"
 arch=('x86_64')
@@ -23,9 +23,14 @@ depends=('alsa-lib' 'jack' 'ladspa' 'curl' 'freetype2' 'fontconfig' 'libx11'
 # Generate a proper pkgver from the git commit (using git describe)
 pkgver() {
   cd "$srcdir/Disflux"
-  # This will output a version based on the latest tag or commit hash.
-  git describe --tags --always | sed 's/^v//'
+  # Extract the latest tag (assumed to be the base version)
+  base_version=$(git describe --tags --abbrev=0 | sed 's/^v//')
+  # Get the short commit hash
+  commit_hash=$(git rev-parse --short HEAD)
+  # Construct the version string
+  echo "${base_version}.${commit_hash}"
 }
+
 
 build() {
   cd "$srcdir/Disflux"
