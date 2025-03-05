@@ -17,10 +17,10 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   }
 
   if (OS_IS_LINUX) {
-    openGLContext.setComponentPaintingEnabled(true);
-    openGLContext.setContinuousRepainting(false);
-    openGLContext.attachTo(*getTopLevelComponent());
-    setResizable(true, true);
+    // openGLContext.setComponentPaintingEnabled(true);
+    // openGLContext.setContinuousRepainting(false);
+    // openGLContext.attachTo(*getTopLevelComponent());
+    // setResizable(true, true);
   }
 
   if (auto* constrainer = getConstrainer()) {
@@ -36,6 +36,31 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   addAndMakeVisible(compositor);
   setResizable(true, true);
   setSize(baseWidth, baseHeight);
+
+  juce::URL url("http://www.google.com");
+  juce::WebInputStream webStream(url, false);
+  webStream.withExtraHeaders("User-Agent: Dimethoxy Audio Plugin");
+  webStream.withConnectionTimeout(5000);
+  auto response = webStream.readEntireStreamAsString();
+  if (webStream.connect(nullptr)) {
+    // Check the status code to see if the request was successful
+    int statusCode = webStream.getStatusCode();
+    if (statusCode == 200) {
+      // Read the response data
+      juce::MemoryBlock responseData;
+      while (!webStream.isExhausted()) {
+        char buffer[1024];
+        int bytesRead = webStream.read(buffer, sizeof(buffer));
+        responseData.append(buffer, bytesRead);
+      }
+      // Print out the fetched data (optional)
+      DBG("Fetched data: " << responseData.toString());
+    } else {
+      DBG("Failed to fetch the page. Status code: " << statusCode);
+    }
+  } else {
+    DBG("Failed to connect to the URL");
+  }
 }
 //==============================================================================
 PluginEditor::~PluginEditor() {}

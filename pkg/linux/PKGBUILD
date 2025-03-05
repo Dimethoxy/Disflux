@@ -3,7 +3,7 @@
 
 pkgname=dimethoxy-disflux-git
 # pkgver is generated from the latest git commit; the initial dummy version is 0.0.0.
-pkgver=Snapshot.e28aa41
+pkgver=d8083ac
 pkgrel=1
 pkgdesc="Unstable build of the latest commit of Disflux from Dimethoxy's GitHub repository"
 arch=('x86_64')
@@ -28,7 +28,7 @@ pkgver() {
   # Get the short commit hash
   commit_hash=$(git rev-parse --short HEAD)
   # Construct the version string
-  echo "${base_version}.${commit_hash}"
+  echo "${commit_hash}"
 }
 
 
@@ -49,7 +49,7 @@ package() {
   install -d "$pkgdir/usr/lib/clap/Disflux"
   install -d "$pkgdir/usr/share/licenses/$pkgname"
 
-  # Install the built artifacts – paths mirror those produced by your CI/CD script.
+  # Install the built artifacts paths mirror those produced by your CI/CD script.
   cp -r "$srcdir/Disflux/build/src/DisfluxPlugin_artefacts/Release/VST3" "$pkgdir/usr/lib/vst3/Disflux/"
   cp -r "$srcdir/Disflux/build/src/DisfluxPlugin_artefacts/Release/LV2" "$pkgdir/usr/lib/lv2/Disflux/"
   cp -r "$srcdir/Disflux/build/src/DisfluxPlugin_artefacts/Release/CLAP" "$pkgdir/usr/lib/clap/Disflux/"
