@@ -47,6 +47,7 @@ public:
 
   //==============================================================================
   dmt::dsp::effect::DisfluxProcessor disfluxProcessor;
+  dmt::version::Manager versionManager;
 
 private:
 #if PERFETTO
