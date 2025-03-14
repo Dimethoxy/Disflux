@@ -98,6 +98,20 @@ jobs:
           cp -r build/src/DisfluxPlugin_artefacts/Release/VST3 artifacts/
           cp -r build/src/DisfluxPlugin_artefacts/Release/LV2 artifacts/
           cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP artifacts/
+
+          # Prepare Debian package metadata
+          mkdir -p debian/DEBIAN
+          cp /pkg/linux/ubuntu/snapshot-metadata.yml debian/DEBIAN/control
+
+          # Use dh_make to create the .deb package structure
+          cd debian
+          dh_make -f ../build/src/DisfluxPlugin_artefacts/Release/Disflux.tar.gz --createorig
+
+          # Build the .deb package
+          dpkg-deb --build . ../dimethoxy-disflux-snapshot-${{ github.sha }}.deb
+
+          # Move the .deb package to artifacts
+          mv ../dimethoxy-disflux-snapshot-${{ github.sha }}.deb artifacts/
         shell: bash
 
       - name: Upload Artifacts
@@ -136,8 +150,12 @@ jobs:
               It may contain bugs, incomplete features, or cause instability.
               **Not recommended** for production or general use—proceed with caution.
               
-      - name: Upload Assets
+      - name: Upload .zip Packages to GitHub Release
         run: |
           gh release upload "Snapshot" disflux-snapshot-macos.zip --clobber
           gh release upload "Snapshot" disflux-snapshot-linux.zip --clobber
           gh release upload "Snapshot" disflux-snapshot-windows.zip --clobber
+      
+      - name: Upload .deb Package to GitHub Release
+        run: |
+          gh release upload "Snapshot" disflux-snapshot-ubuntu.deb --clobber
