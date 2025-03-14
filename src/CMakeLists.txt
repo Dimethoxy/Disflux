@@ -24,6 +24,7 @@ juce_add_plugin(${PROJECT_NAME}
     #COPY_PLUGIN_AFTER_BUILD TRUE
     PLUGIN_MANUFACTURER_CODE DMTX
     PLUGIN_CODE OSCP
+    USE_CURL TRUE
     LV2URI "https://dimethoxy.com/plugins/disflux"                 
     )                    
 
