@@ -15,10 +15,10 @@ source=("git+https://github.com/Dimethoxy/Disflux.git")
 sha256sums=('SKIP')
 
 # Build and runtime dependencies – adjust as necessary for your project.
-makedepends=('git' 'cmake' 'ninja' 'pkg-config' 'curl')
-depends=('alsa-lib' 'jack' 'ladspa' 'curl' 'freetype2' 'fontconfig' 'libx11'
-         'libxcomposite' 'libxcursor' 'libxext' 'libxinerama' 'libxrandr'
-         'libxrender' 'webkit2gtk' 'glu' 'mesa')
+makedepends=('gcc' 'git' 'cmake' 'ninja' 'pkg-config' 'alsa-lib' 'jack' 'ladspa' 
+     'curl' 'freetype2' 'fontconfig' 'libx11' 'libxcomposite' 'libxcursor' 
+     'libxext' 'libxinerama' 'libxrandr' 'libxrender' 'webkit2gtk' 'glu' 'mesa')
+depends=('curl')
 
 # Generate a proper pkgver from the git commit (using git describe)
 pkgver() {

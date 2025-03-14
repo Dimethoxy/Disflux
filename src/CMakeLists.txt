@@ -82,7 +82,6 @@ target_link_libraries(${PROJECT_NAME}
         juce::juce_product_unlocking
         Melatonin::Perfetto
         melatonin_blur
-        curl
     PUBLIC
         FontBinaryData
         juce::juce_recommended_config_flags
@@ -90,9 +89,18 @@ target_link_libraries(${PROJECT_NAME}
         juce::juce_recommended_warning_flags
 )
 
+# Conditionally link curl only on Linux
+if(UNIX AND NOT APPLE)
+    target_link_libraries(${PROJECT_NAME}
+        PRIVATE
+            curl
+    )
+endif()
+
 # Set up JUCE flags
 target_compile_definitions(${PROJECT_NAME}
     PRIVATE
+        JUCE_USE_CURL=$<BOOL:${UNIX}>
         JUCE_WEB_BROWSER=0
         JUCE_VST3_CAN_REPLACE_VST2=0
         JUCE_DISPLAY_SPLASH_SCREEN=0

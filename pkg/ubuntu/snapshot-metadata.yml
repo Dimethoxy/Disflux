@@ -1,0 +1,59 @@
+package:
+  name: dimethoxy-disflux-git
+  version: "7a25a9d"  # Will be set dynamically by your CI/CD pipeline based on the latest git commit hash
+  description: "Unstable build of the latest commit of Disflux from Dimethoxy's GitHub repository"
+  architecture: amd64
+  maintainer: "David Hess (Lunix) <your.email@example.com>"
+  url: "https://github.com/Dimethoxy/Disflux"
+  license: GPL-3.0-or-later
+  provides:
+    - disflux
+  source: "git+https://github.com/Dimethoxy/Disflux.git"
+  dependencies:
+    - alsa-lib
+    - jack
+    - ladspa
+    - curl
+    - freetype2
+    - fontconfig
+    - libx11
+    - libxcomposite
+    - libxcursor
+    - libxext
+    - libxinerama
+    - libxrandr
+    - libxrender
+    - webkit2gtk
+    - glu
+    - mesa
+  build_dependencies:
+    - git
+    - cmake
+    - ninja
+    - pkg-config
+    - curl
+
+build:
+  - mkdir -p build
+  - cd build
+  - cmake --preset "Linux Release" ..
+  - cmake --build . --config "Release"
+
+package:
+  install_directories:
+    - /usr/lib/vst3/Disflux
+    - /usr/lib/lv2/Disflux
+    - /usr/lib/clap/Disflux
+    - /usr/share/licenses/dimethoxy-disflux-git
+  files_to_install:
+    - src/Disflux/build/src/DisfluxPlugin_artefacts/Release/VST3
+    - src/Disflux/build/src/DisfluxPlugin_artefacts/Release/LV2
+    - src/Disflux/build/src/DisfluxPlugin_artefacts/Release/CLAP
+  license:
+    source: "src/Disflux/LICENSE"
+    destination: "/usr/share/licenses/dimethoxy-disflux-git/LICENSE"
+    fallback_url: "https://raw.githubusercontent.com/Dimethoxy/Disflux/refs/heads/main/LICENSE"
+
+# Optional post-build commands (if required)
+post_build:
+  - dh_make -f deb
