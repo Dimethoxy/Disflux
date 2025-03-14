@@ -1,8 +1,8 @@
 # Disflux Project (Work in Progress)
 
-Welcome to our Disflux project! This repository aims to create an open-source, cross-platform audio plugin that replicates the core functionality of the Kilohearts Disperser plugin.
+Disflux is a wild audio effect plugin that takes your transients and smears them through time, adding serious punch and weight. If you're creating Hard Techno or Rawstyle and need your kicks to hit like a freaking train, Disflux is your new best friend. We're talking aggressive, distorted, gated kicks that smack like no tomorrow.
 
-As this project is still in its early stages, several features are under active development.
+Using a chain of all-pass filters, Disflux spreads those high-energy transients through time, giving you that laser-like effect. Think of it as a cross between a short reverb and a falling sine wave. It injects depth and impact into your punch. Outside of kicks, it’s also perfect for crafting experimental soundscapes and other weird, next-level audio magic.
 
 ## Project Goals
 
