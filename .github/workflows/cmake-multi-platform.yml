@@ -108,10 +108,10 @@ jobs:
           dh_make -f ../build/src/DisfluxPlugin_artefacts/Release/Disflux.tar.gz --createorig
 
           # Build the .deb package
-          dpkg-deb --build . ../dimethoxy-disflux-snapshot-${{ github.sha }}.deb
+          dpkg-deb --build . ../dimethoxy-disflux-snapshot.deb
 
           # Move the .deb package to artifacts
-          mv ../dimethoxy-disflux-snapshot-${{ github.sha }}.deb artifacts/
+          mv ../disflux-snapshot-linux.deb artifacts/
         shell: bash
 
       - name: Upload Artifacts

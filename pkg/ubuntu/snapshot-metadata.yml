@@ -1,18 +1,22 @@
 package:
   name: dimethoxy-disflux-git
-  version: "7a25a9d"  # Will be set dynamically by your CI/CD pipeline based on the latest git commit hash
+  version: "7a25a9d"  # Will be set dynamically by the CI/CD pipeline based on the latest git commit hash
   description: "Unstable build of the latest commit of Disflux from Dimethoxy's GitHub repository"
   architecture: amd64
-  maintainer: "David Hess (Lunix) <your.email@example.com>"
+  maintainer: "David Hess (Lunix) <davidhess336@gmx.de>"
   url: "https://github.com/Dimethoxy/Disflux"
   license: GPL-3.0-or-later
   provides:
     - disflux
   source: "git+https://github.com/Dimethoxy/Disflux.git"
   dependencies:
-    - alsa-lib
-    - jack
-    - ladspa
+    - curl
+
+  build_dependencies:
+    - git
+    - cmake
+    - ninja
+    - pkg-config
     - curl
     - freetype2
     - fontconfig
@@ -26,12 +30,9 @@ package:
     - webkit2gtk
     - glu
     - mesa
-  build_dependencies:
-    - git
-    - cmake
-    - ninja
-    - pkg-config
-    - curl
+    - alsa-lib
+    - jack
+    - ladspa
 
 build:
   - mkdir -p build
@@ -54,6 +55,6 @@ package:
     destination: "/usr/share/licenses/dimethoxy-disflux-git/LICENSE"
     fallback_url: "https://raw.githubusercontent.com/Dimethoxy/Disflux/refs/heads/main/LICENSE"
 
-# Optional post-build commands (if required)
+# Optional post-build commands
 post_build:
   - dh_make -f deb
