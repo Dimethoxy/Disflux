@@ -1,28 +1,30 @@
-# Disflux Project (Work in Progress)
+# Disflux
 
 Disflux is a wild audio effect plugin that takes your transients and smears them through time, adding serious punch and weight. If you're creating Hard Techno or Rawstyle and need your kicks to hit like a freaking train, Disflux is your new best friend. We're talking aggressive, distorted, gated kicks that smack like no tomorrow.
 
 Using a chain of all-pass filters, Disflux spreads those high-energy transients through time, giving you that laser-like effect. Think of it as a cross between a short reverb and a falling sine wave. It injects depth and impact into your punch. Outside of kicks, it’s also perfect for crafting experimental soundscapes and other weird, next-level audio magic.
 
-## Project Goals
+> [!WARNING]
+> Disflux is currently a work in progress. While it's functional, there are unfinished features, and some buttons or functionalities may not work as expected.
+> Expect updates and improvements as we continue development!
 
-The main objectives of this project include:
+## 🔥 Features
 
-- **Linux Support:** Ensuring full compatibility with Linux-based digital audio workstations (DAWs) and workflows, making this plugin accessible across all major platforms (Windows, macOS, and Linux).
-- **CLAP Plugin Format:** Supporting the open-source and developer-friendly CLAP plugin format, alongside traditional VST3, to encourage broader community engagement and better performance.
-- **Optimized Performance:** Ensuring the plugin runs efficiently in real-time, with minimal CPU usage, making it suitable for professional audio production in low-latency environments.
+- **Free & Open-Source** – No paywalls, no restrictions
+- **All-Pass Filter Chain** – Smear your transients through time with a series of all-pass filters.
+- **Minimalist UI** – Minimalist vector interface
+- **Scalable UI** – Perfect for high-res screens
+- **Intuitive Workflow** – Get to your sound quickly with easy-to-navigate controls.
+- **Low CPU impact** – Crush your sounds, not your processor
+- **Cross-platform** – Supports Windows, MacOS, and Linux
+- **Multi-Format Support** – Works with VST3, CLAP, LV2, and AU formats.
+- **Regular Updates** – Continuous improvements and new features
+- **Privacy First** – We take your privacy seriously, no tracking or data collection
 
-## Current Status
+## 🚧 Work in Progress
 
-- Nothing
-
-## Getting Started
-
-While the project is still under construction, you can clone the repository and experiment with the current features. Contributions and feedback are welcome as we continue to build out this tool.
-
-```bash
-git clone https://github.com/Dimethoxy/Disflux.git
-```
+- **UI Customization** – Full color options and UI customization
+- **Analyzers** – Features like an oscilloscope to see your sound shaping in real time
 
 ## Donations
 
