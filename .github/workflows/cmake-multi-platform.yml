@@ -94,10 +94,6 @@ jobs:
       - name: Package Linux Artifacts
         if: matrix.os == 'ubuntu-latest'
         run: |
-          # List the files in the current directory to check where we are
-          echo "Listing files in the current directory:"
-          ls -la
-
           mkdir -p artifacts
           cp -r build/src/DisfluxPlugin_artefacts/Release/VST3 artifacts/
           cp -r build/src/DisfluxPlugin_artefacts/Release/LV2 artifacts/
@@ -105,7 +101,7 @@ jobs:
 
           # Prepare Debian package metadata
           mkdir -p debian/DEBIAN
-          cp pkg/linux/ubuntu/snapshot-metadata.yml debian/DEBIAN/control
+          cp pkg/ubuntu/snapshot-metadata.yml debian/DEBIAN/control
 
           # Use dh_make to create the .deb package structure
           cd debian
