@@ -21,12 +21,10 @@ juce_add_plugin(${PROJECT_NAME}
     NEEDS_MIDI_OUTPUT FALSE
     IS_MIDI_EFFECT FALSE
     EDITOR_WANTS_KEYBOARD_FOCUS FALSE
-    #COPY_PLUGIN_AFTER_BUILD TRUE
     PLUGIN_MANUFACTURER_CODE DMTX
-    PLUGIN_CODE OSCP
-    USE_CURL TRUE
+    PLUGIN_CODE DFLX
     LV2URI "https://dimethoxy.com/plugins/disflux"                 
-    )                    
+    )
 
 # Add the main source files
 target_sources(${PROJECT_NAME}
@@ -84,18 +82,19 @@ target_link_libraries(${PROJECT_NAME}
         juce::juce_product_unlocking
         Melatonin::Perfetto
         melatonin_blur
+        curl
     PUBLIC
         FontBinaryData
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags
-        )
+)
 
 # Set up JUCE flags
 target_compile_definitions(${PROJECT_NAME}
     PRIVATE
         JUCE_WEB_BROWSER=0
-        JUCE_USE_CURL=0
+        JUCE_USE_CURL=1
         JUCE_VST3_CAN_REPLACE_VST2=0
         JUCE_DISPLAY_SPLASH_SCREEN=0
         REPORT_JUCE_APP_USAGE=0)
