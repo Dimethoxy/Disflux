@@ -79,17 +79,17 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           mkdir -p artifacts
-          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3 artifacts/
           cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3 artifacts/
         shell: bash
 
       - name: Package macOS Artifacts
         if: matrix.os == 'macos-latest'
         run: |
           mkdir -p artifacts
-          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3 artifacts/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP artifacts/
           cp -r build/src/DisfluxPlugin_artefacts/Release/AU artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3 artifacts/
         shell: bash
 
       - name: Package Linux Artifacts
@@ -97,20 +97,20 @@ jobs:
         run: |
           # Prepare artifacts directory
           mkdir -p artifacts
-          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3/Disflux.vst3 artifacts/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP/Disflux.clap artifacts/
           cp -r build/src/DisfluxPlugin_artefacts/Release/LV2/Disflux.lv2 artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP/Disflux.clap artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3/Disflux.vst3 artifacts/
 
           # Prepare Debian package directory structure
           mkdir -p disflux-snapshot-ubuntu/DEBIAN
-          mkdir -p disflux-snapshot-ubuntu/usr/lib/vst3/Disflux/
           mkdir -p disflux-snapshot-ubuntu/usr/lib/clap/Disflux/
           mkdir -p disflux-snapshot-ubuntu/usr/lib/lv2/Disflux/
+          mkdir -p disflux-snapshot-ubuntu/usr/lib/vst3/Disflux/
 
           # Copy files to Debian package directory
-          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3/Disflux.vst3 disflux-snapshot-ubuntu/usr/lib/vst3/Disflux/
           cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP/Disflux.clap disflux-snapshot-ubuntu/usr/lib/clap/Disflux/
           cp -r build/src/DisfluxPlugin_artefacts/Release/LV2/Disflux.lv2 disflux-snapshot-ubuntu/usr/lib/lv2/Disflux/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3/Disflux.vst3 disflux-snapshot-ubuntu/usr/lib/vst3/Disflux/
           cp pkg/ubuntu/control disflux-snapshot-ubuntu/DEBIAN/control
           
           # Build Debian package
@@ -169,17 +169,17 @@ jobs:
           mv pkg/arch/git/*.pkg.tar.zst .
        
           # Rename the package
-          mv *.pkg.tar.zst disflux-snapshot-archlinux.pkg.tar.zst
+          mv *.pkg.tar.zst disflux-snapshot-linux-arch.pkg.tar.zst
           
           # Move the package to the artifacts directory
           mkdir -p artifacts
-          mv disflux-snapshot-archlinux.pkg.tar.zst artifacts/
+          mv disflux-snapshot-linux-arch.pkg.tar.zst artifacts/
       
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts-archlinux
-          path: artifacts/disflux-snapshot-archlinux.pkg.tar.zst
+          path: artifacts/disflux-snapshot-linux-arch.pkg.tar.zst
 
   # -----------------------------------------------------------------------------------------------
   release:
@@ -197,13 +197,13 @@ jobs:
 
       - name: Package Artifacts
         run: |
-          # Move the deb package to the root directory 
-          mv build-artifacts-ubuntu-latest/disflux-snapshot-ubuntu.deb .
-          mv build-artifacts-archlinux/disflux-snapshot-archlinux.pkg.tar.zst .
+          # Move the deb package to the root directory
+          mv build-artifacts-archlinux/disflux-snapshot-linux-arch.pkg.tar.zst .
+          mv build-artifacts-ubuntu-latest/disflux-snapshot-linux-ubuntu.deb .
           
           # Zip the artifacts
+          zip -r disflux-snapshot-linux.zip ./build-artifacts-linux-vanilla-latest
           zip -r disflux-snapshot-macos.zip ./build-artifacts-macos-latest
-          zip -r disflux-snapshot-linux.zip ./build-artifacts-ubuntu-latest
           zip -r disflux-snapshot-windows.zip ./build-artifacts-windows-latest
 
       - name: Create Release
