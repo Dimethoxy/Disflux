@@ -40,11 +40,18 @@ jobs:
       - name: Build
         run: cmake --build build --config "Release"
 
+      - name: Package Windows Artifacts
+        run: |
+          mkdir -p artifacts
+          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3 artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP artifacts/
+        shell: bash
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts-windows
-          path: build/src/DisfluxPlugin_artefacts/Release
+          path: artifacts
 
   #=========================================================================================
   # macOS Build
@@ -77,7 +84,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts-macos
-          path: build/src/DisfluxPlugin_artefacts/Release
+          path: artifacts
 
   #=========================================================================================
   # Ubuntu Linux Build
@@ -322,8 +329,13 @@ jobs:
 
       - name: Package Artifacts
         run: |
-          # Move the deb package to the root directory
+          # Move the Arch package to the root directory
           mv build-artifacts-archlinux/disflux-snapshot-linux-arch.pkg.tar.zst .
+
+          # Move the Fedora package to the root directory
+          mv build-artifacts-fedora/*.rpm .
+
+          # Move the deb package to the root directory
           mv build-artifacts-ubuntu/disflux-snapshot-linux-ubuntu.deb .
 
           # Zip the artifacts
