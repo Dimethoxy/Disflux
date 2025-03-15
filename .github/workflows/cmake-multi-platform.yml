@@ -202,7 +202,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Select CMake Preset
-        run: cmake --preset "Linx Release"
+        run: cmake --preset "Linux Release"
 
       - name: Build
         run: cmake --build build --config "Release"
