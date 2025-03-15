@@ -229,6 +229,15 @@ jobs:
           LV2_DIR="/usr/lib/lv2/Disflux" # The directory where the LV2 files will be installed
           VST3_DIR="/usr/lib/vst3/Disflux" # The directory where the VST3 files will be installed
 
+          # Get the latest Git hash
+          GIT_HASH=$(git rev-parse --short HEAD)
+
+          # Ensure GIT_HASH is not empty
+          if [ -z "$GIT_HASH" ]; then
+              echo "Error: GIT_HASH is empty. Exiting."
+              exit 1
+          fi
+
           # Copy the files to the Fedora package directory
           mkdir -p $FEDORA_PACKAGE_DIR/
           cp -r $BUILD_DIR/CLAP $FEDORA_PACKAGE_DIR/
@@ -249,7 +258,7 @@ jobs:
           cp pkg/fedora/snapshot.spec ~/rpmbuild/SPECS/dimethoxy-disflux-snapshot.spec
 
           # Build the RPM package with the Git hash correctly defined
-          rpmbuild --define "git_hash $GIT_HASH" -ba ~/rpmbuild/SPECS/dimethoxy-disflux-snapshot.spec
+          rpmbuild --define "git_hash ${GIT_HASH}" -ba ~/rpmbuild/SPECS/dimethoxy-disflux-snapshot.spec
 
           # Move the RPM package to the artifacts directory
           mkdir -p $ARTIFACTS_DIR
