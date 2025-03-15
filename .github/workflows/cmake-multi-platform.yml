@@ -67,10 +67,6 @@ jobs:
                            libxinerama-dev \
                            libxrandr-dev \
                            libxrender-dev \linux-ubuntu
-          mkdir -p artifacts
-          cp -r build/src/DisfluxPlugin_artefacts/Release/AU artifacts/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP artifacts/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3 artifacts/
         shell: bash
 
       - name: Package Linux Artifacts
