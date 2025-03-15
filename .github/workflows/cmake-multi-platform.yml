@@ -117,7 +117,7 @@ jobs:
           dpkg-deb --build disflux-snapshot-ubuntu
           
           # Move Debian package to artifacts
-          mv ../disflux-snapshot-linux.deb artifacts/
+          cp -r disflux-snapshot-ubuntu.deb artifacts/
         shell: bash
 
       - name: Upload Artifacts
