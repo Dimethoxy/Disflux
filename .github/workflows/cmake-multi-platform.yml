@@ -164,13 +164,14 @@ jobs:
         run: |
           # Move the package to the root directory
           mv pkg/arch/git/*.pkg.tar.zst .
-          
+          ls -la
           # Rename the package
           mv *.pkg.tar.zst disflux-snapshot-archlinux.pkg.tar.zst
-          
+          ls -la
           # Move the package to the artifacts directory
           mkdir -p artifacts
           mv disflux-snapshot-archlinux.pkg.tar.zst artifacts/
+          ls -la
       
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
