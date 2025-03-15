@@ -147,6 +147,11 @@ jobs:
           useradd -m dimethoxy
           sudo su - dimethoxy
 
+      - name: Set permissions for the build directory
+        run: |
+          sudo chown -R dimethoxy:dimethoxy /__w/Disflux/Disflux/pkg/arch/git
+          sudo chmod -R u+rw /__w/Disflux/Disflux/pkg/arch/git
+
       - name: Build Package
         run: |
           sudo -u dimethoxy bash -c 'cd pkg/arch/git && makepkg -si --noconfirm'
