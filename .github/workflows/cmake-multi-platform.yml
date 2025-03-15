@@ -183,8 +183,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts-archlinux
-
-
+          path: artifacts/disflux-snapshot-archlinux.pkg.tar.zst
 
   # -----------------------------------------------------------------------------------------------
   release:
