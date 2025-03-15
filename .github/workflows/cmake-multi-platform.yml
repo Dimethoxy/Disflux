@@ -10,12 +10,14 @@ defaults:
     shell: bash
 
 jobs:
+  # -----------------------------------------------------------------------------------------------
+  # ---------------- Multi-Platform Build ----------------
   build:
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        os: [ubuntu-latest, ubuntu-latest-docker, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         build_type: [Release]
 
     steps:
@@ -148,10 +150,53 @@ jobs:
         with:
           name: build-artifacts-${{ matrix.os }}
           path: artifacts
+  # -----------------------------------------------------------------------------------------------
+  # ---------------- Docker-Based Ubuntu Build ----------------
+  build-docker:
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:latest  # Runs in a Docker container instead of a GitHub-hosted VM
+    steps:
+      - name: Install Dependencies
+        run: |
+          apt-get update
+          apt-get install -y ninja-build cmake git
+          apt install -y libasound2-dev \
+                         libjack-jackd2-dev \
+                         ladspa-sdk \
+                         libcurl4-openssl-dev  \
+                         libfreetype-dev \
+                         libfontconfig1-dev \
+                         libx11-dev \
+                         libxcomposite-dev \
+                         libxcursor-dev \
+                         libxext-dev \
+                         libxinerama-dev \
+                         libxrandr-dev \
+                         libxrender-dev \
+                         libwebkit2gtk-4.1-dev \
+                         libglu1-mesa-dev mesa-common-dev
+          apt-get install -y dpkg-dev devscripts
+          /usr/bin/Xvfb $DISPLAY &
 
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure Build
+        run: cmake --preset "Linux Release"
+
+      - name: Build
+        run: cmake --build build --config "Release"
+
+      - name: Upload Docker Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-ubuntu-docker
+          path: build/
+  # -----------------------------------------------------------------------------------------------
   release:
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, build-docker] 
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
