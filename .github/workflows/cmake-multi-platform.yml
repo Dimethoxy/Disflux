@@ -135,12 +135,14 @@ jobs:
         run: |
           pacman -Sy --noconfirm base-devel git
       
+      - name: Install Dependencies
+        run: |
+          pacman -S --noconfirm cmake ninja gcc clang alsa-lib jack2 ladspa libcurl-compat freetype2 fontconfig libx11 libxcomposite libxcursor libxext libxinerama libxrandr libxrender webkit2gtk glu mesa
+
       - name: Checkout Repository
         uses: actions/checkout@v4
       
-      - name: Install Dependencies
-        run: |
-          ls -la
+
   # -----------------------------------------------------------------------------------------------
   release:
     runs-on: ubuntu-latest
