@@ -245,10 +245,10 @@ jobs:
           cp $FEDORA_PACKAGE_DIR.tar.gz ~/rpmbuild/SOURCES/
 
           # Copy the spec file to the RPM build directory
-          cp pkg/fedora/disflux-snapshot.spec ~/rpmbuild/SPECS/
+          cp pkg/fedora/snapshot.spec ~/rpmbuild/SPECS/dimethoxy-disflux-snapshot.spec
 
           # Build the RPM package
-          rpmbuild -ba ~/rpmbuild/SPECS/disflux-snapshot-linux-fedora.spec
+          rpmbuild -ba ~/rpmbuild/SPECS/dimethoxy-disflux-snapshot.spec
 
           # Move the RPM package to the artifacts directory
           mkdir -p $ARTIFACTS_DIR
