@@ -177,9 +177,39 @@ jobs:
     container:
       image: fedora:latest
     steps:
-      - name: Install Base Packages
+      - name: Install Dependencies
         run: |
-          dnf install -y git make gcc-c++ ninja-build
+          dnf install -y rpmdevtools rpmlint
+          dnf install -y git cmake gcc gcc-c++ ninja-build
+          dnf install -y alsa-lib-devel \
+                         jack-audio-connection-kit-devel \
+                         ladspa-devel \
+                         libcurl-devel \
+                         freetype-devel \
+                         fontconfig-devel \
+                         libX11-devel \
+                         libXcomposite-devel \
+                         libXcursor-devel \
+                         libXext-devel \
+                         libXinerama-devel \
+                         libXrandr-devel \
+                         libXrender-devel \
+                         webkit2gtk3-devel \
+                         mesa-libGLU-devel mesa-libGL-devel
+        shell: bash
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Select CMake Preset
+        run: cmake --preset "Linx Release"
+
+      - name: Build
+        run: cmake --build build --config "Release"
+
+      - name: Package Fedora Artifacts
+        run: |
+          ls -la
 
   #=========================================================================================
   # Arch Linux Build
