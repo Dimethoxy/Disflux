@@ -1,18 +1,30 @@
+#==================================================================================================
+# This workflow will build the project for Windows, macOS, and Linux.
+# It will also build an Arch Linux package and create a GitHub release.
+#==================================================================================================
 name: Build Project
 
+#==================================================================================================
+# Workflow Triggers
+#==================================================================================================
 on:
   workflow_dispatch:
   pull_request:
   push:
 
+#==================================================================================================
+# Environment Variables
+#==================================================================================================
 defaults:
   run:
     shell: bash
 
-jobs:
+#==================================================================================================
+# Build the project for Windows, macOS, and Linux
+#==================================================================================================
+jobs
   build:
     runs-on: ${{ matrix.os }}
-
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
@@ -125,7 +137,10 @@ jobs:
         with:
           name: build-artifacts-${{ matrix.os }}
           path: artifacts
-  # -----------------------------------------------------------------------------------------------
+
+  #==================================================================================================
+  # Build Arch Linux Package
+  #==================================================================================================
   build-archlinux:
     runs-on: ubuntu-latest
     container:
@@ -181,7 +196,9 @@ jobs:
           name: build-artifacts-archlinux
           path: artifacts/disflux-snapshot-linux-arch.pkg.tar.zst
 
-  # -----------------------------------------------------------------------------------------------
+  #==================================================================================================
+  # Release the project
+  #==================================================================================================
   release:
     runs-on: ubuntu-latest
     needs: [build, build-archlinux] 
@@ -224,6 +241,11 @@ jobs:
           gh release upload "Snapshot" disflux-snapshot-macos.zip --clobber
           gh release upload "Snapshot" disflux-snapshot-ubuntu.deb --clobber
           gh release upload "Snapshot" disflux-snapshot-windows.zip --clobber
+      
+      - name: Update the Source Code in the Release
+        run: |
+          gh release upload "Snapshot" src.zip --clobber
+          gh release upload "Snapshot" src.tar.gz --clobber
           
 
           
