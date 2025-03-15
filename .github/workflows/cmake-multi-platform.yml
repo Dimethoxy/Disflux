@@ -158,16 +158,22 @@ jobs:
 
       - name: Build Package
         run: |
-          sudo -u dimethoxy bash -c 'cd pkg/arch/git && makepkg -si --noconfirm'
+          sudo -u dimethoxy bash -c 'cd pkg/arch/git && makepkg -s --noconfirm'
       
       - name: Package Artifacts
         run: |
+          # Remove the default package
+          rm pkg/arch/git/*debug*.pkg.tar.zst
+          ls -la
+
           # Move the package to the root directory
           mv pkg/arch/git/*.pkg.tar.zst .
           ls -la
+       
           # Rename the package
           mv *.pkg.tar.zst disflux-snapshot-archlinux.pkg.tar.zst
           ls -la
+          
           # Move the package to the artifacts directory
           mkdir -p artifacts
           mv disflux-snapshot-archlinux.pkg.tar.zst artifacts/
