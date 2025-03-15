@@ -236,7 +236,7 @@ jobs:
           cp -r $BUILD_DIR/VST3 $FEDORA_PACKAGE_DIR/
 
           # Create the tarball
-          tar -czf $FEDORA_PACKAGE_DIR.tar.gz $FEDORA_PACKAGE_DIR
+          tar -czf dimethoxy-disflux-snapshot-${GIT_HASH}.tar.gz $FEDORA_PACKAGE_DIR
 
           # Set up the RPM build directory
           rpmdev-setuptree
@@ -248,7 +248,7 @@ jobs:
           cp pkg/fedora/snapshot.spec ~/rpmbuild/SPECS/dimethoxy-disflux-snapshot.spec
 
           # Build the RPM package
-          rpmbuild -ba ~/rpmbuild/SPECS/dimethoxy-disflux-snapshot.spec
+          rpmbuild --define "git_hash $(git rev-parse --short HEAD)" -ba ~/rpmbuild/SPECS/dimethoxy-disflux-snapshot.spec
 
           # Move the RPM package to the artifacts directory
           mkdir -p $ARTIFACTS_DIR

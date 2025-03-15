@@ -1,5 +1,6 @@
+%global git_hash %{?git_hash}
 Name:           dimethoxy-disflux-snapshot
-Version:        %{git_hash}
+Version:        %{?git_hash}
 Release:        1%{?dist}
 Summary:        Unstable build of the latest commit of Disflux from Dimethoxy's GitHub repository
 License:        GPL-3.0-or-later
