@@ -293,6 +293,19 @@ jobs:
           zip -r disflux-snapshot-macos.zip ./build-artifacts-macos
           zip -r disflux-snapshot-windows.zip ./build-artifacts-windows
 
+      - name: Delete Old Snapshot Release (if exists)
+        run: |
+          # Get the release ID of the old snapshot release if it exists
+          RELEASE_ID=$(gh release view "Snapshot" --json id -q ".id")
+
+          # If the release exists, delete it
+          if [ -n "$RELEASE_ID" ]; then
+            echo "Deleting old release..."
+            gh release delete "Snapshot" --yes
+          else
+            echo "No old release found, creating a new one."
+          fi
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
@@ -311,8 +324,3 @@ jobs:
           gh release upload "Snapshot" disflux-snapshot-linux-vanilla.zip --clobber
           gh release upload "Snapshot" disflux-snapshot-macos.zip --clobber
           gh release upload "Snapshot" disflux-snapshot-windows.zip --clobber
-
-      - name: Update the Source Code in the Release
-        run: |
-          gh release upload "Snapshot" src.zip --clobber
-          gh release upload "Snapshot" src.tar.gz --clobber
