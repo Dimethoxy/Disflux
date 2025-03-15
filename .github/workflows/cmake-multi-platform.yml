@@ -242,7 +242,7 @@ jobs:
           rpmdev-setuptree
 
           # Copy the tarball to the RPM build directory
-          cp $FEDORA_PACKAGE_DIR.tar.gz ~/rpmbuild/SOURCES/
+          cp dimethoxy-disflux-snapshot-${GIT_HASH}.tar.gz ~/rpmbuild/SOURCES/
 
           # Copy the spec file to the RPM build directory
           cp pkg/fedora/snapshot.spec ~/rpmbuild/SPECS/dimethoxy-disflux-snapshot.spec
