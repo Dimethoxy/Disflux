@@ -23,8 +23,18 @@ Using a chain of all-pass filters, Disflux spreads those high-energy transients 
 
 ## 🚧 Work in Progress
 
+Disflux is currently unfinished and we're actively working on developing the following features before a first release:
+
+- **Settings** - Configure the plugin to your preferences
 - **UI Customization** – Full color options and UI customization
 - **Analyzers** – Features like an oscilloscope to see your sound shaping in real time
+- **Performance** – While performance is already solid, we’re working to optimize it even further for smoother operation
+- **Parameter Smoothing** – Aiming to reduce artifacts when automating parameters for seamless transitions
+- **Oversampling** – Implementing oversampling to minimize aliasing and improve the quality of high-frequency content
+- **Update Notifications** – A small, non-intrusive notification to alert you when a newer version of Disflux is available
+- **Code Signing for macOS** – Ensuring macOS users can install Disflux without any security warnings or issues
+- **Installer Wizards** – Creating simple and user-friendly installation processes for both macOS and Windows platforms
+- **Package Managers** – Integrating with Linux package managers like the AUR on Archlinux for easy installation and updates
 
 ## 💖 Donations
 
