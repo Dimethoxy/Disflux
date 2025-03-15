@@ -144,7 +144,7 @@ jobs:
   # -----------------------------------------------------------------------------------------------
   release:
     runs-on: ubuntu-latest
-    needs: [build, build-docker] 
+    needs: [build, build-archlinux] 
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
