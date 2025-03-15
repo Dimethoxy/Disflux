@@ -209,7 +209,39 @@ jobs:
 
       - name: Package Fedora Artifacts
         run: |
-          ls -la
+          # Define variables
+          ARTIFACTS_DIR="artifacts" # The directory where the artifacts will be stored
+          BUILD_DIR="build/src/DisfluxPlugin_artefacts/Release" # Here are the already built artifacts
+          FEDORA_PACKAGE_DIR="disflux-snapshot-linux-fedora" # The directory with the files to package 
+          CLAP_DIR="/usr/lib/clap/Disflux" # The directory where the CLAP files will be installed
+          LV2_DIR="/usr/lib/lv2/Disflux" # The directory where the LV2 files will be installed
+          VST3_DIR="/usr/lib/vst3/Disflux" # The directory where the VST3 files will be installed
+
+          # Copy the files to the Fedora package directory
+          mkdir -p $FEDORA_PACKAGE_DIR/
+          cp -r $BUILD_DIR/CLAP $FEDORA_PACKAGE_DIR/
+          cp -r $BUILD_DIR/LV2 $FEDORA_PACKAGE_DIR/
+          cp -r $BUILD_DIR/VST3 $FEDORA_PACKAGE_DIR/
+
+          # Create the tarball
+          tar -czf $FEDORA_PACKAGE_DIR.tar.gz $FEDORA_PACKAGE_DIR
+
+          # Set up the RPM build directory
+          rpmdev-setuptree
+
+          # Copy the tarball to the RPM build directory
+          cp $FEDORA_PACKAGE_DIR.tar.gz ~/rpmbuild/SOURCES/
+
+          # Copy the spec file to the RPM build directory
+          cp pkg/fedora/disflux-snapshot-linux-fedora.spec ~/rpmbuild/SPECS/
+
+          # Build the RPM package
+          rpmbuild -ba ~/rpmbuild/SPECS/disflux-snapshot-linux-fedora.spec
+
+          # Move the RPM package to the artifacts directory
+          mkdir -p $ARTIFACTS_DIR
+          mv ~/rpmbuild/RPMS/x86_64/*.rpm $ARTIFACTS_DIR/
+        shell: bash
 
   #=========================================================================================
   # Arch Linux Build

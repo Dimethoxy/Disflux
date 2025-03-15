@@ -9,7 +9,8 @@ pkgdesc="Unstable build of the latest commit of Disflux from Dimethoxy's GitHub 
 arch=('x86_64')
 url="https://github.com/Dimethoxy/Disflux"
 license=('GPL3')
-provides=('disflux')
+provides=('dimethoxy-disflux')
+conflicts=('dimethoxy-disflux' 'dimethoxy-disflux-git' 'dimethoxy-disflux-bin')
 # Source from the git repo (unstable build using the latest commit)
 source=("git+https://github.com/Dimethoxy/Disflux.git")
 sha256sums=('SKIP')
