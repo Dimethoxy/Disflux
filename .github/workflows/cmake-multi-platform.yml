@@ -120,13 +120,13 @@ jobs:
       - name: Package Linux Artifacts
         run: |
           # Define variables
-          ARTIFACTS_DIR="artifacts"
-          BUILD_DIR="build/src/DisfluxPlugin_artefacts/Release"
-          DEBIAN_PACKAGE_DIR="disflux-snapshot-linux-ubuntu"
-          DEBIAN_CONTROL_FILE="pkg/ubuntu/control"
-          CLAP_DIR="/usr/lib/clap/Disflux"
-          LV2_DIR="/usr/lib/lv2/Disflux"
-          VST3_DIR="/usr/lib/vst3/Disflux"
+          ARTIFACTS_DIR       ="artifacts"
+          BUILD_DIR           ="build/src/DisfluxPlugin_artefacts/Release"
+          DEBIAN_PACKAGE_DIR  ="disflux-snapshot-linux-ubuntu"
+          DEBIAN_CONTROL_FILE ="pkg/ubuntu/control"
+          CLAP_DIR            ="/usr/lib/clap/Disflux"
+          LV2_DIR             ="/usr/lib/lv2/Disflux"
+          VST3_DIR            ="/usr/lib/vst3/Disflux"
 
           # Prepare artifacts directory
           mkdir -p $ARTIFACTS_DIR
