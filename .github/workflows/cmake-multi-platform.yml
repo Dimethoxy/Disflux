@@ -152,6 +152,10 @@ jobs:
           sudo chown -R dimethoxy:dimethoxy /__w/Disflux/Disflux/pkg/arch/git
           sudo chmod -R u+rw /__w/Disflux/Disflux/pkg/arch/git
 
+      - name: Disable sudo password prompt
+        run: |
+          echo 'dimethoxy ALL=(ALL) NOPASSWD: ALL' | sudo tee -a /etc/sudoers
+
       - name: Build Package
         run: |
           sudo -u dimethoxy bash -c 'cd pkg/arch/git && makepkg -si --noconfirm'
