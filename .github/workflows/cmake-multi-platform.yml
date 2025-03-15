@@ -121,7 +121,7 @@ jobs:
         run: |
           # Define variables
           ARTIFACTS_DIR       = "artifacts"
-          RELEASE_DIR         = "build/src/DisfluxPlugin_artefacts/Release"
+          BUILD_DIR           = "build/src/DisfluxPlugin_artefacts/Release"
           DEBIAN_PACKAGE_DIR  = "disflux-snapshot-linux-ubuntu"
           DEBIAN_CONTROL_FILE = "pkg/ubuntu/control"
           CLAP_DIR            = "/usr/lib/clap/Disflux"
@@ -138,19 +138,19 @@ jobs:
           mkdir -p $DEBIAN_PACKAGE_DIR/$VST3_DIR
 
           # Copy files to Debian package directory
-          cp -r $RELEASE_DIR/CLAP/Disflux.clap \
+          cp -r $BUILD_DIR/CLAP/Disflux.clap \
                 $DEBIAN_PACKAGE_DIR/$CLAP_DIR/
-          cp -r $RELEASE_DIR/LV2/Disflux.lv2 \
+          cp -r $BUILD_DIR/LV2/Disflux.lv2 \
                 $DEBIAN_PACKAGE_DIR/$LV2_DIR/
-          cp -r $RELEASE_DIR/VST3/Disflux.vst3 \
+          cp -r $BUILD_DIR/VST3/Disflux.vst3 \
                 $DEBIAN_PACKAGE_DIR/$VST3_DIR/
 
           # Copy vanilla files to artifacts directory
-          cp -r $RELEASE_DIR/LV2/Disflux.lv2 \
+          cp -r $BUILD_DIR/LV2/Disflux.lv2 \
                 $ARTIFACTS_DIR/
-          cp -r $RELEASE_DIR/CLAP/Disflux.clap \
+          cp -r $BUILD_DIR/CLAP/Disflux.clap \
                 $ARTIFACTS_DIR/
-          cp -r $RELEASE_DIR/VST3/Disflux.vst3 \
+          cp -r $BUILD_DIR/VST3/Disflux.vst3 \
                 $ARTIFACTS_DIR/
 
           cp $DEBIAN_CONTROL_FILE $DEBIAN_PACKAGE_DIR/DEBI
