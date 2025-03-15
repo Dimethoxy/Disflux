@@ -304,12 +304,12 @@ jobs:
             It may contain bugs, incomplete features, or cause instability.
             **Not recommended** for production or general use—proceed with caution.
 
-      - name: Upload .zip Packages to GitHub Release
+      - name: Upload Artifacts
         run: |
-          gh release upload "Snapshot" disflux-snapshot-archlinux.pkg.tar.zst --clobber
-          gh release upload "Snapshot" disflux-snapshot-linux.zip --clobber
+          gh release upload "Snapshot" disflux-snapshot-linux-arch.pkg.tar.zst --clobber
+          gh release upload "Snapshot" disflux-snapshot-linux-ubuntu.deb --clobber
+          gh release upload "Snapshot" disflux-snapshot-linux-vanilla.zip --clobber
           gh release upload "Snapshot" disflux-snapshot-macos.zip --clobber
-          gh release upload "Snapshot" disflux-snapshot-ubuntu.deb --clobber
           gh release upload "Snapshot" disflux-snapshot-windows.zip --clobber
 
       - name: Update the Source Code in the Release
