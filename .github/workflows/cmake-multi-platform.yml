@@ -164,20 +164,16 @@ jobs:
         run: |
           # Remove the default package
           rm pkg/arch/git/*debug*.pkg.tar.zst
-          ls -la
 
           # Move the package to the root directory
           mv pkg/arch/git/*.pkg.tar.zst .
-          ls -la
        
           # Rename the package
           mv *.pkg.tar.zst disflux-snapshot-archlinux.pkg.tar.zst
-          ls -la
           
           # Move the package to the artifacts directory
           mkdir -p artifacts
           mv disflux-snapshot-archlinux.pkg.tar.zst artifacts/
-          ls -la
       
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -203,6 +199,7 @@ jobs:
         run: |
           # Move the deb package to the root directory 
           mv build-artifacts-ubuntu-latest/disflux-snapshot-ubuntu.deb .
+          mv build-artifacts-archlinux/disflux-snapshot-archlinux.pkg.tar.zst .
           
           # Zip the artifacts
           zip -r disflux-snapshot-macos.zip ./build-artifacts-macos-latest
