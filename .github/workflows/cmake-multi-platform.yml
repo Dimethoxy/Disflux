@@ -139,8 +139,12 @@ jobs:
       - name: Get Artifacts
         uses: actions/download-artifact@v4
 
-      - name: Zip Artifacts
+      - name: Package Artifacts
         run: |
+          # Move the deb package to the root directory 
+          mv build-artifacts-ubuntu-latest/disflux-snapshot-ubuntu.deb .
+          
+          # Zip the artifacts
           zip -r disflux-snapshot-macos.zip ./build-artifacts-macos-latest
           zip -r disflux-snapshot-linux.zip ./build-artifacts-ubuntu-latest
           zip -r disflux-snapshot-windows.zip ./build-artifacts-windows-latest
@@ -161,7 +165,8 @@ jobs:
           gh release upload "Snapshot" disflux-snapshot-macos.zip --clobber
           gh release upload "Snapshot" disflux-snapshot-linux.zip --clobber
           gh release upload "Snapshot" disflux-snapshot-windows.zip --clobber
+          gh release upload "Snapshot" disflux-snapshot-ubuntu.deb --clobber
       
       - name: Upload .deb Package to GitHub Release
         run: |
-          gh release upload "Snapshot" disflux-snapshot-ubuntu.deb --clobber
+          
