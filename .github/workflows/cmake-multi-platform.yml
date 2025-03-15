@@ -2,55 +2,29 @@
 # This workflow will build the project for Windows, macOS, and Linux.
 # It will also build an Arch Linux package and create a GitHub release.
 #==================================================================================================
-name: Build Project
 
-#==================================================================================================
-# Workflow Triggers
-#==================================================================================================
+name: Build Project
 on:
   workflow_dispatch:
   pull_request:
   push:
-
-#==================================================================================================
-# Environment Variables
-#==================================================================================================
 defaults:
   run:
     shell: bash
 
 #==================================================================================================
-# Build the project for Windows, macOS, and Linux
+# Build Jobs
 #==================================================================================================
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        build_type: [Release]
-
+  #================================================================================================
+  # Ubuntu Linux Build
+  build-linux:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup MSVC
-        if: matrix.os == 'windows-latest'
-        uses: TheMrMilchmann/setup-msvc-dev@v3
-        with:
-          arch: x64
-          spectre: true
-
-      - name: Set Up Windows
-        if: matrix.os == 'windows-latest'
-        run: choco install ninja
-
-      - name: Set Up Mac
-        if: matrix.os == 'macos-latest'
-        run: brew install ninja osxutils
-
       - name: Set Up Linux
-        if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
           sudo apt-get install ninja-build
@@ -66,11 +40,10 @@ jobs:
                            libxext-dev \
                            libxinerama-dev \
                            libxrandr-dev \
-                           libxrender-dev \linux-ubuntu
+                           libxrender-dev
         shell: bash
 
       - name: Package Linux Artifacts
-        if: matrix.os == 'ubuntu-latest'
         run: |
           # Prepare artifacts directory
           mkdir -p artifacts
@@ -103,12 +76,51 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts-${{ matrix.os }}
+          name: build-artifacts-linux
           path: artifacts
 
+  #================================================================================================
+  # Windows Build
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup MSVC
+        uses: TheMrMilchmann/setup-msvc-dev@v3
+        with:
+          arch: x64
+          spectre: true
+
+      - name: Set Up Windows
+        run: choco install ninja
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-windows
+          path: build/src/DisfluxPlugin_artefacts/Release
+
+  #================================================================================================
+  # macOS Build
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Mac
+        run: brew install ninja osxutils
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-macos
+          path: build/src/DisfluxPlugin_artefacts/Release
+
   #==================================================================================================
-  # Build Arch Linux Package
-  #==================================================================================================
+  # Arch Linux Build
   build-archlinux:
     runs-on: ubuntu-latest
     container:
