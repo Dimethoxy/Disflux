@@ -256,7 +256,8 @@ jobs:
           mv *.pkg.tar.zst disflux-snapshot-linux-arch.pkg.tar.zst
 
           # Move the package to the artifacts directory
-          mkdir -p artifactsg.tar.zst artifacts/
+          mkdir -p artifacts
+          mv disflux-snapshot-linux-arch.pkg.tar.zst artifacts/
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
