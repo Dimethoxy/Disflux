@@ -1,6 +1,11 @@
 #===========================================================================================
 # This workflow will build the project for Windows, macOS, and Linux.
-# It will also build an Arch Linux package and create a GitHub release.
+# It will also build an Arch Linux and Fedora package using Docker containers.
+# The artifacts will be uploaded to the release page.
+#
+# TODO:
+# - Add a step to sign the macOS package
+# - Add a step after release to update the AUR repository
 #===========================================================================================
 
 name: Build Project
@@ -240,7 +245,7 @@ jobs:
           cp $FEDORA_PACKAGE_DIR.tar.gz ~/rpmbuild/SOURCES/
 
           # Copy the spec file to the RPM build directory
-          cp pkg/fedora/disflux-snapshot-linux-fedora.spec ~/rpmbuild/SPECS/
+          cp pkg/fedora/disflux-snapshot.spec ~/rpmbuild/SPECS/
 
           # Build the RPM package
           rpmbuild -ba ~/rpmbuild/SPECS/disflux-snapshot-linux-fedora.spec
@@ -354,6 +359,19 @@ jobs:
             gh release delete "Snapshot" --yes
           else
             echo "No old release found, creating a new one."
+          fi
+
+      - name: Delete the old Snapshot tag
+        run: |
+          # Get the tag ID of the old snapshot tag if it exists
+          TAG_ID=$(gh api repos/:owner/:repo/git/ref/tags/Snapshot --json object.sha -q ".object.sha")
+
+          # If the tag exists, delete it
+          if [ -n "$TAG_ID" ]; then
+            echo "Deleting old tag..."
+            gh api repos/:owner/:repo/git/refs/:ref --method DELETE
+          else
+            echo "No old tag found, creating a new one."
           fi
 
       - name: Create Release
