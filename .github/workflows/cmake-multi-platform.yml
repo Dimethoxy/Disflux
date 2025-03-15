@@ -166,7 +166,4 @@ jobs:
           gh release upload "Snapshot" disflux-snapshot-linux.zip --clobber
           gh release upload "Snapshot" disflux-snapshot-windows.zip --clobber
           gh release upload "Snapshot" disflux-snapshot-ubuntu.deb --clobber
-      
-      - name: Upload .deb Package to GitHub Release
-        run: |
           
