@@ -289,9 +289,9 @@ jobs:
           mv build-artifacts-ubuntu/disflux-snapshot-linux-ubuntu.deb .
 
           # Zip the artifacts
-          zip -r disflux-snapshot-linux.zip ./build-artifacts-linux-vanilla-latest
-          zip -r disflux-snapshot-macos.zip ./build-artifacts-macos-latest
-          zip -r disflux-snapshot-windows.zip ./build-artifacts-windows-latest
+          zip -r disflux-snapshot-linux-vanilla.zip ./build-artifacts-ubuntu
+          zip -r disflux-snapshot-macos.zip ./build-artifacts-macos
+          zip -r disflux-snapshot-windows.zip ./build-artifacts-windows
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
