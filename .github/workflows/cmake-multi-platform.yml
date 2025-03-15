@@ -159,7 +159,24 @@ jobs:
       - name: Build Package
         run: |
           sudo -u dimethoxy bash -c 'cd pkg/arch/git && makepkg -si --noconfirm'
-          ls -la
+      
+      - name: Package Artifacts
+        run: |
+          # Move the package to the root directory
+          mv pkg/arch/git/*.pkg.tar.zst .
+          
+          # Rename the package
+          mv *.pkg.tar.zst disflux-snapshot-archlinux.pkg.tar.zst
+          
+          # Move the package to the artifacts directory
+          mkdir -p artifacts
+          mv disflux-snapshot-archlinux.pkg.tar.zst artifacts/
+      
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-archlinux
+
 
 
   # -----------------------------------------------------------------------------------------------
@@ -199,8 +216,11 @@ jobs:
               
       - name: Upload .zip Packages to GitHub Release
         run: |
-          gh release upload "Snapshot" disflux-snapshot-macos.zip --clobber
+          gh release upload "Snapshot" disflux-snapshot-archlinux.pkg.tar.zst --clobber
           gh release upload "Snapshot" disflux-snapshot-linux.zip --clobber
-          gh release upload "Snapshot" disflux-snapshot-windows.zip --clobber
+          gh release upload "Snapshot" disflux-snapshot-macos.zip --clobber
           gh release upload "Snapshot" disflux-snapshot-ubuntu.deb --clobber
+          gh release upload "Snapshot" disflux-snapshot-windows.zip --clobber
+          
+
           
