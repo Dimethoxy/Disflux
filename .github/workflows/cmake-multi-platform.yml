@@ -99,18 +99,18 @@ jobs:
           cp -r build/src/DisfluxPlugin_artefacts/Release/VST3 artifacts/
           cp -r build/src/DisfluxPlugin_artefacts/Release/LV2 artifacts/
           cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP artifacts/
-
+      
           # Prepare Debian package metadata
-          mkdir -p debian/DEBIAN
-          cp pkg/ubuntu/snapshot-metadata.yml debian/DEBIAN/control
-
-          # Use dh_make to create the .deb package structure
-          cd debian
-          dh_make -f ../build/src/DisfluxPlugin_artefacts/Release/Disflux.tar.gz --createorig
-
+          mkdir -p disflux-1.0/DEBIAN
+          cp pkg/ubuntu/snapshot-metadata.yml disflux-1.0/DEBIAN/control
+      
+          # Use dh_make with explicit package name and version
+          cd disflux-1.0
+          dh_make -f ../build/src/DisfluxPlugin_artefacts/Release/Disflux.tar.gz --createorig -p disflux_1.0
+      
           # Build the .deb package
-          dpkg-deb --build . ../dimethoxy-disflux-snapshot.deb
-
+          dpkg-deb --build . ../disflux-snapshot-linux.deb
+      
           # Move the .deb package to artifacts
           mv ../disflux-snapshot-linux.deb artifacts/
         shell: bash
