@@ -59,7 +59,7 @@ jobs:
         run: brew install ninja osxutils
 
       - name: Select CMake Preset
-        run: cmake --preset "Mac Release"
+        run: cmake --preset "Mac Release" -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
 
       - name: Build
         run: cmake --build build --config "Release"
@@ -104,7 +104,11 @@ jobs:
                            libxext-dev \
                            libxinerama-dev \
                            libxrandr-dev \
-                           libxrender-dev
+                           libxrender-dev \
+                           libwebkit2gtk-4.1-dev \
+                           libglu1-mesa-dev mesa-common-dev
+          sudo apt-get install -y dpkg-dev devscripts
+          sudo /usr/bin/Xvfb $DISPLAY &
         shell: bash
 
       - name: Select CMake Preset
@@ -161,18 +165,6 @@ jobs:
         run: |
           pacman -Sy --noconfirm base-devel git
 
-      - name: Install Dependencies
-        run: |
-          pacman -S --noconfirm \
-            cmake ninja gcc clang \
-            alsa-lib jack2 ladspa \
-            libcurl-compat freetype2 \
-            fontconfig libx11 \
-            libxcomposite libxcursor \
-            libxext libxinerama \
-            libxrandr libxrender \
-            webkit2gtk glu mesa
-
       - name: Checkout Repository
         uses: actions/checkout@v4
 
@@ -213,6 +205,24 @@ jobs:
         with:
           name: build-artifacts-archlinux
           path: artifacts/disflux-snapshot-linux-arch.pkg.tar.zst
+
+  #=========================================================================================
+  # Arch Linux Build
+  #=========================================================================================
+  build-fedora:
+    runs-on: ubuntu-latest
+    container:
+      image: fedora:latest
+    steps:
+      - name: Install Base Packages
+        run: |
+          dnf install -y git make gcc-c++ ninja-build
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Verify Fedora Version
+        run: |
+          cat /etc/os-release
+          ls -la
 
   #=========================================================================================
   # Release the project
