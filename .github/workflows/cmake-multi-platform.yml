@@ -56,8 +56,8 @@ jobs:
                            libxrandr-dev \
                            libxrender-dev \
                            libwebkit2gtk-4.1-dev \
-                           libglu1-mesa-dev mesa-common-dev \
-                           debhelper \
+                           libglu1-mesa-dev mesa-common-dev
+          sudo apt-get install -y dpkg-dev debhelper fakeroot devscripts dh-make
           sudo /usr/bin/Xvfb $DISPLAY &
 
       - name: Configure Build on Windows
