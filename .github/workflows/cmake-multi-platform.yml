@@ -130,11 +130,11 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: archlinux:latest
-    steps:          
+    steps:
       - name: Install Base Packages
         run: |
           pacman -Sy --noconfirm base-devel git
-      
+
       - name: Install Dependencies
         run: |
           pacman -S --noconfirm cmake ninja gcc clang alsa-lib jack2 ladspa libcurl-compat freetype2 fontconfig libx11 libxcomposite libxcursor libxext libxinerama libxrandr libxrender webkit2gtk glu mesa
@@ -142,10 +142,14 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Create user for build process
+        run: |
+          useradd -m dimethoxy
+          sudo su - dimethoxy
+
       - name: Build Package
         run: |
-          cd pkg/arch/git
-          makepkg -si --noconfirm
+          sudo -u dimethoxy bash -c 'cd pkg/arch/git && makepkg -si --noconfirm'
           ls -la
 
 
