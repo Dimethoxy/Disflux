@@ -126,20 +126,21 @@ jobs:
           name: build-artifacts-${{ matrix.os }}
           path: artifacts
   # -----------------------------------------------------------------------------------------------
-  build-docker:
+  build-archlinux:
     runs-on: ubuntu-latest
     container:
       image: archlinux:latest
-    steps:
-      - name: Verify Arch Linux Setup
-        run: |
-          echo "Running inside an Arch Linux container!"
-          uname -a
-          cat /etc/os-release
-          
+    steps:          
       - name: Install Base Packages
         run: |
           pacman -Sy --noconfirm base-devel git
+      
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Install Dependencies
+        run: |
+          ls -la
   # -----------------------------------------------------------------------------------------------
   release:
     runs-on: ubuntu-latest
