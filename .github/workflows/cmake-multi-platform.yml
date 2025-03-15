@@ -119,32 +119,45 @@ jobs:
 
       - name: Package Linux Artifacts
         run: |
+          # Define variables
+          ARTIFACTS_DIR       = "artifacts"
+          RELEASE_DIR         = "build/src/DisfluxPlugin_artefacts/Release"
+          DEBIAN_PACKAGE_DIR  = "disflux-snapshot-linux-ubuntu"
+          DEBIAN_CONTROL_FILE = "pkg/ubuntu/control"
+          CLAP_DIR            = "/usr/lib/clap/Disflux"
+          LV2_DIR             = "/usr/lib/lv2/Disflux"
+          VST3_DIR            = "/usr/lib/vst3/Disflux"
+
           # Prepare artifacts directory
-          mkdir -p artifacts
-          cp -r build/src/DisfluxPlugin_artefacts/Release/LV2/Disflux.lv2 artifacts/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP/Disflux.clap artifacts/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3/Disflux.vst3 artifacts/
+          mkdir -p $ARTIFACTS_DIR
 
           # Prepare Debian package directory structure
-          mkdir -p disflux-snapshot-linux-ubuntu/DEBIAN
-          mkdir -p disflux-snapshot-linux-ubuntu/usr/lib/clap/Disflux/
-          mkdir -p disflux-snapshot-linux-ubuntu/usr/lib/lv2/Disflux/
-          mkdir -p disflux-snapshot-linux-ubuntu/usr/lib/vst3/Disflux/
+          mkdir -p $DEBIAN_PACKAGE_DIR/DEBIAN
+          mkdir -p $DEBIAN_PACKAGE_DIR/$CLAP_DIR
+          mkdir -p $DEBIAN_PACKAGE_DIR/$LV2_DIR
+          mkdir -p $DEBIAN_PACKAGE_DIR/$VST3_DIR
 
           # Copy files to Debian package directory
-          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP/Disflux.clap \
-                disflux-snapshot-linux-ubuntu/usr/lib/clap/Disflux/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/LV2/Disflux.lv2 \
-                disflux-snapshot-linux-ubuntu/usr/lib/lv2/Disflux/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3/Disflux.vst3 \
-                disflux-snapshot-linux-ubuntu/usr/lib/vst3/Disflux/
-          cp pkg/ubuntu/control disflux-snapshot-linux-ubuntu/DEBIAN/control
+          cp -r $RELEASE_DIR/CLAP/Disflux.clap \
+                $DEBIAN_PACKAGE_DIR/$CLAP_DIR/
+          cp -r $RELEASE_DIR/LV2/Disflux.lv2 \
+                $DEBIAN_PACKAGE_DIR/$LV2_DIR/
+          cp -r $RELEASE_DIR/VST3/Disflux.vst3 \
+                $DEBIAN_PACKAGE_DIR/$VST3_DIR/
 
+          # Copy vanilla files to artifacts directory
+          cp -r $RELEASE_DIR/LV2/Disflux.lv2 \
+                $ARTIFACTS_DIR/
+          cp -r $RELEASE_DIR/CLAP/Disflux.clap \
+                $ARTIFACTS_DIR/
+          cp -r $RELEASE_DIR/VST3/Disflux.vst3 \
+                $ARTIFACTS_DIR/
+
+          cp $DEBIAN_CONTROL_FILE $DEBIAN_PACKAGE_DIR/DEBI
           # Build Debian package
-          dpkg-deb --build disflux-snapshot-ubuntu
-
+          dpkg-deb --build $DEBIAN_PACKAGE_D
           # Move Debian package to artifacts
-          cp -r disflux-snapshot-ubuntu.deb artifacts/
+          cp -r $DEBIAN_PACKAGE_DIR.deb $ARTIFACTS_DIR/
         shell: bash
 
       - name: Upload Artifacts
