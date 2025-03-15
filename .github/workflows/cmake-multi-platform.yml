@@ -1,7 +1,7 @@
-#==================================================================================================
+#===========================================================================================
 # This workflow will build the project for Windows, macOS, and Linux.
 # It will also build an Arch Linux package and create a GitHub release.
-#==================================================================================================
+#===========================================================================================
 
 name: Build Project
 on:
@@ -12,13 +12,56 @@ defaults:
   run:
     shell: bash
 
-#==================================================================================================
+#===========================================================================================
 # Build Jobs
-#==================================================================================================
+#===========================================================================================
 jobs:
-  #================================================================================================
+  #=========================================================================================
+  # Windows Build
+  #=========================================================================================
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup MSVC
+        uses: TheMrMilchmann/setup-msvc-dev@v3
+        with:
+          arch: x64
+          spectre: true
+
+      - name: Set Up Windows
+        run: choco install ninja
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-windows
+          path: build/src/DisfluxPlugin_artefacts/Release
+
+  #=========================================================================================
+  # macOS Build
+  #=========================================================================================
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Mac
+        run: brew install ninja osxutils
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-macos
+          path: build/src/DisfluxPlugin_artefacts/Release
+
+  #=========================================================================================
   # Ubuntu Linux Build
-  build-linux:
+  #=========================================================================================
+  build-ubuntu:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -76,51 +119,12 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts-linux
+          name: build-artifacts-ubuntu
           path: artifacts
 
-  #================================================================================================
-  # Windows Build
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup MSVC
-        uses: TheMrMilchmann/setup-msvc-dev@v3
-        with:
-          arch: x64
-          spectre: true
-
-      - name: Set Up Windows
-        run: choco install ninja
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts-windows
-          path: build/src/DisfluxPlugin_artefacts/Release
-
-  #================================================================================================
-  # macOS Build
-  build-macos:
-    runs-on: macos-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Set Up Mac
-        run: brew install ninja osxutils
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts-macos
-          path: build/src/DisfluxPlugin_artefacts/Release
-
-  #==================================================================================================
+  #=========================================================================================
   # Arch Linux Build
+  #=========================================================================================
   build-archlinux:
     runs-on: ubuntu-latest
     container:
@@ -184,12 +188,12 @@ jobs:
           name: build-artifacts-archlinux
           path: artifacts/disflux-snapshot-linux-arch.pkg.tar.zst
 
-  #==================================================================================================
+  #=========================================================================================
   # Release the project
-  #==================================================================================================
+  #=========================================================================================
   release:
     runs-on: ubuntu-latest
-    needs: [build, build-archlinux]
+    needs: [build-windows, build-macos, build-ubuntu, build-archlinux]
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -204,7 +208,7 @@ jobs:
         run: |
           # Move the deb package to the root directory
           mv build-artifacts-archlinux/disflux-snapshot-linux-arch.pkg.tar.zst .
-          mv build-artifacts-ubuntu-latest/disflux-snapshot-linux-ubuntu.deb .
+          mv build-artifacts-ubuntu/disflux-snapshot-linux-ubuntu.deb .
 
           # Zip the artifacts
           zip -r disflux-snapshot-linux.zip ./build-artifacts-linux-vanilla-latest
