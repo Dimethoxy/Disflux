@@ -97,9 +97,9 @@ jobs:
         run: |
           # Prepare artifacts directory
           mkdir -p artifacts
-          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3 artifacts/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/LV2 artifacts/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3/Disflux.vst3 artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP/Disflux.clap artifacts/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/LV2/Disflux.lv2 artifacts/
 
           # Prepare Debian package directory structure
           mkdir -p disflux-snapshot-ubuntu/DEBIAN
@@ -108,9 +108,9 @@ jobs:
           mkdir -p disflux-snapshot-ubuntu/usr/lib/lv2/Disflux/
 
           # Copy files to Debian package directory
-          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3 disflux-snapshot-ubuntu/usr/lib/vst3/Disflux/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP disflux-snapshot-ubuntu/usr/lib/clap/Disflux/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/LV2 disflux-snapshot-ubuntu/usr/lib/lv2/Disflux/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3/Disflux.vst3 disflux-snapshot-ubuntu/usr/lib/vst3/Disflux/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP/Disflux.clap disflux-snapshot-ubuntu/usr/lib/clap/Disflux/
+          cp -r build/src/DisfluxPlugin_artefacts/Release/LV2/Disflux.lv2 disflux-snapshot-ubuntu/usr/lib/lv2/Disflux/
           cp pkg/ubuntu/control disflux-snapshot-ubuntu/DEBIAN/control
           
           # Build Debian package
