@@ -153,9 +153,12 @@ jobs:
           cp -r $BUILD_DIR/VST3/Disflux.vst3 \
                 $ARTIFACTS_DIR/
 
-          cp $DEBIAN_CONTROL_FILE $DEBIAN_PACKAGE_DIR/DEBI
+          # Copy control file to Debian package directory
+          cp $DEBIAN_CONTROL_FILE $DEBIAN_PACKAGE_DIR/DEBIAN
+
           # Build Debian package
-          dpkg-deb --build $DEBIAN_PACKAGE_D
+          dpkg-deb --build $DEBIAN_PACKAGE_DIR
+
           # Move Debian package to artifacts
           cp -r $DEBIAN_PACKAGE_DIR.deb $ARTIFACTS_DIR/
         shell: bash
@@ -177,12 +180,6 @@ jobs:
       - name: Install Base Packages
         run: |
           dnf install -y git make gcc-c++ ninja-build
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-      - name: Verify Fedora Version
-        run: |
-          cat /etc/os-release
-          ls -la
 
   #=========================================================================================
   # Arch Linux Build
