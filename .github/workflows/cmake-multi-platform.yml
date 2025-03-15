@@ -142,11 +142,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Configure Build
-        run: cmake --preset "Linux Release"
-      
-      - name: Build
-        run: cmake --build build --config "Release"
+      - name: Build Package
+        run: |
+          cd pkg/arch/git
+          makepkg -si --noconfirm
+          ls -la
+
 
   # -----------------------------------------------------------------------------------------------
   release:
