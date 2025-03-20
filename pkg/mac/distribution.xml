@@ -1,26 +1,31 @@
-<?xml version="1.0" encoding="utf-8"?>
-<installer-gui-script minSpecVersion="1">
-    <title>Disflux Plugin Installer</title>
-    <options customize="always" allow-external-scripts="no"/>
+<?xml version='1.0' encoding='utf8'?>
+<installer-gui-script minSpecVersion="2">
+    <title>${PRODUCT_NAME}</title>
+    <allowed-os-versions>
+        <os-version min="10.13" />
+    </allowed-os-versions>
+    <license file="EULA" />
+    <readme file="README" />
+    <background file="background.png" mime-type="image/png" scaling="tofit" alignment="bottomleft"/>
+    <background-darkAqua file="background.png" mime-type="image/png" scaling="tofit" alignment="bottomleft"/>
+    <options customize="always" rootVolumeOnly="true" hostArchitectures="x86_64,arm64" />
+    <domain enable_anywhere="false" enable_currentUserHome="false" enable_localSystem="true" />
+
     <choices-outline>
-        <line choice="choiceVST3"/>
-        <line choice="choiceCLAP"/>
-        <line choice="choiceAU"/>
+        <line choice="vst3" />
+        <line choice="au" />
+        <line choice="clap" />
     </choices-outline>
 
-    <choice id="choiceVST3" title="Install VST3 Plugin" start_selected="true">
-        <pkg-ref id="com.dimethoxy.disflux.vst3"/>
+    <choice id="vst3" visible="true" start_selected="true" title="${PRODUCT_NAME} VST3">
+        <pkg-ref id="${BUNDLE_ID}.vst3.pkg" version="${VERSION}" onConclusion="none">${PRODUCT_NAME}.vst3.pkg</pkg-ref>
     </choice>
 
-    <choice id="choiceCLAP" title="Install CLAP Plugin" start_selected="true">
-        <pkg-ref id="com.dimethoxy.disflux.clap"/>
+    <choice id="au" visible="true" start_selected="true" title="${PRODUCT_NAME} AU">
+        <pkg-ref id="${BUNDLE_ID}.au.pkg" version="${VERSION}" onConclusion="none">${PRODUCT_NAME}.au.pkg</pkg-ref>
     </choice>
 
-    <choice id="choiceAU" title="Install AU Plugin" start_selected="true">
-        <pkg-ref id="com.dimethoxy.disflux.au"/>
+    <choice id="clap" visible="true" start_selected="true" title="${PRODUCT_NAME} CLAP">
+        <pkg-ref id="${BUNDLE_ID}.clap.pkg" version="${VERSION}" onConclusion="none">${PRODUCT_NAME}.clap.pkg</pkg-ref>
     </choice>
-
-    <pkg-ref id="com.dimethoxy.disflux.vst3" installKBytes="5000">Disflux.vst3.pkg</pkg-ref>
-    <pkg-ref id="com.dimethoxy.disflux.clap" installKBytes="5000">Disflux.clap.pkg</pkg-ref>
-    <pkg-ref id="com.dimethoxy.disflux.au" installKBytes="5000">Disflux.au.pkg</pkg-ref>
 </installer-gui-script>

@@ -109,7 +109,8 @@ jobs:
           BUNDLE_ID="com.dimethoxy.disflux"
 
           mkdir -p packaging
-          cp pkg/mac/distribution.xml packaging
+          export PRODUCT_NAME
+          envsubst < pkg/mac/distribution.xml > packaging/distribution.xml
 
           pkgbuild --identifier "${BUNDLE_ID}.au.pkg" --version "$VERSION" --component "$AU_PATH" --install-location "/Library/Audio/Plug-Ins/Components" "packaging/${PRODUCT_NAME}.au.pkg"
           pkgbuild --identifier "${BUNDLE_ID}.vst3.pkg" --version "$VERSION" --component "$VST3_PATH" --install-location "/Library/Audio/Plug-Ins/VST3" "packaging/${PRODUCT_NAME}.vst3.pkg"
