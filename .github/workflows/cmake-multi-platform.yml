@@ -85,6 +85,24 @@ jobs:
           cp -r build/src/DisfluxPlugin_artefacts/Release/AU artifacts/
         shell: bash
 
+      - name: Import Certificates
+        uses: sudara/basic-macos-keychain-action@v1
+        id: keychain
+        with:
+          dev-id-app-cert: ${{ secrets.DEV_ID_APP_CERT }}
+          dev-id-app-password: ${{ secrets.DEV_ID_PASSWORD }}
+          dev-id-installer-cert: ${{ secrets.DEV_ID_INSTALL_CERT }}
+          dev-id-installer-password: ${{ secrets.DEV_ID_PASSWORD }}
+
+      - name: Define Path variables
+        run: |
+          # We already moved all binaries to the artifacts directory so we sign them there
+          export VST3_PATH="artifacts/VST3/Disflux.vst3/Contents/MacOS/Disflux"
+
+      - name: Codesign (macOS)
+        run: |
+          codesign --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" -v "${{ env.VST3_PATH }}" --deep --strict --options=runtime --timestamp
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
