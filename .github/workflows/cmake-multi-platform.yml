@@ -77,7 +77,6 @@ jobs:
         run: cmake --build build --config "Release"
 
       - name: Package macOS Artifacts
-        if: matrix.os == 'macos-latest'
         run: |
           mkdir -p artifacts
           cp -r build/src/DisfluxPlugin_artefacts/Release/VST3 artifacts/
@@ -98,10 +97,14 @@ jobs:
         run: |
           # We already moved all binaries to the artifacts directory so we sign them there
           export VST3_PATH="artifacts/VST3/Disflux.vst3/Contents/MacOS/Disflux"
+          export CLAP_PATH="artifacts/CLAP/Disflux.clap/Contents/MacOS/Disflux"
+          export AU_PATH="artifacts/AU/Disflux.component/Contents/MacOS/Disflux"
 
       - name: Codesign (macOS)
         run: |
           codesign --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" -v "${{ env.VST3_PATH }}" --deep --strict --options=runtime --timestamp
+          codesign --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" -v "${{ env.CLAP_PATH }}" --deep --strict --options=runtime --timestamp
+          codesign --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" -v "${{ env.AU_PATH }}" --deep --strict --options=runtime --timestamp
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
