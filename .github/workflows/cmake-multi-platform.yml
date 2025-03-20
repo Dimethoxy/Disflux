@@ -99,6 +99,17 @@ jobs:
           codesign --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" -v "artifacts/CLAP/Disflux.clap/Contents/MacOS/Disflux" --deep --strict --options=runtime --timestamp
           codesign --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" -v "artifacts/AU/Disflux.component/Contents/MacOS/Disflux" --deep --strict --options=runtime --timestamp
 
+      - name: Creare Installer
+        run: |
+          pkgbuild --identifier "${{ env.BUNDLE_ID }}.au.pkg" --version $VERSION --component "${{ env.AU_PATH }}" --install-location "/Library/Audio/Plug-Ins/Components"  "packaging/${{ env.PRODUCT_NAME }}.au.pkg"
+          pkgbuild --identifier "${{ env.BUNDLE_ID }}.vst3.pkg" --version $VERSION --component "${{ env.VST3_PATH }}" --install-location "/Library/Audio/Plug-Ins/VST3" "packaging/${{ env.PRODUCT_NAME }}.vst3.pkg"
+          pkgbuild --identifier "${{ env.BUNDLE_ID }}.clap.pkg" --version $VERSION --component "${{ env.CLAP_PATH }}" --install-location "/Library/Audio/Plug-Ins/CLAP" "packaging/${{ env.PRODUCT_NAME }}.clap.pkg"
+
+          productbuild --distribution "pkg/mac/distribution.xml" \
+            --package-path "packaging" \
+            --output "disflux-snapshot-macos.pkg"
+        shell: bash
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
