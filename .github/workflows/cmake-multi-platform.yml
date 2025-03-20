@@ -113,9 +113,7 @@ jobs:
           pkgbuild --identifier "${BUNDLE_ID}.vst3.pkg" --version "$VERSION" --component "$VST3_PATH" --install-location "/Library/Audio/Plug-Ins/VST3" "packaging/${PRODUCT_NAME}.vst3.pkg"
           pkgbuild --identifier "${BUNDLE_ID}.clap.pkg" --version "$VERSION" --component "$CLAP_PATH" --install-location "/Library/Audio/Plug-Ins/CLAP" "packaging/${PRODUCT_NAME}.clap.pkg"
 
-          productbuild --distribution "pkg/mac/distribution.xml" \
-            --package-path "packaging" \
-            --output "disflux-snapshot-macos.pkg"
+          productbuild --resources ./resources --distribution pkg/mac/distribution.xml --sign "${{ secrets.DEVELOPER_ID_INSTALLER }}" --timestamp "${{ env.ARTIFACT_NAME }}.pkg"
         shell: bash
 
       - name: Upload Artifacts
