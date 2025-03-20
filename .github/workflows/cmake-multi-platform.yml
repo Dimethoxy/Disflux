@@ -97,7 +97,7 @@ jobs:
         run: |
           codesign --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" -v "artifacts/VST3/Disflux.vst3/Contents/MacOS/Disflux" --deep --strict --options=runtime --timestamp
           codesign --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" -v "artifacts/CLAP/Disflux.clap/Contents/MacOS/Disflux" --deep --strict --options=runtime --timestamp
-          codesign --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" -v artifacts/AU/Disflux.component/Contents/MacOS/Disflux}" --deep --strict --options=runtime --timestamp
+          codesign --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" -v "artifacts/AU/Disflux.component/Contents/MacOS/Disflux" --deep --strict --options=runtime --timestamp
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
