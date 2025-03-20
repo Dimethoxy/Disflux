@@ -93,18 +93,11 @@ jobs:
           dev-id-installer-cert: ${{ secrets.DEV_ID_INSTALL_CERT }}
           dev-id-installer-password: ${{ secrets.DEV_ID_PASSWORD }}
 
-      - name: Define Path variables
-        run: |
-          # We already moved all binaries to the artifacts directory so we sign them there
-          export VST3_PATH="artifacts/VST3/Disflux.vst3/Contents/MacOS/Disflux"
-          export CLAP_PATH="artifacts/CLAP/Disflux.clap/Contents/MacOS/Disflux"
-          export AU_PATH="artifacts/AU/Disflux.component/Contents/MacOS/Disflux"
-
       - name: Codesign (macOS)
         run: |
-          codesign --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" -v "${{ env.VST3_PATH }}" --deep --strict --options=runtime --timestamp
-          codesign --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" -v "${{ env.CLAP_PATH }}" --deep --strict --options=runtime --timestamp
-          codesign --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" -v "${{ env.AU_PATH }}" --deep --strict --options=runtime --timestamp
+          codesign --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" -v "artifacts/VST3/Disflux.vst3/Contents/MacOS/Disflux" --deep --strict --options=runtime --timestamp
+          codesign --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" -v "artifacts/CLAP/Disflux.clap/Contents/MacOS/Disflux" --deep --strict --options=runtime --timestamp
+          codesign --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" -v artifacts/AU/Disflux.component/Contents/MacOS/Disflux}" --deep --strict --options=runtime --timestamp
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
