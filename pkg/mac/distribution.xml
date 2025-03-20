@@ -13,14 +13,14 @@
     </choice>
 
     <choice id="choiceCLAP" title="Install CLAP Plugin" start_selected="true">
-        <pkg-ref id="com.dimthoxy.disflux.clap"/>
+        <pkg-ref id="com.dimethoxy.disflux.clap"/>
     </choice>
 
     <choice id="choiceAU" title="Install AU Plugin" start_selected="true">
         <pkg-ref id="com.dimethoxy.disflux.au"/>
     </choice>
 
-    <pkg-ref id="com.dimethoxy.disflux.vst3" installKBytes="5000">#VST3.pkg</pkg-ref>
-    <pkg-ref id="com.dimethoxy.disflux.clap" installKBytes="5000">#CLAP.pkg</pkg-ref>
-    <pkg-ref id="com.dimethoxy.disflux.au" installKBytes="5000">#AU.pkg</pkg-ref>
+    <pkg-ref id="com.dimethoxy.disflux.vst3" installKBytes="5000">Disflux.vst3.pkg</pkg-ref>
+    <pkg-ref id="com.dimethoxy.disflux.clap" installKBytes="5000">Disflux.clap.pkg</pkg-ref>
+    <pkg-ref id="com.dimethoxy.disflux.au" installKBytes="5000">Disflux.au.pkg</pkg-ref>
 </installer-gui-script>
