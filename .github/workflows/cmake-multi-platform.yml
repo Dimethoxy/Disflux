@@ -114,7 +114,7 @@ jobs:
           pkgbuild --identifier "${BUNDLE_ID}.clap.pkg" --version "$VERSION" --component "$CLAP_PATH" --install-location "/Library/Audio/Plug-Ins/CLAP" "packaging/${PRODUCT_NAME}.clap.pkg"
 
           cd packaging
-          cp pkg/mac/distribution.xml .
+          cp /pkg/mac/distribution.xml .
           productbuild --resources ./resources --distribution distribution.xml --sign "${{ secrets.DEVELOPER_ID_INSTALLER }}" --timestamp "${{ env.ARTIFACT_NAME }}.pkg"
 
         shell: bash
