@@ -111,9 +111,9 @@ jobs:
           mkdir -p packaging
           cp pkg/mac/distribution.xml packaging
 
-          pkgbuild --identifier "${BUNDLE_ID}.au.pkg" --version "$VERSION" --component "$AU_PATH" --install-location "/Library/Audio/Plug-Ins/Components" "packaging/${PRODUCT_NAME}.au.pkg"
-          pkgbuild --identifier "${BUNDLE_ID}.vst3.pkg" --version "$VERSION" --component "$VST3_PATH" --install-location "/Library/Audio/Plug-Ins/VST3" "packaging/${PRODUCT_NAME}.vst3.pkg"
-          pkgbuild --identifier "${BUNDLE_ID}.clap.pkg" --version "$VERSION" --component "$CLAP_PATH" --install-location "/Library/Audio/Plug-Ins/CLAP" "packaging/${PRODUCT_NAME}.clap.pkg"
+          pkgbuild --identifier "${BUNDLE_ID}.au.pkg" --version "$VERSION" --component "$AU_PATH" --install-location "/Library/Audio/Plug-Ins/Components" "packaging/${BUNDLE_ID}.au.pkg"
+          pkgbuild --identifier "${BUNDLE_ID}.vst3.pkg" --version "$VERSION" --component "$VST3_PATH" --install-location "/Library/Audio/Plug-Ins/VST3" "packaging/${BUNDLE_ID}.vst3.pkg"
+          pkgbuild --identifier "${BUNDLE_ID}.clap.pkg" --version "$VERSION" --component "$CLAP_PATH" --install-location "/Library/Audio/Plug-Ins/CLAP" "packaging/${BUNDLE_ID}.clap.pkg"
 
 
           cd packaging
