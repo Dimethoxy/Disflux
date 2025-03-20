@@ -101,9 +101,16 @@ jobs:
 
       - name: Creare Installer
         run: |
-          pkgbuild --identifier "${{ env.BUNDLE_ID }}.au.pkg" --version $VERSION --component "${{ env.AU_PATH }}" --install-location "/Library/Audio/Plug-Ins/Components"  "packaging/${{ env.PRODUCT_NAME }}.au.pkg"
-          pkgbuild --identifier "${{ env.BUNDLE_ID }}.vst3.pkg" --version $VERSION --component "${{ env.VST3_PATH }}" --install-location "/Library/Audio/Plug-Ins/VST3" "packaging/${{ env.PRODUCT_NAME }}.vst3.pkg"
-          pkgbuild --identifier "${{ env.BUNDLE_ID }}.clap.pkg" --version $VERSION --component "${{ env.CLAP_PATH }}" --install-location "/Library/Audio/Plug-Ins/CLAP" "packaging/${{ env.PRODUCT_NAME }}.clap.pkg"
+          VERSION=0.1.0
+          AU_PATH="artifacts/AU/Disflux.component"
+          VST3_PATH="artifacts/VST3/Disflux.vst3"
+          CLAP_PATH="artifacts/CLAP/Disflux.clap"
+          PRODUCT_NAME="Disflux"
+          BUNDLE_ID="com.dimethoxy.disflux"
+
+          pkgbuild --identifier "${BUNDLE_ID}.au.pkg" --version "$VERSION" --component "$AU_PATH" --install-location "/Library/Audio/Plug-Ins/Components" "packaging/${PRODUCT_NAME}.au.pkg"
+          pkgbuild --identifier "${BUNDLE_ID}.vst3.pkg" --version "$VERSION" --component "$VST3_PATH" --install-location "/Library/Audio/Plug-Ins/VST3" "packaging/${PRODUCT_NAME}.vst3.pkg"
+          pkgbuild --identifier "${BUNDLE_ID}.clap.pkg" --version "$VERSION" --component "$CLAP_PATH" --install-location "/Library/Audio/Plug-Ins/CLAP" "packaging/${PRODUCT_NAME}.clap.pkg"
 
           productbuild --distribution "pkg/mac/distribution.xml" \
             --package-path "packaging" \
