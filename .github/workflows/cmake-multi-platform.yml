@@ -279,6 +279,9 @@ jobs:
               exit 1
           fi
 
+          # Mark Repository as save
+          git config --global --add safe.directory /__w/Disflux/Disflux
+
           # Copy the files to the Fedora package directory
           mkdir -p $FEDORA_PACKAGE_DIR/
           cp -r $BUILD_DIR/CLAP $FEDORA_PACKAGE_DIR/
@@ -398,7 +401,6 @@ jobs:
 
           # Zip the artifacts
           zip -r disflux-snapshot-linux-vanilla.zip ./build-artifacts-ubuntu
-          zip -r disflux-snapshot-macos.zip ./build-artifacts-macos
           zip -r disflux-snapshot-windows.zip ./build-artifacts-windows
         shell: bash
 
@@ -444,6 +446,5 @@ jobs:
           gh release upload "Snapshot" disflux-snapshot-linux-arch.pkg.tar.zst --clobber
           gh release upload "Snapshot" disflux-snapshot-linux-ubuntu.deb --clobber
           gh release upload "Snapshot" disflux-snapshot-linux-vanilla.zip --clobber
-          gh release upload "Snapshot" disflux-snapshot-macos.zip --clobber
           gh release upload "Snapshot" disflux-snapshot-macos.pkg --clobber
           gh release upload "Snapshot" disflux-snapshot-windows.zip --clobber
