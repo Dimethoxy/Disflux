@@ -118,6 +118,9 @@ jobs:
 
           cd packaging
           productbuild --resources ./resources --distribution distribution.xml --sign "${{ secrets.DEVELOPER_ID_INSTALLER }}" --timestamp "${PRODUCT_NAME}.pkg"
+
+          xcrun notarytool submit "${PRODUCT_NAME}.pkg" --apple-id ${{ secrets.NOTARIZATION_USERNAME }} --password ${{ secrets.NOTARIZATION_PASSWORD }} --team-id ${{ secrets.TEAM_ID }} --wait
+          xcrun stapler staple "${PRODUCT_NAME}.pkg"
         shell: bash
 
       - name: Upload Artifacts
