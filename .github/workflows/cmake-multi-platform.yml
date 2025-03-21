@@ -121,6 +121,9 @@ jobs:
 
           xcrun notarytool submit "${PRODUCT_NAME}.pkg" --apple-id ${{ secrets.NOTARIZATION_USERNAME }} --password ${{ secrets.NOTARIZATION_PASSWORD }} --team-id ${{ secrets.TEAM_ID }} --wait
           xcrun stapler staple "${PRODUCT_NAME}.pkg"
+
+          # Move the installer to the artifacts directory
+          mv "${PRODUCT_NAME}.pkg" ../artifacts/
         shell: bash
 
       - name: Upload Artifacts
@@ -381,11 +384,14 @@ jobs:
 
       - name: Package Artifacts
         run: |
+          # Move the Mac package to the root directory
+          mv build-artifacts-macos/*.pkg ./disflux-snapshot-macos.pkg
+
           # Move the Arch package to the root directory
           mv build-artifacts-archlinux/disflux-snapshot-linux-arch.pkg.tar.zst .
 
           # Move the Fedora package to the root directory
-          mv build-artifacts-fedora/*.rpm .
+          # mv build-artifacts-fedora/*.rpm .
 
           # Move the deb package to the root directory
           mv build-artifacts-ubuntu/disflux-snapshot-linux-ubuntu.deb .
@@ -394,6 +400,7 @@ jobs:
           zip -r disflux-snapshot-linux-vanilla.zip ./build-artifacts-ubuntu
           zip -r disflux-snapshot-macos.zip ./build-artifacts-macos
           zip -r disflux-snapshot-windows.zip ./build-artifacts-windows
+        shell: bash
 
       - name: Delete Old Snapshot Release (if exists)
         run: |
@@ -438,4 +445,5 @@ jobs:
           gh release upload "Snapshot" disflux-snapshot-linux-ubuntu.deb --clobber
           gh release upload "Snapshot" disflux-snapshot-linux-vanilla.zip --clobber
           gh release upload "Snapshot" disflux-snapshot-macos.zip --clobber
+          gh release upload "Snapshot" disflux-snapshot-macos.pkg --clobber
           gh release upload "Snapshot" disflux-snapshot-windows.zip --clobber
