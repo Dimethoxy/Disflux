@@ -46,6 +46,8 @@ jobs:
 
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Setup MSVC
         uses: TheMrMilchmann/setup-msvc-dev@v3
@@ -319,11 +321,11 @@ jobs:
           mkdir -p $UBUNTU_PACKAGE_DIR/$LV2_INSTALL_DIR
 
           # Copy files to Debian package directory
-          cp -r $BUILD_DIR/${{env.PROJECT_NAME}}.vst3 \
+          cp -r artifacts/${{env.PROJECT_NAME}}.vst3 \
                 $UBUNTU_PACKAGE_DIR/$VST3_INSTALL_DIR/
-          cp -r $BUILD_DIR/${{env.PROJECT_NAME}}.clap \
+          cp -r artifacts/${{env.PROJECT_NAME}}.clap \
                 $UBUNTU_PACKAGE_DIR/$CLAP_INSTALL_DIR/
-          cp -r $BUILD_DIR/${{env.PROJECT_NAME}}.lv2 \
+          cp -r artifacts/${{env.PROJECT_NAME}}.lv2 \
                 $UBUNTU_PACKAGE_DIR/$LV2_INSTALL_DIR/
 
           # Copy control file to Debian package directory
