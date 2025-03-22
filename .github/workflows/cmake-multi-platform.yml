@@ -133,7 +133,7 @@ jobs:
           cmake --preset "Mac Release" \
             -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
             -DCMAKE_C_COMPILER_LAUNCHER=sccache \
-            -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+            -DCMAKE_CXX_COMPILER_LAUNCHER=sccache .
 
       - name: Build
         run: cmake --build build --config "Release"
