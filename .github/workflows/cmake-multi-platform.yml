@@ -56,8 +56,8 @@ jobs:
       - name: Copy Artifacts
         run: |
           mkdir -p artifacts
-          cp -r build/src/${{PROJECT_NAME}}Plugin_artefacts/Release/VST3/{$PRODUCT_NAME}.vst3 artifacts/
-          cp -r build/src/${{PROJECT_NAME}}Plugin_artefacts/Release/CLAP/{$PRODUCT_NAME}.clap artifacts/
+          cp -r build/src/${{PROJECT_NAME}}Plugin_artefacts/Release/VST3/${{PROJECT_NAME}}.vst3 artifacts/
+          cp -r build/src/${{PROJECT_NAME}}Plugin_artefacts/Release/CLAP/${{PROJECT_NAME}}.clap artifacts/
         shell: bash
 
       - name: Create Installer
