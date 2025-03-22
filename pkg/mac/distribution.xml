@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf8'?>
 <installer-gui-script minSpecVersion="2">
-    <title>${PRODUCT_NAME}</title>
+    <title>${PROJECT_NAME}</title>
     <allowed-os-versions>
         <os-version min="10.13" />
     </allowed-os-versions>
@@ -17,15 +17,15 @@
         <line choice="clap" />
     </choices-outline>
 
-    <choice id="vst3" visible="true" start_selected="true" title="${PRODUCT_NAME} VST3">
-        <pkg-ref id="${BUNDLE_ID}.vst3.pkg" version="${VERSION}" onConclusion="none">${PRODUCT_NAME}.vst3.pkg</pkg-ref>
+    <choice id="vst3" visible="true" start_selected="true" title="${PROJECT_NAME} VST3">
+        <pkg-ref id="${BUNDLE_ID}.vst3.pkg" version="${VERSION}" onConclusion="none">${PROJECT_NAME}.vst3.pkg</pkg-ref>
     </choice>
 
-    <choice id="au" visible="true" start_selected="true" title="${PRODUCT_NAME} AU">
-        <pkg-ref id="${BUNDLE_ID}.au.pkg" version="${VERSION}" onConclusion="none">${PRODUCT_NAME}.au.pkg</pkg-ref>
+    <choice id="au" visible="true" start_selected="true" title="${PROJECT_NAME} AU">
+        <pkg-ref id="${BUNDLE_ID}.au.pkg" version="${VERSION}" onConclusion="none">${PROJECT_NAME}.au.pkg</pkg-ref>
     </choice>
 
-    <choice id="clap" visible="true" start_selected="true" title="${PRODUCT_NAME} CLAP">
-        <pkg-ref id="${BUNDLE_ID}.clap.pkg" version="${VERSION}" onConclusion="none">${PRODUCT_NAME}.clap.pkg</pkg-ref>
+    <choice id="clap" visible="true" start_selected="true" title="${PROJECT_NAME} CLAP">
+        <pkg-ref id="${BUNDLE_ID}.clap.pkg" version="${VERSION}" onConclusion="none">${PROJECT_NAME}.clap.pkg</pkg-ref>
     </choice>
 </installer-gui-script>
