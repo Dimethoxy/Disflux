@@ -21,7 +21,7 @@ defaults:
 
 env:
   PROJECT_NAME: Disflux
-  BUNDLE_ID: com.Dimethoxy.Disflux
+  BUNDLE_ID: com.dimethoxy.disflux
   VERSION: 0.1.0
   BUILD_DIR: build
   DISPLAY: :0 # Linux pluginval needs this
@@ -83,7 +83,7 @@ jobs:
           cmake --preset "Windows Release" \
             -B ${{ env.BUILD_DIR }}
             -DCMAKE_C_COMPILER_LAUNCHER=sccache \
-            -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+            -DCMAKE_CXX_COMPILER_LAUNCHER=sccache .
 
       - name: Build
         run: cmake --build build --config "Release"
@@ -263,6 +263,9 @@ jobs:
           sudo apt-get install -y dpkg-dev devscripts
           sudo /usr/bin/Xvfb $DISPLAY &
         shell: bash
+
+      - name: Cache the build
+        uses: mozilla-actions/sccache-action@v0.0.7
 
       - name: Select CMake Preset
         run: cmake --preset "Linux Release"

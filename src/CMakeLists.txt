@@ -23,7 +23,8 @@ juce_add_plugin(${PROJECT_NAME}
     EDITOR_WANTS_KEYBOARD_FOCUS FALSE
     PLUGIN_MANUFACTURER_CODE DMTX
     PLUGIN_CODE DFLX
-    LV2URI "https://dimethoxy.com/plugins/disflux"                 
+    LV2URI "https://dimethoxy.com/plugins/disflux"      
+    BUNDLE_ID com.dimethoxy.disflux           
     )
 
 # Add the main source files
@@ -129,5 +130,5 @@ target_compile_definitions(${PROJECT_NAME}
 # CLAP support setup
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/..)
 clap_juce_extensions_plugin(TARGET ${PROJECT_NAME}
-    CLAP_ID "com.Dimethoxy.Disflux"
+    CLAP_ID "com.dimethoxy.disflux"
     CLAP_FEATURES audio-effect filter equalizer)
