@@ -81,7 +81,7 @@ jobs:
       - name: Select CMake Preset
         run: |
           cmake --preset "Windows Release" \
-            -B ${{ env.BUILD_DIR }}
+            -B ${{ env.BUILD_DIR }} \
             -DCMAKE_C_COMPILER_LAUNCHER=sccache \
             -DCMAKE_CXX_COMPILER_LAUNCHER=sccache .
 
