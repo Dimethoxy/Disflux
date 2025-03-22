@@ -28,12 +28,6 @@ env:
   DISPLAY: :0 # Linux pluginval needs this
   HOMEBREW_NO_INSTALL_CLEANUP: 1
   IPP_DIR: C:\Program Files (x86)\Intel\oneAPI\ipp\latest\lib\cmake\ipp
-  BUILD_ARTIFACTS_DIR: build/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release
-  WINDOWS_PACKAGE_NAME: ${{env.BUNDLE_NAME}}-snapshot-windows.exe
-  MACOS_PACKAGE_NAME: ${{env.BUNDLE_NAME}}-snapshot-macos.pkg
-  ARCHLINUX_PACKAGE_NAME: ${{env.BUNDLE_NAME}}-snapshot-linux-arch.pkg.tar.zst
-  UBUNTU_PACKAGE_NAME: ${{env.BUNDLE_NAME}}-snapshot-linux-ubuntu.deb
-  LINUX_PACKAGE_NAME: ${{env.BUNDLE_NAME}}-snapshot-linux-vanilla.zip
 
 #===========================================================================================
 # Build Jobs
@@ -45,6 +39,11 @@ jobs:
   build-windows:
     runs-on: windows-latest
     steps:
+      - name: Export Variables
+        run: |
+          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${PROJECT_NAME}Plugin_artefacts/Release" >> $GITHUB_ENV
+          echo "WINDOWS-PACKAGE=${PROJECT_NAME}-snapshot-windows.exe" >> $GITHUB_ENV
+
       - name: Checkout Code
         uses: actions/checkout@v4
 
@@ -90,18 +89,23 @@ jobs:
       - name: Copy Build Artifacts
         run: |
           mkdir -p artifacts
-          cp -r ${{env.BUILD_ARTIFACTS_DIR}}/VST3/${{env.PROJECT_NAME}}.vst3 artifacts/
-          cp -r ${{env.BUILD_ARTIFACTS_DIR}}/CLAP/${{env.PROJECT_NAME}}.clap artifacts/
+          cp -r ${{BUILD_ARTIFACTS_DIR}}/VST3/${{env.PROJECT_NAME}}.vst3 \
+                artifacts/
+          cp -r ${{BUILD_ARTIFACTS_DIR}}/CLAP/${{env.PROJECT_NAME}}.clap \
+                artifacts/
         shell: bash
 
       - name: Create Installer
         run: |
+          # Create the packaging directory
           mkdir -p packaging
 
+          # Create the Inno Setup
           envsubst < pkg/windows/Setup.iss > packaging/Setup.iss
           iscc packaging/Setup.iss
 
-          mv "${{env.PROJECT_NAME}}-Setup.exe" artifacts/${{env.PACKAGE_NAME}}
+          # Move the installer to the artifacts directory
+          mv "${{env.PROJECT_NAME}}-Setup.exe" artifacts/${{env.WINDOWS-PACKAGE}}
         shell: bash
 
       - name: Upload Artifacts
@@ -116,6 +120,11 @@ jobs:
   build-macos:
     runs-on: macos-latest
     steps:
+      - name: Export Variables
+        run: |
+          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${PROJECT_NAME}Plugin_artefacts/Release" >> $GITHUB_ENV
+          echo "MAC_PACKAGE=${PROJECT_NAME}-snapshot-macos.pkg" >> $GITHUB_ENV
+
       - name: Checkout Code
         uses: actions/checkout@v4
 
@@ -132,11 +141,13 @@ jobs:
 
       - name: Copy Build Artifacts
         run: |
-          BUILD_DIR="build/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release"
           mkdir -p artifacts
-          cp -r $BUILD_DIR/VST3/${{env.PROJECT_NAME}}.vst3 artifacts/
-          cp -r $BUILD_DIR/CLAP/${{env.PROJECT_NAME}}.clap artifacts/
-          cp -r $BUILD_DIR/AU/${{env.PROJECT_NAME}}.component artifacts/
+          cp -r ${{BUILD_ARTIFACTS_DIR}}/VST3/${{env.PROJECT_NAME}}.vst3 \
+                artifacts/
+          cp -r ${{BUILD_ARTIFACTS_DIR}}/CLAP/${{env.PROJECT_NAME}}.clap \
+                artifacts/
+          cp -r ${{BUILD_ARTIFACTS_DIR}}/AU/${{env.PROJECT_NAME}}.component \
+                artifacts/
         shell: bash
 
       - name: Import Certificates
@@ -150,37 +161,41 @@ jobs:
 
       - name: Codesign (macOS)
         run: |
+          # Set variables
           VST3_BIN="artifacts/${{env.PROJECT_NAME}}.vst3/Contents/MacOS/${{env.PROJECT_NAME}}"
           CLAP_BIN="artifacts/${{env.PROJECT_NAME}}.clap/Contents/MacOS/${{env.PROJECT_NAME}}"
           AU_BIN="artifacts/${{env.PROJECT_NAME}}.component/Contents/MacOS/${{env.PROJECT_NAME}}"
 
-          codesign \
+          # Codesign the binaries
+          codesign \  
             --force -s "${{secrets.DEVELOPER_ID_APPLICATION}}" \
             -v "$VST3_BIN" \
             --deep --strict --options=runtime --timestamp
-
           codesign \
             --force -s "${{secrets.DEVELOPER_ID_APPLICATION}}" \
             -v "$CLAP_BIN" \
             --deep --strict --options=runtime --timestamp
-
           codesign \
             --force -s "${{secrets.DEVELOPER_ID_APPLICATION}}" \
             -v "$AU_BIN" \
             --deep --strict --options=runtime --timestamp
-
         shell: bash
 
       - name: Create Installer
         run: |
+          # Set variables
           VST3_PATH="artifacts/Disflux.vst3"
           CLAP_PATH="artifacts/Disflux.clap"
           AU_PATH="artifacts/Disflux.component"
           PACKAGE_NAME="${{env.PROJECT_NAME}}-snapshot-macos.pkg"
 
+          # Create the packaging directory
           mkdir -p packaging
+
+          # Create the distribution file
           envsubst < pkg/mac/distribution.xml > packaging/distribution.xml
 
+          # Create the VST subpackage
           pkgbuild \
             --identifier "${{env.BUNDLE_ID}}.vst3.pkg" \
             --version "$VERSION" \
@@ -188,6 +203,7 @@ jobs:
             --install-location "/Library/Audio/Plug-Ins/VST3" \
             "packaging/${{env.PROJECT_NAME}}.vst3.pkg"
 
+          # Create the CLAP subpackage
           pkgbuild \
             --identifier "${{env.BUNDLE_ID}}.clap.pkg" \
             --version "$VERSION" \
@@ -195,6 +211,7 @@ jobs:
             --install-location "/Library/Audio/Plug-Ins/CLAP" \
             "packaging/${{env.PROJECT_NAME}}.clap.pkg"
 
+          # Create the AU subpackage
           pkgbuild \
             --identifier "${{env.BUNDLE_ID}}.au.pkg" \
             --version "$VERSION" \
@@ -202,6 +219,7 @@ jobs:
             --install-location "/Library/Audio/Plug-Ins/Components" \
             "packaging/${{env.PROJECT_NAME}}.au.pkg"
 
+          # Create the main package
           cd packaging
           productbuild \
             --resources ./resources \
@@ -209,14 +227,18 @@ jobs:
             --sign "${{secrets.DEVELOPER_ID_INSTALLER}}" \
             --timestamp "${{env.PROJECT_NAME}}.pkg"
 
+          # Notarize the package
           xcrun notarytool submit "${{env.PROJECT_NAME}}.pkg" \
             --apple-id ${{secrets.NOTARIZATION_USERNAME}} \
             --password ${{secrets.NOTARIZATION_PASSWORD}} \
             --team-id ${{secrets.TEAM_ID}} \
             --wait
 
+          # Staple the package
           xcrun stapler staple "${{env.PROJECT_NAME}}.pkg"
-          mv "${{env.PROJECT_NAME}}.pkg" ../artifacts/$PACKAGE_NAME¨
+
+          # Move the package to the artifacts directory
+          mv "${{env.PROJECT_NAME}}.pkg" ../artifacts/${{env.MAC_PACKAGE}}¨
         shell: bash
 
       - name: Upload Artifacts
@@ -231,6 +253,12 @@ jobs:
   build-ubuntu:
     runs-on: ubuntu-latest
     steps:
+      - name: Export Variables
+        run: |
+          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${PROJECT_NAME}Plugin_artefacts/Release" >> $GITHUB_ENV
+          echo "UBUNTU_PACKAGE=${PROJECT_NAME}-snapshot-linux-ubuntu.deb" >> $GITHUB_ENV
+          echo "LINUX_PACKAGE=${PROJECT_NAME}-snapshot-linux-vanilla.zip" >> $GITHUB_ENV
+
       - name: Checkout Code
         uses: actions/checkout@v4
 
@@ -266,49 +294,46 @@ jobs:
 
       - name: Copy Artifacts
         run: |
-          BUILD_DIR="build/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release"
           mkdir -p artifacts
-          cp -r $BUILD_DIR/VST3/${{env.PROJECT_NAME}}.vst3 artifacts/
-          cp -r $BUILD_DIR/CLAP/${{env.PROJECT_NAME}}.clap artifacts/
-          cp -r $BUILD_DIR/LV2/${{env.PROJECT_NAME}}.lv2 artifacts/
+          cp -r ${{BUILD_ARTIFACTS_DIR}}/VST3/${{env.PROJECT_NAME}}.vst3 \
+                artifacts/
+          cp -r ${{BUILD_ARTIFACTS_DIR}}/CLAP/${{env.PROJECT_NAME}}.clap \
+                artifacts/
+          cp -r ${{BUILD_ARTIFACTS_DIR}}/LV2/${{env.PROJECT_NAME}}.lv2 \
+                artifacts/
         shell: bash
 
       - name: Package Linux Artifacts
         run: |
-          # Define variables
-          ARTIFACTS_DIR="artifacts"
-          DEBIAN_PACKAGE_DIR="${{env.PROJECT_NAME}}-linux-ubuntu"
-          DEBIAN_CONTROL_FILE="pkg/ubuntu/control"
-          VST3_DIR="/usr/lib/vst3/${{env.PROJECT_NAME}}"
-          CLAP_DIR="/usr/lib/clap/${{env.PROJECT_NAME}}"
-          LV2_DIR="/usr/lib/lv2/${{env.PROJECT_NAME}}"
+          # Set variables
+          UBUNTU_PACKAGE_DIR="${{env.PROJECT_NAME}}-linux-ubuntu"
+          UBUNTU_CONTROL_FILE="pkg/ubuntu/control"
+          VST3_INSTALL_DIR="/usr/lib/vst3/${{env.PROJECT_NAME}}"
+          CLAP_INSTALL_DIR="/usr/lib/clap/${{env.PROJECT_NAME}}"
+          LV2_INSTALL_DIR="/usr/lib/lv2/${{env.PROJECT_NAME}}"
 
-
-          # Prepare artifacts directory
-          mkdir -p $ARTIFACTS_DIR
-
-          # Prepare Debian package directory structure
-          mkdir -p $DEBIAN_PACKAGE_DIR/DEBIAN
-          mkdir -p $DEBIAN_PACKAGE_DIR/$CLAP_DIR
-          mkdir -p $DEBIAN_PACKAGE_DIR/$LV2_DIR
-          mkdir -p $DEBIAN_PACKAGE_DIR/$VST3_DIR
+          # Create Debian package directory
+          mkdir -p $UBUNTU_PACKAGE_DIR/DEBIAN
+          mkdir -p $UBUNTU_PACKAGE_DIR/$VST3_INSTALL_DIR
+          mkdir -p $UBUNTU_PACKAGE_DIR/$CLAP_INSTALL_DIR
+          mkdir -p $UBUNTU_PACKAGE_DIR/$LV2_INSTALL_DIR
 
           # Copy files to Debian package directory
-          cp -r $BUILD_DIR/CLAP/Disflux.clap \
-                $DEBIAN_PACKAGE_DIR/$CLAP_DIR/
-          cp -r $BUILD_DIR/LV2/Disflux.lv2 \
-                $DEBIAN_PACKAGE_DIR/$LV2_DIR/
-          cp -r $BUILD_DIR/VST3/Disflux.vst3 \
-                $DEBIAN_PACKAGE_DIR/$VST3_DIR/
+          cp -r $BUILD_DIR/${{env.PROJECT_NAME}}.vst3 \
+                $UBUNTU_PACKAGE_DIR/$VST3_INSTALL_DIR/
+          cp -r $BUILD_DIR/${{env.PROJECT_NAME}}.clap \
+                $UBUNTU_PACKAGE_DIR/$CLAP_INSTALL_DIR/
+          cp -r $BUILD_DIR/${{env.PROJECT_NAME}}.lv2 \
+                $UBUNTU_PACKAGE_DIR/$LV2_INSTALL_DIR/
 
           # Copy control file to Debian package directory
-          cp $DEBIAN_CONTROL_FILE $DEBIAN_PACKAGE_DIR/DEBIAN
+          cp $UBUNTU_CONTROL_FILE $UBUNTU_PACKAGE_DIR/DEBIAN
 
           # Build Debian package
-          dpkg-deb --build $DEBIAN_PACKAGE_DIR
+          dpkg-deb --build $UBUNTU_PACKAGE_DIR
 
-          # Move Debian package to artifacts
-          cp -r $DEBIAN_PACKAGE_DIR.deb $ARTIFACTS_DIR/
+          # Move the package to the artifacts directory
+          cp -r $UBUNTU_PACKAGE_DIR.deb artifacts/${{env.UBUNTU_PACKAGE}}
         shell: bash
 
       - name: Upload Artifacts
@@ -325,6 +350,11 @@ jobs:
     container:
       image: archlinux:latest
     steps:
+      - name: Export Variables
+        run: |
+          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${PROJECT_NAME}Plugin_artefacts/Release" >> $GITHUB_ENV
+          echo "PACKAGE_NAME=${PROJECT_NAME}-snapshot-linux-arch.pkg.tar.zst" >> $GITHUB_ENV
+
       - name: Install Base Packages
         run: |
           pacman -Sy --noconfirm base-devel git
