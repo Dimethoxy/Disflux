@@ -363,7 +363,7 @@ jobs:
       - name: Export Variables
         run: |
           echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release" >> $GITHUB_ENV
-          echo "PACKAGE_NAME=${{env.PROJECT_NAME}}-snapshot-linux-arch.pkg.tar.zst" >> $GITHUB_ENV
+          echo "PACKAGE_NAME=${{env.BUNDLE_NAME}}-snapshot-linux-arch.pkg.tar.zst" >> $GITHUB_ENV
 
       - name: Install Base Packages
         run: |
@@ -404,9 +404,6 @@ jobs:
           # Move the package to the artifacts directory
           mkdir -p artifacts
           mv ${{env.PACKAGE_NAME}} artifacts/
-          ls -la
-          cd artifacts
-          ls -la
         shell: bash
 
       - name: Upload Artifacts
