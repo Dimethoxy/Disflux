@@ -89,9 +89,9 @@ jobs:
       - name: Copy Build Artifacts
         run: |
           mkdir -p artifacts
-          cp -r ${{BUILD_ARTIFACTS_DIR}}/VST3/${{env.PROJECT_NAME}}.vst3 \
+          cp -r ${{env.BUILD_ARTIFACTS_DIR}}/VST3/${{env.PROJECT_NAME}}.vst3 \
                 artifacts/
-          cp -r ${{BUILD_ARTIFACTS_DIR}}/CLAP/${{env.PROJECT_NAME}}.clap \
+          cp -r ${{env.BUILD_ARTIFACTS_DIR}}/CLAP/${{env.PROJECT_NAME}}.clap \
                 artifacts/
         shell: bash
 
@@ -142,11 +142,11 @@ jobs:
       - name: Copy Build Artifacts
         run: |
           mkdir -p artifacts
-          cp -r ${{BUILD_ARTIFACTS_DIR}}/VST3/${{env.PROJECT_NAME}}.vst3 \
+          cp -r ${{env.BUILD_ARTIFACTS_DIR}}/VST3/${{env.PROJECT_NAME}}.vst3 \
                 artifacts/
-          cp -r ${{BUILD_ARTIFACTS_DIR}}/CLAP/${{env.PROJECT_NAME}}.clap \
+          cp -r ${{env.BUILD_ARTIFACTS_DIR}}/CLAP/${{env.PROJECT_NAME}}.clap \
                 artifacts/
-          cp -r ${{BUILD_ARTIFACTS_DIR}}/AU/${{env.PROJECT_NAME}}.component \
+          cp -r ${{env.BUILD_ARTIFACTS_DIR}}/AU/${{env.PROJECT_NAME}}.component \
                 artifacts/
         shell: bash
 
@@ -295,11 +295,11 @@ jobs:
       - name: Copy Artifacts
         run: |
           mkdir -p artifacts
-          cp -r ${{BUILD_ARTIFACTS_DIR}}/VST3/${{env.PROJECT_NAME}}.vst3 \
+          cp -r ${{env.BUILD_ARTIFACTS_DIR}}/VST3/${{env.PROJECT_NAME}}.vst3 \
                 artifacts/
-          cp -r ${{BUILD_ARTIFACTS_DIR}}/CLAP/${{env.PROJECT_NAME}}.clap \
+          cp -r ${{env.BUILD_ARTIFACTS_DIR}}/CLAP/${{env.PROJECT_NAME}}.clap \
                 artifacts/
-          cp -r ${{BUILD_ARTIFACTS_DIR}}/LV2/${{env.PROJECT_NAME}}.lv2 \
+          cp -r ${{env.BUILD_ARTIFACTS_DIR}}/LV2/${{env.PROJECT_NAME}}.lv2 \
                 artifacts/
         shell: bash
 
