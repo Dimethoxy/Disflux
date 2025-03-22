@@ -16,19 +16,24 @@ on:
 defaults:
   run:
     shell: bash
+
 #===========================================================================================
 # Environment Variables
-
 env:
   PROJECT_NAME: Disflux
+  BUNDLE_NAME: disflux
   BUNDLE_ID: com.dimethoxy.disflux
   VERSION: 0.1.0
   BUILD_DIR: build
   DISPLAY: :0 # Linux pluginval needs this
   HOMEBREW_NO_INSTALL_CLEANUP: 1
-  SCCACHE_GHA_ENABLED: true
-  SCCACHE_CACHE_MULTIARCH: 1
   IPP_DIR: C:\Program Files (x86)\Intel\oneAPI\ipp\latest\lib\cmake\ipp
+  BUILD_ARTIFACTS_DIR: build/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release
+  WINDOWS_PACKAGE_NAME: ${{env.BUNDLE_NAME}}-snapshot-windows.exe
+  MACOS_PACKAGE_NAME: ${{env.BUNDLE_NAME}}-snapshot-macos.pkg
+  ARCHLINUX_PACKAGE_NAME: ${{env.BUNDLE_NAME}}-snapshot-linux-arch.pkg.tar.zst
+  UBUNTU_PACKAGE_NAME: ${{env.BUNDLE_NAME}}-snapshot-linux-ubuntu.deb
+  LINUX_PACKAGE_NAME: ${{env.BUNDLE_NAME}}-snapshot-linux-vanilla.zip
 
 #===========================================================================================
 # Build Jobs
@@ -84,21 +89,19 @@ jobs:
 
       - name: Copy Build Artifacts
         run: |
-          BUILD_DIR="build/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release"
           mkdir -p artifacts
-          cp -r $BUILD_DIR/VST3/${{env.PROJECT_NAME}}.vst3 artifacts/
-          cp -r $BUILD_DIR/CLAP/${{env.PROJECT_NAME}}.clap artifacts/
+          cp -r ${{env.BUILD_ARTIFACTS_DIR}}/VST3/${{env.PROJECT_NAME}}.vst3 artifacts/
+          cp -r ${{env.BUILD_ARTIFACTS_DIR}}/CLAP/${{env.PROJECT_NAME}}.clap artifacts/
         shell: bash
 
       - name: Create Installer
         run: |
-          PACKAGE_NAME="${{env.PROJECT_NAME}}-Snapshot-Windows.exe"
           mkdir -p packaging
 
           envsubst < pkg/windows/Setup.iss > packaging/Setup.iss
           iscc packaging/Setup.iss
 
-          mv "${{env.PROJECT_NAME}}-Setup.exe" artifacts/$PACKAGE_NAME
+          mv "${{env.PROJECT_NAME}}-Setup.exe" artifacts/${{env.PACKAGE_NAME}}
         shell: bash
 
       - name: Upload Artifacts
@@ -173,6 +176,7 @@ jobs:
           VST3_PATH="artifacts/Disflux.vst3"
           CLAP_PATH="artifacts/Disflux.clap"
           AU_PATH="artifacts/Disflux.component"
+          PACKAGE_NAME="${{env.PROJECT_NAME}}-snapshot-macos.pkg"
 
           mkdir -p packaging
           envsubst < pkg/mac/distribution.xml > packaging/distribution.xml
@@ -212,7 +216,7 @@ jobs:
             --wait
 
           xcrun stapler staple "${{env.PROJECT_NAME}}.pkg"
-          mv "${{env.PROJECT_NAME}}.pkg" ../artifacts/
+          mv "${{env.PROJECT_NAME}}.pkg" ../artifacts/$PACKAGE_NAME¨
         shell: bash
 
       - name: Upload Artifacts
@@ -260,16 +264,25 @@ jobs:
       - name: Build
         run: cmake --build build --config "Release"
 
+      - name: Copy Artifacts
+        run: |
+          BUILD_DIR="build/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release"
+          mkdir -p artifacts
+          cp -r $BUILD_DIR/VST3/${{env.PROJECT_NAME}}.vst3 artifacts/
+          cp -r $BUILD_DIR/CLAP/${{env.PROJECT_NAME}}.clap artifacts/
+          cp -r $BUILD_DIR/LV2/${{env.PROJECT_NAME}}.lv2 artifacts/
+        shell: bash
+
       - name: Package Linux Artifacts
         run: |
           # Define variables
           ARTIFACTS_DIR="artifacts"
-          BUILD_DIR="build/src/DisfluxPlugin_artefacts/Release"
-          DEBIAN_PACKAGE_DIR="disflux-snapshot-linux-ubuntu"
+          DEBIAN_PACKAGE_DIR="${{env.PROJECT_NAME}}-linux-ubuntu"
           DEBIAN_CONTROL_FILE="pkg/ubuntu/control"
-          CLAP_DIR="/usr/lib/clap/Disflux"
-          LV2_DIR="/usr/lib/lv2/Disflux"
-          VST3_DIR="/usr/lib/vst3/Disflux"
+          VST3_DIR="/usr/lib/vst3/${{env.PROJECT_NAME}}"
+          CLAP_DIR="/usr/lib/clap/${{env.PROJECT_NAME}}"
+          LV2_DIR="/usr/lib/lv2/${{env.PROJECT_NAME}}"
+
 
           # Prepare artifacts directory
           mkdir -p $ARTIFACTS_DIR
@@ -287,14 +300,6 @@ jobs:
                 $DEBIAN_PACKAGE_DIR/$LV2_DIR/
           cp -r $BUILD_DIR/VST3/Disflux.vst3 \
                 $DEBIAN_PACKAGE_DIR/$VST3_DIR/
-
-          # Copy vanilla files to artifacts directory
-          cp -r $BUILD_DIR/LV2/Disflux.lv2 \
-                $ARTIFACTS_DIR/
-          cp -r $BUILD_DIR/CLAP/Disflux.clap \
-                $ARTIFACTS_DIR/
-          cp -r $BUILD_DIR/VST3/Disflux.vst3 \
-                $ARTIFACTS_DIR/
 
           # Copy control file to Debian package directory
           cp $DEBIAN_CONTROL_FILE $DEBIAN_PACKAGE_DIR/DEBIAN
