@@ -16,6 +16,12 @@ on:
 defaults:
   run:
     shell: bash
+#===========================================================================================
+# Environment Variables
+
+env:
+  PROJECT_NAME: Disflux
+  VERSION: 0.1.0
 
 #===========================================================================================
 # Build Jobs
@@ -37,7 +43,9 @@ jobs:
           spectre: true
 
       - name: Set Up Windows
-        run: choco install ninja
+        run: |
+          choco install ninja
+          choco install innosetup
 
       - name: Select CMake Preset
         run: cmake --preset "Windows Release"
@@ -45,18 +53,28 @@ jobs:
       - name: Build
         run: cmake --build build --config "Release"
 
-      - name: Package Windows Artifacts
+      - name: Copy Artifacts
         run: |
           mkdir -p artifacts
-          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3 artifacts/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP artifacts/
+          cp -r build/src/${{PROJECT_NAME}}Plugin_artefacts/Release/VST3/{$PRODUCT_NAME}.vst3 artifacts/
+          cp -r build/src/${{PROJECT_NAME}}Plugin_artefacts/Release/CLAP/{$PRODUCT_NAME}.clap artifacts/
         shell: bash
 
-      - name: Upload Artifacts
+      - name: Create Installer
+        run: |
+          mkdir -p packaging
+
+          envsubst < pkg/windows/Setup.iss > packaging/Setup.iss
+          iscc packaging/Setup.iss
+
+          mv "${{PROJECT_NAME}}-Setup.exe" artifacts/${{PROJECT_NAME}}-Snapshot-Windows.exe
+        shell: bash
+
+      - name: Upload Installer
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts-windows
-          path: artifacts
+          name: windows-artifacts
+          path: packaging
 
   #=========================================================================================
   # macOS Build
@@ -294,21 +312,19 @@ jobs:
 
       - name: Package Artifacts
         run: |
+          mv windows-artifacts/* .
+
           # Move the Mac package to the root directory
           mv build-artifacts-macos/*.pkg ./disflux-snapshot-macos.pkg
 
           # Move the Arch package to the root directory
           mv build-artifacts-archlinux/disflux-snapshot-linux-arch.pkg.tar.zst .
 
-          # Move the Fedora package to the root directory
-          # mv build-artifacts-fedora/*.rpm .
-
           # Move the deb package to the root directory
           mv build-artifacts-ubuntu/disflux-snapshot-linux-ubuntu.deb .
 
           # Zip the artifacts
           zip -r disflux-snapshot-linux-vanilla.zip ./build-artifacts-ubuntu
-          zip -r disflux-snapshot-windows.zip ./build-artifacts-windows
         shell: bash
 
       - name: Create Release
@@ -324,8 +340,8 @@ jobs:
 
       - name: Upload Artifacts
         run: |
+          gh release upload "Snapshot" ${{PROJECT_NAME}}-Snapshot-Windows.exe --clobber
           gh release upload "Snapshot" disflux-snapshot-linux-arch.pkg.tar.zst --clobber
           gh release upload "Snapshot" disflux-snapshot-linux-ubuntu.deb --clobber
           gh release upload "Snapshot" disflux-snapshot-linux-vanilla.zip --clobber
           gh release upload "Snapshot" disflux-snapshot-macos.pkg --clobber
-          gh release upload "Snapshot" disflux-snapshot-windows.zip --clobber
