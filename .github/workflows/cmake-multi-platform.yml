@@ -73,7 +73,10 @@ jobs:
         uses: mozilla-actions/sccache-action@v0.0.7
 
       - name: Select CMake Preset
-        run: cmake --preset "Windows Release" -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+        run: |
+          cmake --preset "Windows Release" \
+            -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
 
       - name: Build
         run: cmake --build build --config "Release" --parallel 4
@@ -115,8 +118,15 @@ jobs:
       - name: Set Up Mac
         run: brew install ninja osxutils
 
+      - name: Cache the build
+        uses: mozilla-actions/sccache-action@v0.0.7
+
       - name: Select CMake Preset
-        run: cmake --preset "Mac Release" -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+        run: |
+          cmake --preset "Mac Release" \
+            -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
+            -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
 
       - name: Build
         run: cmake --build build --config "Release"
