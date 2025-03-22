@@ -212,7 +212,7 @@ jobs:
           xcrun notarytool submit "${{env.PROJECT_NAME}}.pkg" \
             --apple-id ${{secrets.NOTARIZATION_USERNAME}} \
             --password ${{secrets.NOTARIZATION_PASSWORD}} \
-            --team-id ${{secrets.TEAM_ID}} 
+            --team-id ${{secrets.TEAM_ID}} \
             --wait
 
           xcrun stapler staple "${{env.PROJECT_NAME}}.pkg"
