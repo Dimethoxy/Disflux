@@ -55,19 +55,21 @@ jobs:
 
       - name: Copy Artifacts
         run: |
+          BUILD_DIR="build/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release"
           mkdir -p artifacts
-          cp -r build/src/${{PROJECT_NAME}}Plugin_artefacts/Release/VST3/${{PROJECT_NAME}}.vst3 artifacts/
-          cp -r build/src/${{PROJECT_NAME}}Plugin_artefacts/Release/CLAP/${{PROJECT_NAME}}.clap artifacts/
+          cp -r $BUILD_DIR/VST3/${{env.PROJECT_NAME}}.vst3 artifacts/
+          cp -r $BUILD_DIR/CLAP/${{env.PROJECT_NAME}}.clap artifacts/
         shell: bash
 
       - name: Create Installer
         run: |
+          PACKAGE_NAME="${{PROJECT_NAME}}-Snapshot-Windows.exe"
           mkdir -p packaging
 
           envsubst < pkg/windows/Setup.iss > packaging/Setup.iss
           iscc packaging/Setup.iss
 
-          mv "${{PROJECT_NAME}}-Setup.exe" artifacts/${{PROJECT_NAME}}-Snapshot-Windows.exe
+          mv "${{env.PROJECT_NAME}}-Setup.exe" artifacts/$PACKAGE_NAME
         shell: bash
 
       - name: Upload Installer
@@ -340,7 +342,7 @@ jobs:
 
       - name: Upload Artifacts
         run: |
-          gh release upload "Snapshot" ${{PROJECT_NAME}}-Snapshot-Windows.exe --clobber
+          gh release upload "Snapshot" ${{env.PROJECT_NAME}}-Snapshot-Windows.exe --clobber
           gh release upload "Snapshot" disflux-snapshot-linux-arch.pkg.tar.zst --clobber
           gh release upload "Snapshot" disflux-snapshot-linux-ubuntu.deb --clobber
           gh release upload "Snapshot" disflux-snapshot-linux-vanilla.zip --clobber
