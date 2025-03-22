@@ -21,6 +21,7 @@ defaults:
 
 env:
   PROJECT_NAME: Disflux
+  BUNDLE_ID: com.dimethoxy.disflux
   VERSION: 0.1.0
 
 #===========================================================================================
@@ -53,7 +54,7 @@ jobs:
       - name: Build
         run: cmake --build build --config "Release"
 
-      - name: Copy Artifacts
+      - name: Copy Build Artifacts
         run: |
           BUILD_DIR="build/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release"
           mkdir -p artifacts
@@ -75,8 +76,8 @@ jobs:
       - name: Upload Installer
         uses: actions/upload-artifact@v4
         with:
-          name: windows-artifacts
-          path: packaging
+          name: artifacts-windows
+          path: artifacts
 
   #=========================================================================================
   # macOS Build
@@ -96,12 +97,13 @@ jobs:
       - name: Build
         run: cmake --build build --config "Release"
 
-      - name: Package macOS Artifacts
+      - name: Copy Build Artifacts
         run: |
+          BUILD_DIR="build/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release"
           mkdir -p artifacts
-          cp -r build/src/DisfluxPlugin_artefacts/Release/VST3 artifacts/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/CLAP artifacts/
-          cp -r build/src/DisfluxPlugin_artefacts/Release/AU artifacts/
+          cp -r $BUILD_DIR/VST3/${{env.PROJECT_NAME}}.vst3 artifacts/
+          cp -r $BUILD_DIR/CLAP/${{env.PROJECT_NAME}}.clap artifacts/
+          cp -r $BUILD_DIR/AU/${{env.PROJECT_NAME}}.component artifacts/
         shell: bash
 
       - name: Import Certificates
@@ -115,41 +117,78 @@ jobs:
 
       - name: Codesign (macOS)
         run: |
-          codesign --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" -v "artifacts/VST3/Disflux.vst3/Contents/MacOS/Disflux" --deep --strict --options=runtime --timestamp
-          codesign --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" -v "artifacts/CLAP/Disflux.clap/Contents/MacOS/Disflux" --deep --strict --options=runtime --timestamp
-          codesign --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" -v "artifacts/AU/Disflux.component/Contents/MacOS/Disflux" --deep --strict --options=runtime --timestamp
+          VST3_BIN="artifacts/{{env.PROJECT_NAME}}.vst3/Contents/MacOS/{{env.PROJECT_NAME}}"
+          CLAP_BIN="artifacts/{{env.PROJECT_NAME}}.clap/Contents/MacOS/{{env.PROJECT_NAME}}"
+          AU_BIN="artifacts/{{env.PROJECT_NAME}}.component/Contents/MacOS/{{env.PROJECT_NAME}"
+
+          codesign \
+            --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" \
+            -v "$VST3_BIN" 
+            --deep --strict --options=runtime --timestamp
+
+          codesign \
+            --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" \
+            -v "$CLAP_BIN" \ 
+            --deep --strict --options=runtime --timestamp
+
+          codesign \
+            --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" \
+            -v "$AU_BIN" \
+            --deep --strict --options=runtime --timestamp
+
+        shell: bash
 
       - name: Create Installer
         run: |
-          VERSION=0.1.0
-          AU_PATH="artifacts/AU/Disflux.component"
-          VST3_PATH="artifacts/VST3/Disflux.vst3"
-          CLAP_PATH="artifacts/CLAP/Disflux.clap"
-          PRODUCT_NAME="Disflux"
-          BUNDLE_ID="com.dimethoxy.disflux"
+          VST3_PATH="artifacts/Disflux.vst3"
+          CLAP_PATH="artifacts/Disflux.clap"
+          AU_PATH="artifacts/Disflux.component"
 
           mkdir -p packaging
-          export PRODUCT_NAME
           envsubst < pkg/mac/distribution.xml > packaging/distribution.xml
 
-          pkgbuild --identifier "${BUNDLE_ID}.au.pkg" --version "$VERSION" --component "$AU_PATH" --install-location "/Library/Audio/Plug-Ins/Components" "packaging/${PRODUCT_NAME}.au.pkg"
-          pkgbuild --identifier "${BUNDLE_ID}.vst3.pkg" --version "$VERSION" --component "$VST3_PATH" --install-location "/Library/Audio/Plug-Ins/VST3" "packaging/${PRODUCT_NAME}.vst3.pkg"
-          pkgbuild --identifier "${BUNDLE_ID}.clap.pkg" --version "$VERSION" --component "$CLAP_PATH" --install-location "/Library/Audio/Plug-Ins/CLAP" "packaging/${PRODUCT_NAME}.clap.pkg"
+          pkgbuild \
+            --identifier "${{ env.BUNDLE_ID }}.vst3.pkg" \
+            --version "$VERSION" \
+            --component "$VST3_PATH" \
+            --install-location "/Library/Audio/Plug-Ins/VST3" \
+            "packaging/${{ env.PROJECT_NAME }}.vst3.pkg"
+
+          pkgbuild \
+            --identifier "${{ env.BUNDLE_ID }}.clap.pkg" \
+            --version "$VERSION" \
+            --component "$CLAP_PATH" \
+            --install-location "/Library/Audio/Plug-Ins/CLAP" \
+            "packaging/${{ env.PROJECT_NAME }}.clap.pkg"
+
+          pkgbuild \
+            --identifier "${{ env.BUNDLE_ID }}.au.pkg" \
+            --version "$VERSION" \
+            --component "$AU_PATH" \
+            --install-location "/Library/Audio/Plug-Ins/Components" \
+            "packaging/${{ env.PROJECT_NAME }}.au.pkg"
 
           cd packaging
-          productbuild --resources ./resources --distribution distribution.xml --sign "${{ secrets.DEVELOPER_ID_INSTALLER }}" --timestamp "${PRODUCT_NAME}.pkg"
+          productbuild \
+            --resources ./resources \
+            --distribution distribution.xml \
+            --sign "${{ secrets.DEVELOPER_ID_INSTALLER }}" \
+            --timestamp "${{ PROJECT_NAME }}.pkg"
 
-          xcrun notarytool submit "${PRODUCT_NAME}.pkg" --apple-id ${{ secrets.NOTARIZATION_USERNAME }} --password ${{ secrets.NOTARIZATION_PASSWORD }} --team-id ${{ secrets.TEAM_ID }} --wait
-          xcrun stapler staple "${PRODUCT_NAME}.pkg"
+          xcrun notarytool submit "${{ PROJECT_NAME }}.pkg" \
+            --apple-id ${{ secrets.NOTARIZATION_USERNAME }} \
+            --password ${{ secrets.NOTARIZATION_PASSWORD }} \
+            --team-id ${{ secrets.TEAM_ID }} 
+            --wait
 
-          # Move the installer to the artifacts directory
-          mv "${PRODUCT_NAME}.pkg" ../artifacts/
+          xcrun stapler staple "${{ env.PROJECT_NAME }}.pkg"
+          mv "${{ env.PROJECT_NAME }}.pkg" ../artifacts/
         shell: bash
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts-macos
+          name: artifacts-macos
           path: artifacts
 
   #=========================================================================================
@@ -314,10 +353,8 @@ jobs:
 
       - name: Package Artifacts
         run: |
-          mv windows-artifacts/* .
-
-          # Move the Mac package to the root directory
-          mv build-artifacts-macos/*.pkg ./disflux-snapshot-macos.pkg
+          mv artifacts-windows/*.exe .
+          mv artifacts-macos/*.pkg .
 
           # Move the Arch package to the root directory
           mv build-artifacts-archlinux/disflux-snapshot-linux-arch.pkg.tar.zst .
