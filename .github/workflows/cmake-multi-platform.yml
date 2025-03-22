@@ -129,7 +129,7 @@ jobs:
             -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
 
       - name: Build
-        run: cmake --build build --config "Release"
+        run: cmake --build build --config "Release" --parallel 4
 
       - name: Copy Build Artifacts
         run: |
