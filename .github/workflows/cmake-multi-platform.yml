@@ -105,7 +105,7 @@ jobs:
           iscc packaging/Setup.iss
 
           # Move the installer to the artifacts directory
-          mv "${{env.PROJECT_NAME}}-Setup.exe" artifacts/${{env.WINDOWS-PACKAGE}}
+          mv packaging/"${{env.PROJECT_NAME}}-Setup.exe" artifacts/${{env.WINDOWS-PACKAGE}}
         shell: bash
 
       - name: Upload Artifacts
