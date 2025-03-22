@@ -404,6 +404,10 @@ jobs:
           # Move the package to the artifacts directory
           mkdir -p artifacts
           mv ${{env.PACKAGE_NAME}} artifacts/
+          ls -la
+          cd artifacts
+          ls -la
+        shell: bash
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -449,6 +453,7 @@ jobs:
 
       - name: Upload Artifacts
         run: |
+          ls -la
           gh release upload "Snapshot" ${{env.BUNDLE_NAME}}-snapshot-windows.exe --clobber
           gh release upload "Snapshot" ${{env.BUNDLE_NAME}}-snapshot-linux-arch.pkg.tar.zst --clobber
           gh release upload "Snapshot" ${{env.BUNDLE_NAME}}-snapshot-linux-ubuntu.deb --clobber
