@@ -63,7 +63,7 @@ jobs:
 
       - name: Create Installer
         run: |
-          PACKAGE_NAME="${{PROJECT_NAME}}-Snapshot-Windows.exe"
+          PACKAGE_NAME="${{env.PROJECT_NAME}}-Snapshot-Windows.exe"
           mkdir -p packaging
 
           envsubst < pkg/windows/Setup.iss > packaging/Setup.iss
