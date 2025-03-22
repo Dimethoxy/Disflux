@@ -125,7 +125,7 @@ jobs:
 
           codesign \
             --force -s "${{secrets.DEVELOPER_ID_APPLICATION}}" \
-            -v "$VST3_BIN" 
+            -v "$VST3_BIN" \
             --deep --strict --options=runtime --timestamp
 
           codesign \
