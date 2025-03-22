@@ -184,9 +184,9 @@ jobs:
       - name: Create Installer
         run: |
           # Set variables
-          VST3_PATH="artifacts/Disflux.vst3"
-          CLAP_PATH="artifacts/Disflux.clap"
-          AU_PATH="artifacts/Disflux.component"
+          VST3_PATH="artifacts/${{env.PROJECT_NAME}}.vst3"
+          CLAP_PATH="artifacts/${{env.PROJECT_NAME}}.clap"
+          AU_PATH="artifacts/${{env.PROJECT_NAME}}.component"
           PACKAGE_NAME="${{env.PROJECT_NAME}}-snapshot-macos.pkg"
 
           # Create the packaging directory
@@ -238,7 +238,7 @@ jobs:
           xcrun stapler staple "${{env.PROJECT_NAME}}.pkg"
 
           # Move the package to the artifacts directory
-          mv "${{env.PROJECT_NAME}}.pkg" ../artifacts/${{env.MAC_PACKAGE}}¨
+          mv ${{env.PROJECT_NAME}}.pkg ../artifacts/${{env.MAC_PACKAGE}}
         shell: bash
 
       - name: Upload Artifacts
@@ -311,6 +311,16 @@ jobs:
           VST3_INSTALL_DIR="/usr/lib/vst3/${{env.PROJECT_NAME}}"
           CLAP_INSTALL_DIR="/usr/lib/clap/${{env.PROJECT_NAME}}"
           LV2_INSTALL_DIR="/usr/lib/lv2/${{env.PROJECT_NAME}}"
+
+          # Create Vanilla package directory
+          mkdir -p vanilla
+          cp -r artifacts/${{env.PROJECT_NAME}}.vst3 vanilla/
+          cp -r artifacts/${{env.PROJECT_NAME}}.clap vanilla/
+          cp -r artifacts/${{env.PROJECT_NAME}}.lv2 vanilla/
+
+          # Zip and move the package to the artifacts directory
+          zip -r ${{env.LINUX_PACKAGE}} vanilla/*
+          mv ${{env.LINUX_PACKAGE}} artifacts/$LINUX_PACKAGE
 
           # Create Debian package directory
           mkdir -p $UBUNTU_PACKAGE_DIR/DEBIAN
@@ -421,15 +431,9 @@ jobs:
         run: |
           mv artifacts-windows/*.exe .
           mv artifacts-macos/*.pkg .
-
-          # Move the Arch package to the root directory
-          mv build-artifacts-archlinux/disflux-snapshot-linux-arch.pkg.tar.zst .
-
-          # Move the deb package to the root directory
-          mv build-artifacts-ubuntu/disflux-snapshot-linux-ubuntu.deb .
-
-          # Zip the artifacts
-          zip -r disflux-snapshot-linux-vanilla.zip ./build-artifacts-ubuntu
+          mv artifacts-ubuntu/*.deb .
+          mv artifacts-ubuntu/*.zip .
+          mv artifacts-archlinux/*.pkg.tar.zst .
         shell: bash
 
       - name: Create Release
