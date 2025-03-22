@@ -257,7 +257,7 @@ jobs:
         run: |
           echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release" >> $GITHUB_ENV
           echo "UBUNTU_PACKAGE=${{env.BUNDLE_NAME}}-snapshot-linux-ubuntu.deb" >> $GITHUB_ENV
-          echo "LINUX_PACKAGE=${env.BUNDLE_NAME}}-snapshot-linux-vanilla.zip" >> $GITHUB_ENV
+          echo "LINUX_PACKAGE=${{env.BUNDLE_NAME}}-snapshot-linux-vanilla.zip" >> $GITHUB_ENV
 
       - name: Checkout Code
         uses: actions/checkout@v4
