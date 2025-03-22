@@ -46,8 +46,6 @@ jobs:
 
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: Setup MSVC
         uses: TheMrMilchmann/setup-msvc-dev@v3
@@ -308,7 +306,6 @@ jobs:
       - name: Package Linux Artifacts
         run: |
           # Set variables
-          UBUNTU_PACKAGE_DIR="${{env.PROJECT_NAME}}-linux-ubuntu"
           UBUNTU_CONTROL_FILE="pkg/ubuntu/control"
           VST3_INSTALL_DIR="/usr/lib/vst3/${{env.PROJECT_NAME}}"
           CLAP_INSTALL_DIR="/usr/lib/clap/${{env.PROJECT_NAME}}"
@@ -335,7 +332,7 @@ jobs:
           dpkg-deb --build $UBUNTU_PACKAGE_DIR
 
           # Move the package to the artifacts directory
-          cp -r $UBUNTU_PACKAGE_DIR.deb artifacts/${{env.UBUNTU_PACKAGE}}
+          cp -r *.deb artifacts/${{env.UBUNTU_PACKAGE}}
         shell: bash
 
       - name: Upload Artifacts
