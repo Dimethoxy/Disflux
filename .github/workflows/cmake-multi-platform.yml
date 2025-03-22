@@ -173,9 +173,9 @@ jobs:
             --resources ./resources \
             --distribution distribution.xml \
             --sign "${{ secrets.DEVELOPER_ID_INSTALLER }}" \
-            --timestamp "${{ PROJECT_NAME }}.pkg"
+            --timestamp "${{ env.PROJECT_NAME }}.pkg"
 
-          xcrun notarytool submit "${{ PROJECT_NAME }}.pkg" \
+          xcrun notarytool submit "${{ env.PROJECT_NAME }}.pkg" \
             --apple-id ${{ secrets.NOTARIZATION_USERNAME }} \
             --password ${{ secrets.NOTARIZATION_PASSWORD }} \
             --team-id ${{ secrets.TEAM_ID }} 
