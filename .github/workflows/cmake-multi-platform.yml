@@ -123,7 +123,7 @@ jobs:
       - name: Export Variables
         run: |
           echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release" >> $GITHUB_ENV
-          echo "MAC_PACKAGE=${{BUNDLE_NAME}}-snapshot-macos.pkg" >> $GITHUB_ENV
+          echo "MAC_PACKAGE=${{env.BUNDLE_NAME}}-snapshot-macos.pkg" >> $GITHUB_ENV
 
       - name: Checkout Code
         uses: actions/checkout@v4
