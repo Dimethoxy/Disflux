@@ -167,7 +167,7 @@ jobs:
           AU_BIN="artifacts/${{env.PROJECT_NAME}}.component/Contents/MacOS/${{env.PROJECT_NAME}}"
 
           # Codesign the binaries
-          codesign \  
+          codesign \
             --force -s "${{secrets.DEVELOPER_ID_APPLICATION}}" \
             -v "$VST3_BIN" \
             --deep --strict --options=runtime --timestamp
