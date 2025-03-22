@@ -379,8 +379,8 @@ jobs:
 
       - name: Set permissions for the build directory
         run: |
-          sudo chown -R dimethoxy:dimethoxy /__w/Disflux/Disflux/pkg/arch/git
-          sudo chmod -R u+rw /__w/Disflux/Disflux/pkg/arch/git
+          sudo chown -R dimethoxy:dimethoxy /__w/${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}/pkg/arch/git
+          sudo chmod -R u+rw /__w/${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}/pkg/arch/git
 
       - name: Disable sudo password prompt
         run: |
@@ -399,16 +399,16 @@ jobs:
           mv pkg/arch/git/*.pkg.tar.zst .
 
           # Rename the package
-          mv *.pkg.tar.zst disflux-snapshot-linux-arch.pkg.tar.zst
+          mv *.pkg.tar.zst ${{env.PACKAGE_NAME}}
 
           # Move the package to the artifacts directory
           mkdir -p artifacts
-          mv disflux-snapshot-linux-arch.pkg.tar.zst artifacts/
+          mv ${{env.PACKAGE_NAME}} artifacts/
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts-archlinux
+          name: artifacts-archlinux
           path: artifacts
 
   #=========================================================================================
