@@ -48,11 +48,35 @@ jobs:
           choco install ninja
           choco install innosetup
 
+      - name: Cache IPP (Windows)
+        id: cache-ipp
+        uses: actions/cache@v4
+        with:
+          key: ipp-v6
+          path: C:\Program Files (x86)\Intel
+
+      - name: Install IPP (Windows)
+        if: steps.cache-ipp.outputs.cache-hit != 'true'
+        run: |
+          curl --output oneapi.exe https://registrationcenter-download.intel.com/akdlm/IRC_NAS/2e89fab4-e1c7-4f14-a1ef-6cddba8c5fa7/intel-ipp-2022.0.0.796_offline.exe
+          ./oneapi.exe -s -x -f oneapi
+          ./oneapi/bootstrapper.exe -s -c --action install --components=intel.oneapi.win.ipp.devel --eula=accept -p=NEED_VS2022_INTEGRATION=1 --log-dir=.
+
+      - name: Save IPP cache
+        if: steps.cache-ipp.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: C:\Program Files (x86)\Intel
+          key: ipp-v6
+
+      - name: Cache the build
+        uses: mozilla-actions/sccache-action@v0.0.7
+
       - name: Select CMake Preset
-        run: cmake --preset "Windows Release"
+        run: cmake --preset "Windows Release" -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
 
       - name: Build
-        run: cmake --build build --config "Release"
+        run: cmake --build build --config "Release" --parallel 4
 
       - name: Copy Build Artifacts
         run: |
