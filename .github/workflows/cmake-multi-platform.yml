@@ -21,7 +21,7 @@ defaults:
 
 env:
   PROJECT_NAME: Disflux
-  BUNDLE_ID: com.dimethoxy.disflux
+  BUNDLE_ID: com.Dimethoxy.Disflux
   VERSION: 0.1.0
 
 #===========================================================================================
@@ -104,8 +104,6 @@ jobs:
           cp -r $BUILD_DIR/VST3/${{env.PROJECT_NAME}}.vst3 artifacts/
           cp -r $BUILD_DIR/CLAP/${{env.PROJECT_NAME}}.clap artifacts/
           cp -r $BUILD_DIR/AU/${{env.PROJECT_NAME}}.component artifacts/
-          cd artifacts 
-          ls -la
         shell: bash
 
       - name: Import Certificates
@@ -130,7 +128,7 @@ jobs:
 
           codesign \
             --force -s "${{secrets.DEVELOPER_ID_APPLICATION}}" \
-            -v "$CLAP_BIN" \ 
+            -v "$CLAP_BIN" \
             --deep --strict --options=runtime --timestamp
 
           codesign \
