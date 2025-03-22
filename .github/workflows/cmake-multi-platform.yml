@@ -104,6 +104,8 @@ jobs:
           cp -r $BUILD_DIR/VST3/${{env.PROJECT_NAME}}.vst3 artifacts/
           cp -r $BUILD_DIR/CLAP/${{env.PROJECT_NAME}}.clap artifacts/
           cp -r $BUILD_DIR/AU/${{env.PROJECT_NAME}}.component artifacts/
+          cd artifacts 
+          ls -la
         shell: bash
 
       - name: Import Certificates
@@ -152,37 +154,37 @@ jobs:
             --version "$VERSION" \
             --component "$VST3_PATH" \
             --install-location "/Library/Audio/Plug-Ins/VST3" \
-            "packaging/${{ env.PROJECT_NAME }}.vst3.pkg"
+            "packaging/${{env.PROJECT_NAME}}.vst3.pkg"
 
           pkgbuild \
             --identifier "${{ env.BUNDLE_ID }}.clap.pkg" \
             --version "$VERSION" \
             --component "$CLAP_PATH" \
             --install-location "/Library/Audio/Plug-Ins/CLAP" \
-            "packaging/${{ env.PROJECT_NAME }}.clap.pkg"
+            "packaging/${{env.PROJECT_NAME}}.clap.pkg"
 
           pkgbuild \
             --identifier "${{ env.BUNDLE_ID }}.au.pkg" \
             --version "$VERSION" \
             --component "$AU_PATH" \
             --install-location "/Library/Audio/Plug-Ins/Components" \
-            "packaging/${{ env.PROJECT_NAME }}.au.pkg"
+            "packaging/${{env.PROJECT_NAME}}.au.pkg"
 
           cd packaging
           productbuild \
             --resources ./resources \
             --distribution distribution.xml \
             --sign "${{ secrets.DEVELOPER_ID_INSTALLER }}" \
-            --timestamp "${{ env.PROJECT_NAME }}.pkg"
+            --timestamp "${{env.PROJECT_NAME}}.pkg"
 
-          xcrun notarytool submit "${{ env.PROJECT_NAME }}.pkg" \
+          xcrun notarytool submit "${{env.PROJECT_NAME}}.pkg" \
             --apple-id ${{ secrets.NOTARIZATION_USERNAME }} \
             --password ${{ secrets.NOTARIZATION_PASSWORD }} \
             --team-id ${{ secrets.TEAM_ID }} 
             --wait
 
-          xcrun stapler staple "${{ env.PROJECT_NAME }}.pkg"
-          mv "${{ env.PROJECT_NAME }}.pkg" ../artifacts/
+          xcrun stapler staple "${{env.PROJECT_NAME}}.pkg"
+          mv "${{env.PROJECT_NAME}}.pkg" ../artifacts/
         shell: bash
 
       - name: Upload Artifacts
