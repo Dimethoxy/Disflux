@@ -73,7 +73,7 @@ jobs:
           mv "${{env.PROJECT_NAME}}-Setup.exe" artifacts/$PACKAGE_NAME
         shell: bash
 
-      - name: Upload Installer
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: artifacts-windows
@@ -121,7 +121,7 @@ jobs:
         run: |
           VST3_BIN="artifacts/${{env.PROJECT_NAME}}.vst3/Contents/MacOS/${{env.PROJECT_NAME}}"
           CLAP_BIN="artifacts/${{env.PROJECT_NAME}}.clap/Contents/MacOS/${{env.PROJECT_NAME}}"
-          AU_BIN="artifacts/${{env.PROJECT_NAME}}.component/Contents/MacOS/${{env.PROJECT_NAME}"
+          AU_BIN="artifacts/${{env.PROJECT_NAME}}.component/Contents/MacOS/${{env.PROJECT_NAME}}"
 
           codesign \
             --force -s "${{secrets.DEVELOPER_ID_APPLICATION}}" \
