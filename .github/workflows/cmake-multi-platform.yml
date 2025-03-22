@@ -131,6 +131,7 @@ jobs:
       - name: Select CMake Preset
         run: |
           cmake --preset "Mac Release" \
+            -B ${{ env.BUILD_DIR }} \
             -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
             -DCMAKE_C_COMPILER_LAUNCHER=sccache \
             -DCMAKE_CXX_COMPILER_LAUNCHER=sccache .
@@ -268,7 +269,11 @@ jobs:
         uses: mozilla-actions/sccache-action@v0.0.7
 
       - name: Select CMake Preset
-        run: cmake --preset "Linux Release"
+        run: |
+          cmake --preset "Linux Release" \
+            -B ${{ env.BUILD_DIR }} \
+            -DCMAKE_C_COMPILER_LAUNCHER=sccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=sccache .
 
       - name: Build
         run: cmake --build build --config "Release"
