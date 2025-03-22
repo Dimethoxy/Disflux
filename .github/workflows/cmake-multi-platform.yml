@@ -41,8 +41,8 @@ jobs:
     steps:
       - name: Export Variables
         run: |
-          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${PROJECT_NAME}Plugin_artefacts/Release" >> $GITHUB_ENV
-          echo "WINDOWS-PACKAGE=${PROJECT_NAME}-snapshot-windows.exe" >> $GITHUB_ENV
+          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release" >> $GITHUB_ENV
+          echo "WINDOWS-PACKAGE=${{env.BUNDLE_NAME}}-snapshot-windows.exe" >> $GITHUB_ENV
 
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -122,8 +122,8 @@ jobs:
     steps:
       - name: Export Variables
         run: |
-          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${PROJECT_NAME}Plugin_artefacts/Release" >> $GITHUB_ENV
-          echo "MAC_PACKAGE=${PROJECT_NAME}-snapshot-macos.pkg" >> $GITHUB_ENV
+          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release" >> $GITHUB_ENV
+          echo "MAC_PACKAGE=${{BUNDLE_NAME}}-snapshot-macos.pkg" >> $GITHUB_ENV
 
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -255,9 +255,9 @@ jobs:
     steps:
       - name: Export Variables
         run: |
-          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${PROJECT_NAME}Plugin_artefacts/Release" >> $GITHUB_ENV
-          echo "UBUNTU_PACKAGE=${PROJECT_NAME}-snapshot-linux-ubuntu.deb" >> $GITHUB_ENV
-          echo "LINUX_PACKAGE=${PROJECT_NAME}-snapshot-linux-vanilla.zip" >> $GITHUB_ENV
+          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release" >> $GITHUB_ENV
+          echo "UBUNTU_PACKAGE=${{env.BUNDLE_NAME}}-snapshot-linux-ubuntu.deb" >> $GITHUB_ENV
+          echo "LINUX_PACKAGE=${env.BUNDLE_NAME}}-snapshot-linux-vanilla.zip" >> $GITHUB_ENV
 
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -306,6 +306,7 @@ jobs:
       - name: Package Linux Artifacts
         run: |
           # Set variables
+          UBUNTU_PACKAGE_DIR="${{env.BUNDLE_NAME}}-snapshot-linux-ubuntu"
           UBUNTU_CONTROL_FILE="pkg/ubuntu/control"
           VST3_INSTALL_DIR="/usr/lib/vst3/${{env.PROJECT_NAME}}"
           CLAP_INSTALL_DIR="/usr/lib/clap/${{env.PROJECT_NAME}}"
@@ -338,7 +339,7 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts-ubuntu
+          name: artifacts-ubuntu
           path: artifacts
 
   #=========================================================================================
@@ -351,8 +352,8 @@ jobs:
     steps:
       - name: Export Variables
         run: |
-          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${PROJECT_NAME}Plugin_artefacts/Release" >> $GITHUB_ENV
-          echo "PACKAGE_NAME=${PROJECT_NAME}-snapshot-linux-arch.pkg.tar.zst" >> $GITHUB_ENV
+          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release" >> $GITHUB_ENV
+          echo "PACKAGE_NAME=${{env.PROJECT_NAME}}-snapshot-linux-arch.pkg.tar.zst" >> $GITHUB_ENV
 
       - name: Install Base Packages
         run: |
@@ -444,8 +445,8 @@ jobs:
 
       - name: Upload Artifacts
         run: |
-          gh release upload "Snapshot" ${{env.PROJECT_NAME}}-Snapshot-Windows.exe --clobber
-          gh release upload "Snapshot" disflux-snapshot-linux-arch.pkg.tar.zst --clobber
-          gh release upload "Snapshot" disflux-snapshot-linux-ubuntu.deb --clobber
-          gh release upload "Snapshot" disflux-snapshot-linux-vanilla.zip --clobber
-          gh release upload "Snapshot" disflux-snapshot-macos.pkg --clobber
+          gh release upload "Snapshot" ${{env.BUNDLE_NAME}}-snapshot-windows.exe --clobber
+          gh release upload "Snapshot" ${{env.BUNDLE_NAME}}-snapshot-linux-arch.pkg.tar.zst --clobber
+          gh release upload "Snapshot" ${{env.BUNDLE_NAME}}-snapshot-linux-ubuntu.deb --clobber
+          gh release upload "Snapshot" ${{env.BUNDLE_NAME}}-snapshot-linux-vanilla.zip --clobber
+          gh release upload "Snapshot" ${{env.BUNDLE_NAME}}-snapshot-macos.pkg --clobber
