@@ -119,22 +119,22 @@ jobs:
 
       - name: Codesign (macOS)
         run: |
-          VST3_BIN="artifacts/{{env.PROJECT_NAME}}.vst3/Contents/MacOS/{{env.PROJECT_NAME}}"
-          CLAP_BIN="artifacts/{{env.PROJECT_NAME}}.clap/Contents/MacOS/{{env.PROJECT_NAME}}"
-          AU_BIN="artifacts/{{env.PROJECT_NAME}}.component/Contents/MacOS/{{env.PROJECT_NAME}"
+          VST3_BIN="artifacts/${{env.PROJECT_NAME}}.vst3/Contents/MacOS/${{env.PROJECT_NAME}}"
+          CLAP_BIN="artifacts/${{env.PROJECT_NAME}}.clap/Contents/MacOS/${{env.PROJECT_NAME}}"
+          AU_BIN="artifacts/${{env.PROJECT_NAME}}.component/Contents/MacOS/${{env.PROJECT_NAME}"
 
           codesign \
-            --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" \
+            --force -s "${{secrets.DEVELOPER_ID_APPLICATION}}" \
             -v "$VST3_BIN" 
             --deep --strict --options=runtime --timestamp
 
           codesign \
-            --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" \
+            --force -s "${{secrets.DEVELOPER_ID_APPLICATION}}" \
             -v "$CLAP_BIN" \ 
             --deep --strict --options=runtime --timestamp
 
           codesign \
-            --force -s "${{ secrets.DEVELOPER_ID_APPLICATION}}" \
+            --force -s "${{secrets.DEVELOPER_ID_APPLICATION}}" \
             -v "$AU_BIN" \
             --deep --strict --options=runtime --timestamp
 
@@ -150,21 +150,21 @@ jobs:
           envsubst < pkg/mac/distribution.xml > packaging/distribution.xml
 
           pkgbuild \
-            --identifier "${{ env.BUNDLE_ID }}.vst3.pkg" \
+            --identifier "${{env.BUNDLE_ID}}.vst3.pkg" \
             --version "$VERSION" \
             --component "$VST3_PATH" \
             --install-location "/Library/Audio/Plug-Ins/VST3" \
             "packaging/${{env.PROJECT_NAME}}.vst3.pkg"
 
           pkgbuild \
-            --identifier "${{ env.BUNDLE_ID }}.clap.pkg" \
+            --identifier "${{env.BUNDLE_ID}}.clap.pkg" \
             --version "$VERSION" \
             --component "$CLAP_PATH" \
             --install-location "/Library/Audio/Plug-Ins/CLAP" \
             "packaging/${{env.PROJECT_NAME}}.clap.pkg"
 
           pkgbuild \
-            --identifier "${{ env.BUNDLE_ID }}.au.pkg" \
+            --identifier "${{env.BUNDLE_ID}}.au.pkg" \
             --version "$VERSION" \
             --component "$AU_PATH" \
             --install-location "/Library/Audio/Plug-Ins/Components" \
@@ -174,13 +174,13 @@ jobs:
           productbuild \
             --resources ./resources \
             --distribution distribution.xml \
-            --sign "${{ secrets.DEVELOPER_ID_INSTALLER }}" \
+            --sign "${{secrets.DEVELOPER_ID_INSTALLER}}" \
             --timestamp "${{env.PROJECT_NAME}}.pkg"
 
           xcrun notarytool submit "${{env.PROJECT_NAME}}.pkg" \
-            --apple-id ${{ secrets.NOTARIZATION_USERNAME }} \
-            --password ${{ secrets.NOTARIZATION_PASSWORD }} \
-            --team-id ${{ secrets.TEAM_ID }} 
+            --apple-id ${{secrets.NOTARIZATION_USERNAME}} \
+            --password ${{secrets.NOTARIZATION_PASSWORD}} \
+            --team-id ${{secrets.TEAM_ID}} 
             --wait
 
           xcrun stapler staple "${{env.PROJECT_NAME}}.pkg"
