@@ -75,17 +75,9 @@ jobs:
           path: C:\Program Files (x86)\Intel
           key: ipp-v6
 
-      - name: Cache the build
-        uses: mozilla-actions/sccache-action@v0.0.7
-
       - name: Select CMake Preset
         run: |
-          cmake --preset "Windows Release" \
-            -B ${{ env.BUILD_DIR }} \
-            -DCMAKE_CXX_FLAGS="/FS" \
-            -DCMAKE_C_FLAGS="/FS" \
-            -DCMAKE_C_COMPILER_LAUNCHER=sccache \
-            -DCMAKE_CXX_COMPILER_LAUNCHER=sccache .
+          cmake --preset "Windows Release"
 
       - name: Build
         run: cmake --build build --config "Release"
@@ -127,16 +119,10 @@ jobs:
       - name: Set Up Mac
         run: brew install ninja osxutils
 
-      - name: Cache the build
-        uses: mozilla-actions/sccache-action@v0.0.7
-
       - name: Select CMake Preset
         run: |
           cmake --preset "Mac Release" \
-            -B ${{ env.BUILD_DIR }} \
-            -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
-            -DCMAKE_C_COMPILER_LAUNCHER=sccache \
-            -DCMAKE_CXX_COMPILER_LAUNCHER=sccache .
+            -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
 
       - name: Build
         run: cmake --build build --config "Release"
@@ -267,15 +253,9 @@ jobs:
           sudo /usr/bin/Xvfb $DISPLAY &
         shell: bash
 
-      - name: Cache the build
-        uses: mozilla-actions/sccache-action@v0.0.7
-
       - name: Select CMake Preset
         run: |
-          cmake --preset "Linux Release" \
-            -B ${{ env.BUILD_DIR }} \
-            -DCMAKE_C_COMPILER_LAUNCHER=sccache \
-            -DCMAKE_CXX_COMPILER_LAUNCHER=sccache .
+          cmake --preset "Linux Release"
 
       - name: Build
         run: cmake --build build --config "Release"
