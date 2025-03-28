@@ -44,6 +44,7 @@ public:
 
   //==============================================================================
   juce::AudioProcessorValueTreeState apvts;
+  dmt::dsp::data::FifoAudioBuffer<float> oscilloscopeBuffer;
 
   //==============================================================================
   dmt::dsp::effect::DisfluxProcessor disfluxProcessor;

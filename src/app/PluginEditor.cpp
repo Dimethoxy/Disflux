@@ -5,7 +5,7 @@
 PluginEditor::PluginEditor(PluginProcessor& p)
   : AudioProcessorEditor(&p)
   , p(p)
-  , disfluxPanel(p.apvts)
+  , disfluxPanel(p.apvts, p.oscilloscopeBuffer)
   , compositor("DisFlux", disfluxPanel)
 {
   if (OS_IS_WINDOWS) {

@@ -14,6 +14,7 @@ PluginProcessor::PluginProcessor()
         )
   , apvts(*this, nullptr, ProjectInfo::projectName, createParameterLayout())
   , disfluxProcessor(apvts)
+  , oscilloscopeBuffer(2, 4096)
 {
 #if PERFETTO
   MelatoninPerfetto::get().beginSession();
