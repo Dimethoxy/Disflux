@@ -167,12 +167,9 @@ PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     buffer.clear(i, 0, buffer.getNumSamples());
 
   //============================================================================
-  disfluxProcessor.processBlock(buffer);
-
-  //============================================================================
-  oscilloscopeBuffer.addToFifo(buffer);
-
   TRACE_DSP();
+  disfluxProcessor.processBlock(buffer);
+  oscilloscopeBuffer.addToFifo(buffer);
 }
 
 //==============================================================================
