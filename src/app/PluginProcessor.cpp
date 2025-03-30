@@ -13,14 +13,13 @@ PluginProcessor::PluginProcessor()
 #endif
         )
   , apvts(*this, nullptr, ProjectInfo::projectName, createParameterLayout())
-  , disfluxProcessor(apvts)
   , oscilloscopeBuffer(2, 4096)
+  , disfluxProcessor(apvts)
 {
 #if PERFETTO
   MelatoninPerfetto::get().beginSession();
 #endif
-  // auto properties = dmt::configuration::Properties::getInstance();
-  // properties->initialize(ProjectInfo::projectName);
+  properties.initialize();
 }
 
 PluginProcessor::~PluginProcessor()

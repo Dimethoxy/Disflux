@@ -47,7 +47,7 @@ PluginEditor::paint(juce::Graphics& g)
   TRACER("PluginEditor::paint");
 
   // Just painting the background
-  g.fillAll(dmt::Settings::Window::backroundColour);
+  g.fillAll(dmt::Settings::Window::backgroundColour);
 }
 
 //==============================================================================
