@@ -23,19 +23,24 @@ PluginEditor::PluginEditor(PluginProcessor& p)
     // setResizable(true, true);
   }
 
-  if (auto* constrainer = getConstrainer()) {
-    const auto aspectRatio = (double)baseWidth / (double)baseHeight;
-    constrainer->setFixedAspectRatio(aspectRatio);
-    const auto minWidth = baseWidth / 2;
-    const auto minHeight = baseHeight / 2;
-    const auto maxWidth = baseWidth * 4;
-    const auto maxHeight = baseHeight * 4;
-    constrainer->setSizeLimits(minWidth, minHeight, maxWidth, maxHeight);
-  }
-
+  setConstraints(baseWidth, baseHeight + headerHeight);
   addAndMakeVisible(compositor);
   setResizable(true, true);
   setSize(baseWidth, baseHeight);
+
+  // Set the callback for header visibility changes
+  compositor.setHeaderVisibilityCallback([this](bool isHeaderVisible) {
+    handleHeaderVisibilityChange(isHeaderVisible);
+  });
+}
+
+void
+PluginEditor::handleHeaderVisibilityChange(bool isHeaderVisible)
+{
+  const int adjustedHeight =
+    isHeaderVisible ? baseHeight + headerHeight : baseHeight;
+  setConstraints(baseWidth, adjustedHeight);
+  setSize(baseWidth, adjustedHeight);
 }
 //==============================================================================
 PluginEditor::~PluginEditor() {}
@@ -52,12 +57,32 @@ PluginEditor::paint(juce::Graphics& g)
 
 //==============================================================================
 void
+PluginEditor::setConstraints(int width, int height)
+{
+  if (auto* constrainer = this->getConstrainer()) {
+    const auto aspectRatio = (double)width / (double)height;
+    constrainer->setFixedAspectRatio(aspectRatio);
+    const auto minWidth = width / 2;
+    const auto minHeight = height / 2;
+    const auto maxWidth = width * 4;
+    const auto maxHeight = height * 4;
+    constrainer->setSizeLimits(minWidth, minHeight, maxWidth, maxHeight);
+  } else {
+    jassertfalse; // Constrainer not set
+  }
+}
+
+//==============================================================================
+void
 PluginEditor::resized()
 {
   TRACER("PluginEditor::resized");
 
   // Set the global size
-  float newSize = (float)getHeight() / (float)baseHeight;
+  const int currentHeight = getHeight();
+  const float newSize =
+    (float)currentHeight /
+    (compositor.isHeaderVisible() ? baseHeight + headerHeight : baseHeight);
 
   // Make sure the size makes sense
   if (newSize <= 0.0f || std::isinf(newSize)) {

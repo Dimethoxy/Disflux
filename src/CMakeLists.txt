@@ -45,22 +45,22 @@ target_include_directories(${PROJECT_NAME}
 # Add fonts and icons as binary data so they can be used in the app
 juce_add_binary_data(FontBinaryData
     SOURCES
-   ${CMAKE_SOURCE_DIR}/fonts/poppins/Poppins-Thin.ttf
-   ${CMAKE_SOURCE_DIR}/fonts/poppins/Poppins-ExtraLight.ttf
-   ${CMAKE_SOURCE_DIR}/fonts/poppins/Poppins-Light.ttf
-   ${CMAKE_SOURCE_DIR}/fonts/poppins/Poppins-Regular.ttf
-   ${CMAKE_SOURCE_DIR}/fonts/poppins/Poppins-Medium.ttf
-   ${CMAKE_SOURCE_DIR}/fonts/poppins/Poppins-SemiBold.ttf
-   ${CMAKE_SOURCE_DIR}/fonts/poppins/Poppins-Bold.ttf
-   ${CMAKE_SOURCE_DIR}/fonts/poppins/Poppins-ExtraBold.ttf
-   ${CMAKE_SOURCE_DIR}/fonts/poppins/Poppins-Black.ttf
-   ${CMAKE_SOURCE_DIR}/fonts/sedgwick_ave_display/SedgwickAveDisplay-Regular.ttf
-   ${CMAKE_SOURCE_DIR}/icons/speed.svg
-   ${CMAKE_SOURCE_DIR}/icons/back.svg
-   ${CMAKE_SOURCE_DIR}/icons/height.svg
-   ${CMAKE_SOURCE_DIR}/icons/thickness.svg
-   ${CMAKE_SOURCE_DIR}/icons/gear.svg
-   ${CMAKE_SOURCE_DIR}/icons/angles_up.svg
+    ${CMAKE_SOURCE_DIR}/fonts/poppins/Poppins-Thin.ttf
+    ${CMAKE_SOURCE_DIR}/fonts/poppins/Poppins-ExtraLight.ttf
+    ${CMAKE_SOURCE_DIR}/fonts/poppins/Poppins-Light.ttf
+    ${CMAKE_SOURCE_DIR}/fonts/poppins/Poppins-Regular.ttf
+    ${CMAKE_SOURCE_DIR}/fonts/poppins/Poppins-Medium.ttf
+    ${CMAKE_SOURCE_DIR}/fonts/poppins/Poppins-SemiBold.ttf
+    ${CMAKE_SOURCE_DIR}/fonts/poppins/Poppins-Bold.ttf
+    ${CMAKE_SOURCE_DIR}/fonts/poppins/Poppins-ExtraBold.ttf
+    ${CMAKE_SOURCE_DIR}/fonts/poppins/Poppins-Black.ttf
+    ${CMAKE_SOURCE_DIR}/fonts/sedgwick_ave_display/SedgwickAveDisplay-Regular.ttf
+    ${CMAKE_SOURCE_DIR}/icons/speed.svg
+    ${CMAKE_SOURCE_DIR}/icons/back.svg
+    ${CMAKE_SOURCE_DIR}/icons/height.svg
+    ${CMAKE_SOURCE_DIR}/icons/thickness.svg
+    ${CMAKE_SOURCE_DIR}/icons/gear.svg
+    ${CMAKE_SOURCE_DIR}/icons/angles_up.svg
 )
 
 # Link the libraries

@@ -4,7 +4,7 @@
 #include <DmtHeader.h>
 
 //==============================================================================
-class PluginEditor final : public juce::AudioProcessorEditor
+class PluginEditor : public juce::AudioProcessorEditor
 {
   using Image = juce::Image;
   using ImageComponent = juce::ImageComponent;
@@ -14,7 +14,10 @@ class PluginEditor final : public juce::AudioProcessorEditor
   // Window size
   float& size = dmt::Settings::Window::size;
   const int baseWidth = 500;
-  const int baseHeight = 310;
+  const int baseHeight = 270;
+
+  // Window header
+  const int& headerHeight = dmt::Settings::Header::height;
 
 public:
   explicit PluginEditor(PluginProcessor&);
@@ -23,6 +26,8 @@ public:
   //==============================================================================
   void paint(juce::Graphics&) override;
   void resized() override;
+  void setConstraints(int width, int height);
+  void handleHeaderVisibilityChange(bool isHeaderVisible);
 
 private:
   //==============================================================================
