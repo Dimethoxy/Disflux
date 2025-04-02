@@ -8,6 +8,11 @@ Disflux is a wild audio effect plugin that takes your transients and smears them
 
 Using a chain of all-pass filters, Disflux spreads those high-energy transients through time, giving you that laser-like effect. Think of it as a cross between a short reverb and a falling sine wave. It injects depth and impact into your punch. Outside of kicks, it’s also perfect for crafting experimental soundscapes and other weird, next-level audio magic.
 
+<div align="center">
+  <img src="https://raw.githubusercontent.com/Dimethoxy/Disflux/refs/heads/main/PREVIEW.webp" alt="Image of the GUI" style="width: 50%;">
+</div>
+
+
 ## 🔥 Features
 
 - **Free & Open-Source** – No paywalls, no restrictions
