@@ -61,6 +61,7 @@ juce_add_binary_data(FontBinaryData
     ${CMAKE_SOURCE_DIR}/icons/thickness.svg
     ${CMAKE_SOURCE_DIR}/icons/gear.svg
     ${CMAKE_SOURCE_DIR}/icons/angles_up.svg
+    ${CMAKE_SOURCE_DIR}/icons/bypass.svg
 )
 
 # Link the libraries
