@@ -29,7 +29,7 @@ Using a chain of all-pass filters, Disflux spreads those high-energy transients 
 ## 🚧 Work in Progress
 
 Disflux is currently unfinished and we're actively working on developing the following features before a first release:
-
+   
 - **Preset Menu** – Add functionality to select and save presets
 - **Settings & Customization** – We need to build an editor to configure the theme and settings live
 - **Performance** – While performance is already solid, we’re working to optimize it even further by removing unneeded draw calls
