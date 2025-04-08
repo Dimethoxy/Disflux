@@ -6,7 +6,7 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   : AudioProcessorEditor(&p)
   , p(p)
   , disfluxPanel(p.apvts, p.oscilloscopeBuffer)
-  , compositor("DisFlux", disfluxPanel)
+  , compositor("DisFlux", disfluxPanel, p.apvts)
 {
   if (OS_IS_WINDOWS) {
     setResizable(true, true);

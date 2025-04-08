@@ -167,7 +167,12 @@ PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
 
   //============================================================================
   TRACE_DSP();
-  disfluxProcessor.processBlock(buffer);
+  const auto* bypassParam = apvts.getRawParameterValue("GlobalBypass");
+  bool isBypassed = bypassParam->load() > 0.5f;
+
+  if (!isBypassed) {
+    disfluxProcessor.processBlock(buffer);
+  }
   oscilloscopeBuffer.addToFifo(buffer);
 }
 
