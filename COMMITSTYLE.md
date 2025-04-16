@@ -12,8 +12,6 @@ Use the following **types**:
 - `revert`: Reverts a previous commit  
 - `release`: Release-related changes, such as version bumps or changelog updates  
 - `security`: Security-related fixes or updates  
-- `ui`: UI-related changes or improvements (e.g., layout, buttons, visuals)  
-- `behavior`: Changes that modify the behavior of an existing feature  
 
 Use a relevant **scope** based on the folder or subsystem involved:
 - `app`: General things for the app
