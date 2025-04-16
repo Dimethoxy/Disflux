@@ -40,7 +40,7 @@ PluginEditor::handleHeaderVisibilityChange(bool isHeaderVisible)
   const int adjustedHeight =
     isHeaderVisible ? baseHeight + headerHeight : baseHeight;
   setConstraints(baseWidth, adjustedHeight);
-  setSize(baseWidth, adjustedHeight);
+  setSize(baseWidth * size, adjustedHeight * size);
 }
 //==============================================================================
 PluginEditor::~PluginEditor() {}
