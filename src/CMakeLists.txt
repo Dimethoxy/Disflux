@@ -10,6 +10,9 @@ if (APPLE)
     set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
 endif()
 
+# Option to disable update notification (default OFF)
+option(DMT_DISABLE_UPDATE_NOTIFICATION "Disable update notification in the GUI" OFF)
+
 # JUCE setup
 juce_add_plugin(${PROJECT_NAME}
     PRODUCT_NAME "Disflux"
@@ -110,7 +113,9 @@ target_compile_definitions(${PROJECT_NAME}
         JUCE_WEB_BROWSER=0
         JUCE_VST3_CAN_REPLACE_VST2=0
         JUCE_DISPLAY_SPLASH_SCREEN=0
-        REPORT_JUCE_APP_USAGE=0)
+        REPORT_JUCE_APP_USAGE=0
+        $<$<BOOL:${DMT_DISABLE_UPDATE_NOTIFICATION}>:DMT_DISABLE_UPDATE_NOTIFICATION>
+)
 
 # Generate JUCE header file
 juce_generate_juce_header(${PROJECT_NAME})

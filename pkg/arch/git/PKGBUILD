@@ -38,7 +38,7 @@ build() {
   mkdir -p build
   cd build
   # Configure using the CMake preset defined in your project.
-  cmake --preset "Linux Release" ..
+  cmake --preset "Linux Release" -DDMT_DISABLE_UPDATE_NOTIFICATION=ON ..
   # Build using the Release configuration.
   cmake --build . --config "Release"
 }
