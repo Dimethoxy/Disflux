@@ -52,11 +52,11 @@ The source code is licensed under the **GPLv3**. If you download the source or c
 
 ## 🔐 Privacy
 
-**Disflux** is built with privacy in mind. It **does not collect any personal data** or send any telemetry. We are committed to **never sharing or selling your data**. However, some features that require networking may affect your privacy. We want to be transparent about these and explain how they work.
+**Disflux** is built with privacy in mind. It **does not collect any personal data** or send any telemetry. We are committed to **never sharing or selling your data**.
 
 ### Update Checking
 
-On certain systems, **Disflux** may attempt to connect to the internet to check for updates. This process is entirely anonymous, and **no personal information is sent** during the check.
+On certain systems, **Disflux** includes a lightweight, anonymous update notification system. This system checks if a new version is available by sending a simple GET request to our server for the latest version string. The check is performed locally, with no personal data being sent or stored.
 
 ### Disabling Update Notifications
 
