@@ -1,0 +1,45 @@
+name: 🚀 Feature Request
+description: Submit a feature request for the plugin
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature!  
+        Please try to fill out all relevant fields below — the more detail you give, the easier it is for us to evaluate and possibly implement your idea.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature Description
+      description: What would you like to see added or changed? Be as specific as possible.
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Why is this feature important?
+      description: How would this feature improve your workflow or the plugin experience? What problem does it solve?
+
+  - type: textarea
+    id: visuals
+    attributes:
+      label: Screenshots / Videos (optional)
+      description: Got a mockup, diagram, or visual reference? Drop it here if it helps explain your idea.
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Anything else you’d like to add? Related plugins, UX notes, prior discussions, etc.
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this feature request, you agree to follow our [Code of Conduct](https://berlincodeofconduct.org/)
+      options:
+        - label: I agree to follow the Code of Conduct
+          required: true
