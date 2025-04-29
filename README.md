@@ -52,7 +52,7 @@ The source code is licensed under the **GPLv3**. If you download the source or c
 
 ## 🔐 Privacy
 
-**Disflux** is built with privacy in mind. It **does not collect any personal data** or send any telemetry. We are committed to **never sharing or selling your data**.
+**Disflux** is built with privacy in mind. It **does not collect any personal data** or send any telemetry. We are committed to **never sharing or selling your data**. It makes us sad that in today's day and age, we consider this to be a standout point, but here we are.
 
 ### Update Checking
 
