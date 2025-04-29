@@ -50,6 +50,69 @@ We are dedicated to providing high-quality audio tools to the community for free
 
 The source code is licensed under the **GPLv3**. If you download the source or create builds, you must comply with that license. For more information, visit [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).
 
+## 🛠️ Compiling
+
+If you want to compile Plasma from source yourself, follow these steps:
+
+### 1. Prerequisites
+
+**Ubuntu**
+- Install build tools: `sudo apt-get install build-essential cmake ninja-build`
+- Install dependencies: `sudo apt install libasound2-dev libjack-jackd2-dev ladspa-sdk libcurl4-openssl-dev libfreetype-dev libfontconfig1-dev libx11-dev libxcomposite-dev libxcursor-dev libxext-dev libxinerama-dev libxrandr-dev libxrender-dev libwebkit2gtk-4.1-dev libglu1-mesa-dev mesa-common-dev curl`
+
+**MacOS** 
+1. Install [Homebrew](https://brew.sh/)
+2. Install build tools: `brew install ninja osxutils`
+
+**Windows**
+1. Install [Git](https://git-scm.com/downloads)
+2. Install [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/).
+3. Install [Chocolatey](https://chocolatey.org/install)
+4. Install Ninja `choco install ninja`
+  
+### 2. Clone the Repository
+```bash
+git clone https://github.com/yourusername/Disflux.git
+cd Disflux
+```
+
+### 3. Configure the Build with CMake
+
+Run CMake to configure the project. Use the appropriate preset for your platform:
+
+**Ubuntu**
+```bash
+cmake --preset "Linux Release"
+```
+
+**MacOS**
+```bash
+cmake --preset "Mac Release" -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+```
+
+**Windows**
+```bash
+cmake --preset "Windows Release"
+```
+
+### 4. Build the project
+
+After configuring with CMake, build the project using the following command:
+```bash
+cmake --build build --config "Release"
+```
+
+### 5. Locate the Build Artifacts
+
+After the build process completes, you can find the compiled artifacts in the build directory under the following paths:
+- **VST3:** `build/src/DisfluxPlugin_artefacts/Release/VST3/Disflux.vst3`
+- **CLAP:** `build/src/DisfluxPlugin_artefacts/Release/CLAP/Disflux.clap`
+- **LV2:** `build/src/DisfluxPlugin_artefacts/Release/LV2/Disflux.lv2`
+- **AU:** `build/src/DisfluxPlugin_artefacts/Release/AU/Disflux.component`
+
+You can move these to your plugin folder.
+
+
 ## 🔐 Privacy
 
 **Disflux** is built with privacy in mind. It **does not collect any personal data** or send any telemetry. We are committed to **never sharing or selling your data**. It makes us sad that in today's day and age, we consider this to be a standout point, but here we are.
