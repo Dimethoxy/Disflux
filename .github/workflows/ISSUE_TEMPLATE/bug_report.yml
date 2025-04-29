@@ -1,0 +1,137 @@
+name: Bug Report
+description: File a bug report for the plugin
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping us squash bugs!  
+        Please try to fill out all relevant fields below — the more detail you give, the faster we can fix it.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: What’s going wrong? Be as specific as possible.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: How to reproduce
+      description: Please provide step-by-step instructions to reproduce the bug.
+      placeholder: |
+        1. Open plugin in XYZ DAW
+        2. Load preset "Hard Punch"
+        3. Turn Drive to 100%
+        4. Crash!
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / Videos
+      description: If applicable, drag & drop images or videos to help explain the issue.
+
+  - type: dropdown
+    id: buildtype
+    attributes:
+      label: Was this an official release or a self-compiled build?
+      options:
+        - Official release
+        - Self-compiled build
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Plugin version
+      description: Provide the exact version string (e.g. v1.2.0 or commit hash).
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      multiple: false
+      options:
+        - Windows
+        - macOS
+        - Linux
+    validations:
+      required: true
+
+  - type: input
+    id: osversion
+    attributes:
+      label: OS version
+      placeholder: e.g. Windows 11 23H2, macOS 14.4, Arch Linux (kernel 6.7.x)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: architecture
+    attributes:
+      label: CPU architecture
+      description: What kind of hardware are you running on?
+      multiple: false
+      options:
+        - x86_64 (Intel/AMD 64-bit)
+        - x86 (32-bit)
+        - ARM64 / aarch64 (Apple Silicon, Raspberry Pi 4+, etc.)
+        - ARM64EC (Windows on ARM)
+        - ARMv7 (32-bit ARM — legacy)
+        - Unknown / Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: pluginformat
+    attributes:
+      label: Plugin format
+      multiple: true
+      options:
+        - VST2
+        - VST3
+        - CLAP
+        - AU
+        - AUv3
+        - AAX
+        - LV2
+        - Standalone
+
+  - type: textarea
+    id: dawhost
+    attributes:
+      label: DAW / Host application
+      description: Which DAW(s) or host(s) are you using to run the plugin?
+      placeholder: e.g. FL Studio 21.2.2, Bitwig 5.1, REAPER 7.12...
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Crash logs / stacktrace (optional)
+      description: If you have any logs, backtraces, or debug output, paste them here.
+      render: shell
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://berlincodeofconduct.org/)
+      options:
+        - label: I agree to follow the Code of Conduct
+          required: true
