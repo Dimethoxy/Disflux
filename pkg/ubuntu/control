@@ -1,5 +1,5 @@
-Package: dimethoxy-disflux-snapshot
-Version: 1.0-1
+Package: ${PACKAGE_NAME}
+Version: ${VERSION}-1
 Architecture: amd64
 Maintainer: David Hess (Lunix) <davidhess336@gmx.de>
 Depends: curl
