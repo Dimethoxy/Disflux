@@ -1,5 +1,5 @@
 Package: ${PACKAGE_NAME}
-Version: ${VERSION}-1
+Version: ${PACKAGE_VERSION}-1
 Architecture: amd64
 Maintainer: David Hess (Lunix) <davidhess336@gmx.de>
 Depends: curl

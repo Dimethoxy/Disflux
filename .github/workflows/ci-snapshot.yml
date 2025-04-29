@@ -337,6 +337,10 @@ jobs:
           cp -r artifacts/${{env.PROJECT_NAME}}.lv2 \
                 $UBUNTU_PACKAGE_DIR/$LV2_INSTALL_DIR/
 
+          # Set PACKAGE_NAME for envsubst
+           export PACKAGE_NAME=${{env.BUNDLE_NAME}}-snapshot
+          export PACKAGE_VERSION=${{env.VERSION}}
+
           # Replace PACKAGE_NAME in control file and copy to Debian package directory
           envsubst < $UBUNTU_CONTROL_FILE > $UBUNTU_PACKAGE_DIR/DEBIAN/control
 

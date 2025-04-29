@@ -8,7 +8,7 @@
 # - Add a step after release to update the AUR repository
 #===========================================================================================
 
-name: Build Project
+name: Build Release
 on:
   workflow_dispatch:
 defaults:
@@ -20,7 +20,6 @@ defaults:
 env:
   PROJECT_NAME: Disflux
   BUNDLE_NAME: disflux
-  PACKAGE_NAME: dimethoxy-disflux
   BUNDLE_ID: com.dimethoxy.disflux
   VERSION: 0.1.0
   BUILD_DIR: build
@@ -335,6 +334,10 @@ jobs:
                 $UBUNTU_PACKAGE_DIR/$CLAP_INSTALL_DIR/
           cp -r artifacts/${{env.PROJECT_NAME}}.lv2 \
                 $UBUNTU_PACKAGE_DIR/$LV2_INSTALL_DIR/
+
+          # Set PACKAGE_NAME for envsubst
+          export PACKAGE_NAME=${{env.BUNDLE_NAME}}
+          export PACKAGE_VERSION=${{env.VERSION}}
 
           # Replace PACKAGE_NAME in control file and copy to Debian package directory
           envsubst < $UBUNTU_CONTROL_FILE > $UBUNTU_PACKAGE_DIR/DEBIAN/control
