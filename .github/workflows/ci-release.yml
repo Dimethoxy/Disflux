@@ -8,7 +8,7 @@
 # - Add a step after release to update the AUR repository
 #===========================================================================================
 
-name: Build Release
+name: Build Snapshot
 on:
   workflow_dispatch:
 defaults:
