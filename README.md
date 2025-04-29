@@ -15,28 +15,28 @@ Using a chain of all-pass filters, Disflux spreads those high-energy transients 
 
 ## 🔥 Features
 
-- **Free & Open-Source** – No paywalls, no restrictions
+- **Free & Open-Source** – No paywalls, no restrictions.
 - **All-Pass Filter Chain** – Smear your transients through time with a series of all-pass filters.
-- **Minimalist UI** – Minimalist vector interface
-- **Scalable UI** – Perfect for high-res screens
+- **Minimalist UI** – Minimalist vector interface.
+- **Scalable UI** – Perfect for high-res screens.
+- **Theming System** - A powerful theme system that lets you style the plugin your way.
 - **Intuitive Workflow** – Get to your sound quickly with easy-to-navigate controls.
-- **Low CPU impact** – Crush your sounds, not your processor
-- **Cross-platform** – Supports Windows, MacOS, and Linux
+- **Low CPU impact** – Crush your sounds, not your processor.
+- **Cross-platform** – Supports Windows, MacOS, and Linux.
 - **Multi-Format Support** – Works with VST3, CLAP, LV2, and AU formats.
-- **Regular Updates** – Continuous improvements and new features
-- **Privacy First** – We take your privacy seriously, no tracking or data collection
+- **Regular Updates** – Continuous improvements and new features.
+- **Privacy First** – We take your privacy seriously, no tracking or data collection.
 
 ## 🚧 Work in Progress
 
 Disflux is currently unfinished and we're actively working on developing the following features before a first release:
    
-- **Preset Menu** – Add functionality to select and save presets
-- **Settings & Customization** – We need to build an editor to configure the theme and settings live
-- **Performance** – While performance is already solid, we’re working to optimize it even further by removing unneeded draw calls
-- **Parameter Smoothing** – Aiming to reduce artifacts when automating parameters for seamless transitions
-- **Oversampling** – Implementing oversampling to minimize aliasing and improve the quality of high-frequency content
-- **Update Notifications** – A small, non-intrusive notification to alert you when a newer version of Disflux is available
-- **Package Managers** – Integrating with Linux package managers like the AUR on Archlinux for easy installation and updates
+- **Preset Menu** – Add functionality to select and save presets.
+- **Settings & Customization** – The settings panel needs sanity checks. Right now, you can input cursed values that break everything.
+- **Performance** – While performance is already solid, we’re working to optimize it even further.
+- **Parameter Smoothing** – Aiming to reduce artifacts when automating parameters for seamless transitions.
+- **Oversampling** – Implementing oversampling to minimize aliasing and improve the quality of high-frequency content.
+- **Package Managers** – Integrating with Linux package managers like the AUR on Archlinux for easy installation and updates.
 
 
 ## 💖 Donations
@@ -49,6 +49,30 @@ We are dedicated to providing high-quality audio tools to the community for free
 ## 📜 License
 
 The source code is licensed under the **GPLv3**. If you download the source or create builds, you must comply with that license. For more information, visit [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).
+
+## 🔐 Privacy
+
+**Disflux** is built with privacy in mind. It **does not collect any personal data** or send any telemetry. We are committed to **never sharing or selling your data**. However, some features that require networking may affect your privacy. We want to be transparent about these and explain how they work.
+
+### Update Checking
+
+On certain systems, **Disflux** may attempt to connect to the internet to check for updates. This process is entirely anonymous, and **no personal information is sent** during the check.
+
+### Disabling Update Notifications
+
+If you prefer to disable update notifications, you can compile **Disflux** without these checks by using the following CMake flag:
+
+```bash
+-DDMT_DISABLE_UPDATE_NOTIFICATION=ON
+```
+
+Some pre-built versions, like those available from the **Arch User Repository (AUR)**, may already have this option enabled by default. This is because these builds are managed by package managers that handle updates on their own, making the update check unnecessary.
+
+### Third-Party Tools and Telemetry
+
+We use third-party libraries, such as [JUCE](https://github.com/juce-framework/JUCE), to help with plugin development. While we are not aware of any telemetry or data collection within these tools, we recommend you do your own research to ensure you are comfortable with their data practices.
+
+If we discover any issues or unexpected data collection, we will address them immediately and update you accordingly.
 
 ## ⚠️ Warranty
 
