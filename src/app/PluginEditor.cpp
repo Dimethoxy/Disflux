@@ -26,7 +26,10 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   setConstraints(baseWidth, baseHeight + headerHeight);
   addAndMakeVisible(compositor);
   setResizable(true, true);
-  setSize(baseWidth, baseHeight);
+
+  const auto startWidth = baseWidth * size;
+  const auto startHeight = (baseHeight + headerHeight) * size;  
+  setSize(startWidth, startHeight);
 
   // Set the callback for header visibility changes
   compositor.setHeaderVisibilityCallback([this](bool isHeaderVisible) {
