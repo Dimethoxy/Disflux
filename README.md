@@ -56,11 +56,11 @@ The source code is licensed under the **GPLv3**. If you download the source or c
 
 ### Update Checking
 
-On certain systems, **Disflux** includes a lightweight, anonymous update notification system. This system checks if a new version is available by sending a simple GET request to our server for the latest version string. The check is performed locally, with no personal data being sent or stored.
+On supported systems, **Disflux** includes a lightweight and anonymous update notification system. It checks for new versions by sending a simple GET request to our server to retrieve the latest version string. The system then compares the retrieved version with the current version locally. No personal data is sent or stored during this process.
 
 ### Disabling Update Notifications
 
-If you prefer to disable update notifications, you can compile **Disflux** without these checks by using the following CMake flag:
+If you'd rather disable the update notification system, you can compile **Disflux** without it by adding the following CMake flag:
 
 ```bash
 -DDMT_DISABLE_UPDATE_NOTIFICATION=ON
