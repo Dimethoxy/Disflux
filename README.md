@@ -37,6 +37,7 @@ Disflux is currently unfinished and we're actively working on developing the fol
 - **Parameter Smoothing** – Aiming to reduce artifacts when automating parameters for seamless transitions.
 - **Oversampling** – Implementing oversampling to minimize aliasing and improve the quality of high-frequency content.
 - **Package Managers** – Integrating with Linux package managers like the AUR on Archlinux for easy installation and updates.
+- **Mobile Support** – We are planning to release Disflux for iOS and Android in the future.
 
 ## 💾 Downloads
 
