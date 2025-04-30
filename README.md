@@ -123,7 +123,7 @@ You can move these to your plugin folder.
 
 ### Update Checking
 
-On supported systems, **Disflux** includes a lightweight and anonymous update notification system. It checks for new versions by sending a simple GET request to our server to retrieve the latest version string. The system then compares the retrieved version with the current version locally. No personal data is sent or stored during this process.
+On some systems, **Disflux** includes a lightweight and anonymous update notification system. It checks for new versions by sending a simple GET request to our server to retrieve the latest version string. The system then compares the retrieved version with the current version locally. No personal data is sent or stored during this process.
 
 ### Disabling Update Notifications
 
