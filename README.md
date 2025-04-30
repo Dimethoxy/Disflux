@@ -38,7 +38,7 @@ Disflux is currently unfinished and we're actively working on developing the fol
 - **Oversampling** – Implementing oversampling to minimize aliasing and improve the quality of high-frequency content.
 - **Package Managers** – Integrating with Linux package managers like the AUR on Archlinux for easy installation and updates.
 
-## 🔻 Downloads
+## 💾 Downloads
 
 You can download our pre-built binaries for Windows, MacOS and Linux [here](https://github.com/Dimethoxy/Disflux/releases).
 
