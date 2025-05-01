@@ -14,6 +14,5 @@ createParameterLayout()
   return juce::AudioProcessorValueTreeState::ParameterLayout{
     std::make_unique<ParameterGroup>(Model::globalParameterGroup()),
     std::make_unique<ParameterGroup>(Model::disfluxParameterGroup(uid)),
-    std::make_unique<ParameterGroup>(Model::oscilloscopeParameterGroup(uid)),
   };
 }
