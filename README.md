@@ -29,7 +29,7 @@ Using a chain of all-pass filters, Disflux spreads those high-energy transients 
 
 ## 🚧 Coming Soon
 
-We're constantly working on new features and improvements for Disflux. Here are some of the exciting things you can expect in future updates:
+Here are some of the exciting things you can expect in future updates:
    
 - **Bug Fixes** – We are actively working on fixing bugs and improving stability.
 - **Preset Menu** – Add functionality to select and save presets.
@@ -50,10 +50,6 @@ If you have enjoyed using our software, please consider donating.
 [Donate via PayPal](https://www.paypal.com/donate/?hosted_button_id=8SJXCUYV5ZHKG)
 
 We are dedicated to providing high-quality audio tools to the community for free, and your support helps us to continue our work. Your donation will contribute to maintaining and improving our software, as well as supporting the development of new tools and features. We greatly appreciate your support and thank you for helping us to continue our work.
-
-## 📜 License
-
-The source code is licensed under the **GPLv3**. If you download the source or create builds, you must comply with that license. For more information, visit [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).
 
 ## 🛠️ Compiling
 
@@ -141,6 +137,10 @@ Some pre-built versions, like those available from the **Arch User Repository (A
 We use third-party libraries, such as [JUCE](https://github.com/juce-framework/JUCE), to help with plugin development. While we are not aware of any telemetry or data collection within these tools, we recommend you do your own research to ensure you are comfortable with their data practices.
 
 If we discover any issues or unexpected data collection, we will address them immediately and update you accordingly.
+
+## 📜 License
+
+The source code is licensed under the **GPLv3**. If you download the source or create builds, you must comply with that license. For more information, visit [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).
 
 ## ⚠️ Warranty
 
