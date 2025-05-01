@@ -31,13 +31,14 @@ Using a chain of all-pass filters, Disflux spreads those high-energy transients 
 
 Disflux is currently unfinished and we're actively working on developing the following features before a first release:
    
+- **Bug Fixes** – We are actively working on fixing bugs and improving stability.
 - **Preset Menu** – Add functionality to select and save presets.
-- **Settings & Customization** – The settings panel needs sanity checks. Right now, you can input cursed values that break everything.
 - **Performance** – While performance is already solid, we’re working to optimize it even further.
 - **Parameter Smoothing** – Aiming to reduce artifacts when automating parameters for seamless transitions.
 - **Oversampling** – Implementing oversampling to minimize aliasing and improve the quality of high-frequency content.
-- **Package Managers** – Integrating with Linux package managers like the AUR on Archlinux for easy installation and updates.
+- **Themes** - We already allow heavy theming, but we want to make it easier to export and share themes with the community.
 - **Mobile Support** – We are planning to release Disflux for iOS and Android in the future.
+- **Fedora Support** – We are working on a Fedora package for users who prefer this distribution.
 
 ## 💾 Downloads
 
