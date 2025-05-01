@@ -8,7 +8,7 @@
 # - Add a step after release to update the AUR repository
 #===========================================================================================
 
-name: Build Snapshot
+name: Build Release
 on:
   workflow_dispatch:
 defaults:
@@ -21,7 +21,7 @@ env:
   PROJECT_NAME: Disflux
   BUNDLE_NAME: disflux
   BUNDLE_ID: com.dimethoxy.disflux
-  VERSION: 0.1.0
+  VERSION: 1.0.0
   BUILD_DIR: build
   DISPLAY: :0 # Linux pluginval needs this
   HOMEBREW_NO_INSTALL_CLEANUP: 1
