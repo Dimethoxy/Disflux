@@ -391,7 +391,13 @@ jobs:
 
       - name: Build Package
         run: |
-          sudo -u dimethoxy bash -c 'cd pkg/arch/git && makepkg -s --noconfirm'
+          sudo -u dimethoxy bash -c 'cd pkg/arch/git
+
+          # Replace variables in PKGBUILD
+          export PACKAGE_VERSION=${{env.VERSION}}
+          envsubst < PKGBUILD > PKGBUILD.tmp && mv PKGBUILD.tmp PKGBUILD
+
+          makepkg -s --noconfirm'   - name: Package Artifacts
 
       - name: Package Artifacts
         run: |
