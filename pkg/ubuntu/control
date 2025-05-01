@@ -1,4 +1,4 @@
-Package: ${PACKAGE_NAME}
+Package: dimethoxy-${PACKAGE_NAME}
 Version: ${PACKAGE_VERSION}-1
 Architecture: amd64
 Maintainer: David Hess (Lunix) <davidhess336@gmx.de>
