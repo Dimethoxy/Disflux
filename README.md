@@ -27,9 +27,9 @@ Using a chain of all-pass filters, Disflux spreads those high-energy transients 
 - **Regular Updates** – Continuous improvements and new features.
 - **Privacy First** – We take your privacy seriously, no tracking or data collection.
 
-## 🚧 Work in Progress
+## 🚧 Coming Soon
 
-Disflux is currently unfinished and we're actively working on developing the following features before a first release:
+We're constantly working on new features and improvements for Disflux. Here are some of the exciting things you can expect in future updates:
    
 - **Bug Fixes** – We are actively working on fixing bugs and improving stability.
 - **Preset Menu** – Add functionality to select and save presets.
