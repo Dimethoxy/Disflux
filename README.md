@@ -27,17 +27,18 @@ Using a chain of all-pass filters, Disflux spreads those high-energy transients 
 - **Regular Updates** – Continuous improvements and new features.
 - **Privacy First** – We take your privacy seriously, no tracking or data collection.
 
-## 🚧 Work in Progress
+## 🚧 Coming Soon
 
-Disflux is currently unfinished and we're actively working on developing the following features before a first release:
+Here are some of the exciting things you can expect in future updates:
    
+- **Bug Fixes** – We are actively working on fixing bugs and improving stability.
 - **Preset Menu** – Add functionality to select and save presets.
-- **Settings & Customization** – The settings panel needs sanity checks. Right now, you can input cursed values that break everything.
 - **Performance** – While performance is already solid, we’re working to optimize it even further.
 - **Parameter Smoothing** – Aiming to reduce artifacts when automating parameters for seamless transitions.
 - **Oversampling** – Implementing oversampling to minimize aliasing and improve the quality of high-frequency content.
-- **Package Managers** – Integrating with Linux package managers like the AUR on Archlinux for easy installation and updates.
+- **Themes** - We already allow heavy theming, but we want to make it easier to export and share themes with the community.
 - **Mobile Support** – We are planning to release Disflux for iOS and Android in the future.
+- **Fedora Support** – We are working on a Fedora package for users who prefer this distribution.
 
 ## 💾 Downloads
 
@@ -49,10 +50,6 @@ If you have enjoyed using our software, please consider donating.
 [Donate via PayPal](https://www.paypal.com/donate/?hosted_button_id=8SJXCUYV5ZHKG)
 
 We are dedicated to providing high-quality audio tools to the community for free, and your support helps us to continue our work. Your donation will contribute to maintaining and improving our software, as well as supporting the development of new tools and features. We greatly appreciate your support and thank you for helping us to continue our work.
-
-## 📜 License
-
-The source code is licensed under the **GPLv3**. If you download the source or create builds, you must comply with that license. For more information, visit [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).
 
 ## 🛠️ Compiling
 
@@ -140,6 +137,10 @@ Some pre-built versions, like those available from the **Arch User Repository (A
 We use third-party libraries, such as [JUCE](https://github.com/juce-framework/JUCE), to help with plugin development. While we are not aware of any telemetry or data collection within these tools, we recommend you do your own research to ensure you are comfortable with their data practices.
 
 If we discover any issues or unexpected data collection, we will address them immediately and update you accordingly.
+
+## 📜 License
+
+The source code is licensed under the **GPLv3**. If you download the source or create builds, you must comply with that license. For more information, visit [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).
 
 ## ⚠️ Warranty
 
