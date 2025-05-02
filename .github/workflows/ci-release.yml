@@ -391,7 +391,12 @@ jobs:
 
       - name: Build Package
         run: |
-          sudo -u dimethoxy bash -c 'cd pkg/arch/release
+          # Ensure the dimethoxy user has write permissions for the build directory
+          sudo chown -R dimethoxy:dimethoxy pkg/arch/release
+
+          # Run the build process as the dimethoxy user
+          sudo -u dimethoxy bash -c '
+          cd pkg/arch/release
 
           # Replace variables in PKGBUILD
           export PACKAGE_VERSION=${{env.VERSION}}
