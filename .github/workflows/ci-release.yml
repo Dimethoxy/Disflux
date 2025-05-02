@@ -382,8 +382,8 @@ jobs:
 
       - name: Set permissions for the build directory
         run: |
-          sudo chown -R dimethoxy:dimethoxy /__w/${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}/pkg/arch/git
-          sudo chmod -R u+rw /__w/${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}/pkg/arch/git
+          sudo chown -R dimethoxy:dimethoxy /__w/${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}/pkg/arch/release
+          sudo chmod -R u+rw /__w/${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}/pkg/arch/release
 
       - name: Disable sudo password prompt
         run: |
