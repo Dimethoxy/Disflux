@@ -391,7 +391,7 @@ jobs:
 
       - name: Build Package
         run: |
-          sudo -u dimethoxy bash -c 'cd pkg/arch/git
+          sudo -u dimethoxy bash -c 'cd pkg/arch/release
 
           # Replace variables in PKGBUILD
           export PACKAGE_VERSION=${{env.VERSION}}
