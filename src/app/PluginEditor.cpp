@@ -67,8 +67,8 @@ PluginEditor::setConstraints(int width, int height)
     constrainer->setFixedAspectRatio(aspectRatio);
     const auto minWidth = width / 2;
     const auto minHeight = height / 2;
-    const auto maxWidth = width * 4;
-    const auto maxHeight = height * 4;
+    const auto maxWidth = width * 2;
+    const auto maxHeight = height * 2;
     constrainer->setSizeLimits(minWidth, minHeight, maxWidth, maxHeight);
   } else {
     jassertfalse; // Constrainer not set
