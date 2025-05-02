@@ -17,10 +17,10 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   }
 
   if (OS_IS_LINUX) {
-    // openGLContext.setComponentPaintingEnabled(true);
-    // openGLContext.setContinuousRepainting(false);
-    // openGLContext.attachTo(*getTopLevelComponent());
-    // setResizable(true, true);
+    openGLContext.setComponentPaintingEnabled(true);
+    openGLContext.setContinuousRepainting(false);
+    openGLContext.attachTo(*getTopLevelComponent());
+    setResizable(true, true);
   }
 
   setConstraints(baseWidth, baseHeight + headerHeight);
@@ -28,7 +28,7 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   setResizable(true, true);
 
   const auto startWidth = baseWidth * size;
-  const auto startHeight = (baseHeight + headerHeight) * size;  
+  const auto startHeight = (baseHeight + headerHeight) * size;
   setSize(startWidth, startHeight);
 
   // Set the callback for header visibility changes
