@@ -4,7 +4,6 @@
 # The artifacts will be uploaded to the release page.
 #
 # TODO:
-# - Add a step to sign the macOS package
 # - Add a step after release to update the AUR repository
 #===========================================================================================
 
