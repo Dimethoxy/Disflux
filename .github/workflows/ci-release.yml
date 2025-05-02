@@ -397,7 +397,7 @@ jobs:
           export PACKAGE_VERSION=${{env.VERSION}}
           envsubst < PKGBUILD > PKGBUILD.tmp && mv PKGBUILD.tmp PKGBUILD
 
-          makepkg -s --noconfirm'   - name: Package Artifacts
+          makepkg -s --noconfirm'
 
       - name: Package Artifacts
         run: |
