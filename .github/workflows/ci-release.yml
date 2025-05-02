@@ -391,26 +391,15 @@ jobs:
 
       - name: Build Package
         run: |
-          # Ensure the dimethoxy user has write permissions for the build directory
-          sudo chown -R dimethoxy:dimethoxy pkg/arch/release
-
-          # Run the build process as the dimethoxy user
-          sudo -u dimethoxy bash -c '
-          cd pkg/arch/release
-
-          # Replace variables in PKGBUILD
-          export PACKAGE_VERSION=${{env.VERSION}}
-          envsubst < PKGBUILD > PKGBUILD.tmp && mv PKGBUILD.tmp PKGBUILD
-
-          makepkg -s --noconfirm'
+          sudo -u dimethoxy bash -c 'cd pkg/arch/release && makepkg -s --noconfirm'
 
       - name: Package Artifacts
         run: |
           # Remove the default package
-          rm pkg/arch/git/*debug*.pkg.tar.zst
+          rm pkg/arch/release/*debug*.pkg.tar.zst
 
           # Move the package to the root directory
-          mv pkg/arch/git/*.pkg.tar.zst .
+          mv pkg/arch/release/*.pkg.tar.zst .
 
           # Rename the package
           mv *.pkg.tar.zst ${{env.PACKAGE_NAME}}
