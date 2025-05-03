@@ -21,7 +21,6 @@ Using a chain of all-pass filters, Disflux spreads those high-energy transients 
 - **Scalable UI** – Perfect for high-res screens.
 - **Theming System** - A powerful theme system that lets you style the plugin your way.
 - **Intuitive Workflow** – Get to your sound quickly with easy-to-navigate controls.
-- **Low CPU impact** – Crush your sounds, not your processor.
 - **Cross-platform** – Supports Windows, MacOS, and Linux.
 - **Multi-Format Support** – Works with VST3, CLAP, LV2, and AU formats.
 - **Regular Updates** – Continuous improvements and new features.
