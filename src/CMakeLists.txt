@@ -70,6 +70,10 @@ juce_add_binary_data(FontBinaryData
     ${CMAKE_SOURCE_DIR}/external/dmt/icons/close.svg
     ${CMAKE_SOURCE_DIR}/external/dmt/icons/reload.svg
     ${CMAKE_SOURCE_DIR}/external/dmt/icons/save.svg
+    ${CMAKE_SOURCE_DIR}/external/dmt/icons/error.svg
+    ${CMAKE_SOURCE_DIR}/external/dmt/icons/warning.svg
+    ${CMAKE_SOURCE_DIR}/external/dmt/icons/success.svg
+    ${CMAKE_SOURCE_DIR}/external/dmt/icons/info.svg
 )
 
 # Link the libraries
