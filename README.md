@@ -67,8 +67,9 @@ If you want to compile Plasma from source yourself, follow these steps:
 **Windows**
 1. Install [Git](https://git-scm.com/downloads)
 2. Install [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/).
-3. Install [Chocolatey](https://chocolatey.org/install)
-4. Install Ninja `choco install ninja`
+  - During installation, make sure to select package "Desktop development with C++"  
+4. Install [Chocolatey](https://chocolatey.org/install) (open **PowerShell** as Admin and follow instructions on their site)
+5. Use **Chocolatey** to install required tools: `choco install cmake ninja llvm`
   
 ### 2. Clone the Repository
 ```bash
