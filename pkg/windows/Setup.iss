@@ -10,10 +10,10 @@ UninstallDisplayIcon={app}\uninstall.ico
 
 [Files]
 ; Install VST3 to the standard VST3 location
-Source: "..\artifacts\${PROJECT_NAME}.vst3"; DestDir: "{commoncf64}\VST3\${PROJECT_NAME}"; Flags: recursesubdirs replace
+Source: "..\artifacts\${PROJECT_NAME}.vst3"; DestDir: "{commoncf64}\VST3\${PROJECT_NAME}"; Flags: recursesubdirs replacesameversion
 
 ; Install CLAP to the standard CLAP location
-Source: "..\artifacts\${PROJECT_NAME}.clap"; DestDir: "{commoncf64}\CLAP\${PROJECT_NAME}"; Flags: recursesubdirs replace
+Source: "..\artifacts\${PROJECT_NAME}.clap"; DestDir: "{commoncf64}\CLAP\${PROJECT_NAME}"; Flags: recursesubdirs replacesameversion
 
 ; Install resources and uninstaller to Dimethoxy folder in Program Files
-Source: "..\resources\uninstall.ico"; DestDir: "{app}"; Flags: replace
+Source: "..\resources\uninstall.ico"; DestDir: "{app}"; Flags: replacesameversion
