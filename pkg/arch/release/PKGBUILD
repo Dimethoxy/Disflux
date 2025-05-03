@@ -18,7 +18,7 @@ sha256sums=('SKIP')
 # Build and runtime dependencies – adjust as necessary for your project.
 makedepends=('gcc' 'git' 'cmake' 'ninja' 'pkg-config' 'alsa-lib' 'jack' 'ladspa' 
      'curl' 'freetype2' 'fontconfig' 'libx11' 'libxcomposite' 'libxcursor' 
-     'libxext' 'libxinerama' 'libxrandr' 'libxrender' 'webkit2gtk' 'glu' 'mesa')
+     'libxext' 'libxinerama' 'libxrandr' 'libxrender' 'webkit2gtk' 'glu' 'mesa' 'libxml2')
 depends=('curl')
 
 build() {
@@ -26,7 +26,7 @@ build() {
   mkdir -p build
   cd build
   # Configure using the CMake preset defined in your project.
-  cmake --preset "Linux Release"..
+  cmake --preset "Linux Release" ..
   # Build using the Release configuration.
   cmake --build . --config "Release"
 }
