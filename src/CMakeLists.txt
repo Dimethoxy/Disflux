@@ -120,7 +120,7 @@ target_compile_definitions(${PROJECT_NAME}
         JUCE_VST3_CAN_REPLACE_VST2=0
         JUCE_DISPLAY_SPLASH_SCREEN=0
         REPORT_JUCE_APP_USAGE=0
-        $<$<BOOL:${DMT_DISABLE_UPDATE_NOTIFICATION}>:DMT_DISABLE_UPDATE_NOTIFICATION>
+        $<$<BOOL:${DMT_DISABLE_UPDATE_NOTIFICATION}>:CMAKE_DMT_DISABLE_UPDATE_NOTIFICATION>
 )
 
 # Generate JUCE header file
@@ -136,12 +136,35 @@ if(MSVC)
 endif()
 
 # Set up OS flags to use in code later
-target_compile_definitions(${PROJECT_NAME}
-    PRIVATE
-        OS_IS_WINDOWS=$<BOOL:${WIN32}>
-        OS_IS_DARWIN=$<BOOL:${APPLE}>
-        OS_IS_LINUX=$<BOOL:${UNIX} AND NOT APPLE>
-)
+if(WIN32)
+    target_compile_definitions(${PROJECT_NAME}
+        PRIVATE
+            CMAKE_OS_IS_WINDOWS=1
+            CMAKE_OS_IS_DARWIN=0
+            CMAKE_OS_IS_LINUX=0
+    )
+elseif(APPLE)
+    target_compile_definitions(${PROJECT_NAME}
+        PRIVATE
+            CMAKE_OS_IS_WINDOWS=0
+            CMAKE_OS_IS_DARWIN=1
+            CMAKE_OS_IS_LINUX=0
+    )
+elseif(UNIX)
+    target_compile_definitions(${PROJECT_NAME}
+        PRIVATE
+            CMAKE_OS_IS_WINDOWS=0
+            CMAKE_OS_IS_DARWIN=0
+            CMAKE_OS_IS_LINUX=1
+    )
+else()
+    target_compile_definitions(${PROJECT_NAME}
+        PRIVATE
+            CMAKE_OS_IS_WINDOWS=0
+            CMAKE_OS_IS_DARWIN=0
+            CMAKE_OS_IS_LINUX=0
+    )
+endif()
 
 # CLAP support setup
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/..)
