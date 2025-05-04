@@ -2,9 +2,13 @@
 
 #include "PluginProcessor.h"
 #include <DmtHeader.h>
+#include <juce_events/juce_events.h>
+#include <juce_gui_basics/juce_gui_basics.h>
 
 //==============================================================================
-class PluginEditor : public juce::AudioProcessorEditor
+class PluginEditor
+  : public juce::AudioProcessorEditor
+  , private juce::Timer
 {
   using Image = juce::Image;
   using ImageComponent = juce::ImageComponent;
@@ -28,6 +32,12 @@ public:
   void setConstraints(int width, int height);
   void handleHeaderVisibilityChange(bool isHeaderVisible);
 
+  // Debounced resizing
+  void timerCallback() override;
+  void detachCompositorForResize();
+  void attachCompositorAfterResize();
+  void updateCompositorSnapshot();
+
 private:
   //==============================================================================
   PluginProcessor& p;
@@ -44,6 +54,9 @@ private:
   //==============================================================================
   dmt::gui::panel::DisfluxPanel<float> disfluxPanel;
   dmt::gui::window::Compositor compositor;
+  //==============================================================================
+  juce::Image compositorSnapshot;
+  bool compositorAttached = true;
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginEditor)
 };
