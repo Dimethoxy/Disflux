@@ -139,9 +139,8 @@ PluginEditor::attachCompositorAfterResize()
 {
   if (!compositorAttached) {
     // Set compositor bounds to fill the editor
-    compositor.setBounds(getLocalBounds());
-    compositor.resized();
     addAndMakeVisible(compositor);
+    compositor.setBounds(getLocalBounds());
     compositorAttached = true;
     repaint();
   }
