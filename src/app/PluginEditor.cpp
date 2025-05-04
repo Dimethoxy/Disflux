@@ -97,3 +97,10 @@ PluginEditor::resized()
   // Set the bounds of the compositor to the bounds of the PluginEditor
   compositor.setBoundsRelative(0.0f, 0.0f, 1.0f, 1.0f);
 }
+
+//==============================================================================
+float&
+PluginEditor::getSizeFactor() const noexcept
+{
+  return dmt::Settings::Window::size;
+} // namespace dmt
