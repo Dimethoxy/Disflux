@@ -5,6 +5,7 @@
 PluginEditor::PluginEditor(PluginProcessor& p)
   : AudioProcessorEditor(&p)
   , p(p)
+  , sizeFactor(p.scaleFactor) // reference to processor's scaleFactor
   , disfluxPanel(p.apvts, p.oscilloscopeBuffer)
   , compositor("DisFlux", disfluxPanel, p.apvts, p.properties, sizeFactor)
   , compositorAttached(true)
@@ -101,8 +102,9 @@ PluginEditor::resized()
     jassertfalse;
   }
 
-  // Update the size factor
+  // Update the processor's scale factor
   sizeFactor = newSize;
+  p.setScaleFactor(newSize);
 
   // Debounced resizing logic
   static bool firstDraw = true;
