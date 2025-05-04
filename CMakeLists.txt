@@ -19,7 +19,7 @@ CPMAddPackage(
 CPMAddPackage(
     NAME DMT
     GITHUB_REPOSITORY Dimethoxy/DMT
-    GIT_TAG v25.01
+    GIT_TAG host-context-menu
     SOURCE_DIR ${EXT_DIR}/dmt
 )
 CPMAddPackage(
