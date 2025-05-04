@@ -14,10 +14,20 @@ endif()
 option(DMT_DISABLE_UPDATE_NOTIFICATION "Disable update notification in the GUI" OFF)
 
 # JUCE setup
+if(WIN32)
+    set(DISFLUX_PLUGIN_FORMATS "VST3;CLAP;Standalone")
+elseif(APPLE)
+    set(DISFLUX_PLUGIN_FORMATS "VST3;CLAP;AU;Standalone")
+elseif(UNIX)
+    set(DISFLUX_PLUGIN_FORMATS "VST3;CLAP;LV2;Standalone")
+else()
+    set(DISFLUX_PLUGIN_FORMATS "VST3;CLAP;Standalone")
+endif()
+
 juce_add_plugin(${PROJECT_NAME}
     PRODUCT_NAME "Disflux"
     COMPANY_NAME "Dimethoxy"
-    FORMATS VST3 LV2 AU Standalone  
+    FORMATS ${DISFLUX_PLUGIN_FORMATS}
     VST3_CATEGORIES "Fx" "Analyzer"                   
     IS_SYNTH FALSE
     NEEDS_MIDI_INPUT FALSE
