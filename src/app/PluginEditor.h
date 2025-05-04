@@ -12,7 +12,6 @@ class PluginEditor : public juce::AudioProcessorEditor
   using OpenGLContext = juce::OpenGLContext;
 
   // Window size
-  float& size = dmt::Settings::Window::size;
   const int baseWidth = 500;
   const int baseHeight = 270;
 

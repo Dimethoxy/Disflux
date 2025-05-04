@@ -16,19 +16,19 @@ PluginEditor::PluginEditor(PluginProcessor& p)
     setResizable(true, true);
   }
 
-  // if (OS_IS_LINUX) {
-  //   openGLContext.setComponentPaintingEnabled(true);
-  //   openGLContext.setContinuousRepainting(false);
-  //   openGLContext.attachTo(*getTopLevelComponent());
-  //   setResizable(true, true);
-  // }
+  if (OS_IS_LINUX) {
+    openGLContext.setComponentPaintingEnabled(true);
+    openGLContext.setContinuousRepainting(false);
+    openGLContext.attachTo(*getTopLevelComponent());
+    setResizable(true, true);
+  }
 
   setConstraints(baseWidth, baseHeight + headerHeight);
   addAndMakeVisible(compositor);
   setResizable(true, true);
 
-  const auto startWidth = baseWidth * size;
-  const auto startHeight = (baseHeight + headerHeight) * size;
+  const auto startWidth = baseWidth * sizeFactor;
+  const auto startHeight = (baseHeight + headerHeight) * sizeFactor;
   setSize(startWidth, startHeight);
 
   // Set the callback for header visibility changes
@@ -43,7 +43,7 @@ PluginEditor::handleHeaderVisibilityChange(bool isHeaderVisible)
   const int adjustedHeight =
     isHeaderVisible ? baseHeight + headerHeight : baseHeight;
   setConstraints(baseWidth, adjustedHeight);
-  setSize(baseWidth * size, adjustedHeight * size);
+  setSize(baseWidth * sizeFactor, adjustedHeight * sizeFactor);
 }
 //==============================================================================
 PluginEditor::~PluginEditor() {}
@@ -92,7 +92,7 @@ PluginEditor::resized()
     jassertfalse;
   }
 
-  dmt::Settings::Window::size = newSize;
+  // Update the size factor
   sizeFactor = newSize;
 
   // Set the bounds of the compositor to the bounds of the PluginEditor
