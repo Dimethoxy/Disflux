@@ -4,9 +4,7 @@
 #include <DmtHeader.h>
 
 //==============================================================================
-class PluginEditor
-  : public juce::AudioProcessorEditor
-  , public dmt::SizeServer
+class PluginEditor : public juce::AudioProcessorEditor
 {
   using Image = juce::Image;
   using ImageComponent = juce::ImageComponent;
@@ -30,7 +28,6 @@ public:
   void resized() override;
   void setConstraints(int width, int height);
   void handleHeaderVisibilityChange(bool isHeaderVisible);
-  float& getSizeFactor() const noexcept override;
 
 private:
   //==============================================================================
@@ -41,6 +38,7 @@ private:
   int lastWidth = baseWidth;
   int lastHeight = baseHeight;
   double ratio = baseWidth / baseHeight;
+  float sizeFactor = 1.0f;
   //==============================================================================
   Image image;
   bool isResizing = false;

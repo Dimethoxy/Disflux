@@ -6,7 +6,7 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   : AudioProcessorEditor(&p)
   , p(p)
   , disfluxPanel(p.apvts, p.oscilloscopeBuffer)
-  , compositor("DisFlux", disfluxPanel, p.apvts, p.properties)
+  , compositor("DisFlux", disfluxPanel, p.apvts, p.properties, sizeFactor)
 {
   if (OS_IS_WINDOWS) {
     setResizable(true, true);
@@ -16,12 +16,12 @@ PluginEditor::PluginEditor(PluginProcessor& p)
     setResizable(true, true);
   }
 
-  if (OS_IS_LINUX) {
-    openGLContext.setComponentPaintingEnabled(true);
-    openGLContext.setContinuousRepainting(false);
-    openGLContext.attachTo(*getTopLevelComponent());
-    setResizable(true, true);
-  }
+  // if (OS_IS_LINUX) {
+  //   openGLContext.setComponentPaintingEnabled(true);
+  //   openGLContext.setContinuousRepainting(false);
+  //   openGLContext.attachTo(*getTopLevelComponent());
+  //   setResizable(true, true);
+  // }
 
   setConstraints(baseWidth, baseHeight + headerHeight);
   addAndMakeVisible(compositor);
@@ -93,14 +93,8 @@ PluginEditor::resized()
   }
 
   dmt::Settings::Window::size = newSize;
+  sizeFactor = newSize;
 
   // Set the bounds of the compositor to the bounds of the PluginEditor
   compositor.setBoundsRelative(0.0f, 0.0f, 1.0f, 1.0f);
 }
-
-//==============================================================================
-float&
-PluginEditor::getSizeFactor() const noexcept
-{
-  return dmt::Settings::Window::size;
-} // namespace dmt
