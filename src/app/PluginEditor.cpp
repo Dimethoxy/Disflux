@@ -56,6 +56,9 @@ PluginEditor::paint(juce::Graphics& g)
 {
   TRACER("PluginEditor::paint");
 
+  // Just painting the background
+  g.fillAll(dmt::Settings::Window::backgroundColour);
+
   if (!compositorAttached && compositorSnapshot.isValid()) {
     // Draw the last compositor snapshot, scaled to fit
     auto bounds = getLocalBounds().toFloat();
@@ -63,9 +66,6 @@ PluginEditor::paint(juce::Graphics& g)
       compositorSnapshot, bounds, juce::RectanglePlacement::stretchToFit);
     return;
   }
-
-  // Just painting the background
-  g.fillAll(dmt::Settings::Window::backgroundColour);
 }
 
 //==============================================================================
