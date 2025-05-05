@@ -1,9 +1,5 @@
 # Disflux
 
-> [!WARNING]
-> Disflux is currently a work in progress. While it's functional, there are unfinished features, and some buttons or functionalities may not work as expected.
-> Expect updates and improvements as we continue development!
-
 Disflux is a wild audio effect plugin that takes your transients and smears them through time, adding serious punch and weight. If you're creating Hard Techno or Rawstyle and need your kicks to hit like a freaking train, Disflux is your new best friend. We're talking aggressive, distorted, gated kicks that smack like no tomorrow.
 
 Using a chain of all-pass filters, Disflux spreads those high-energy transients through time, giving you that laser-like effect. Think of it as a cross between a short reverb and a falling sine wave. It injects depth and impact into your punch. Outside of kicks, it’s also perfect for crafting experimental soundscapes and other weird, next-level audio magic.
@@ -33,7 +29,6 @@ Here are some of the exciting things you can expect in future updates:
 - **Bug Fixes** – We are actively working on fixing bugs and improving stability.
 - **Preset Menu** – Add functionality to select and save presets.
 - **Performance** – While performance is already solid, we’re working to optimize it even further.
-- **Parameter Smoothing** – Aiming to reduce artifacts when automating parameters for seamless transitions.
 - **Oversampling** – Implementing oversampling to minimize aliasing and improve the quality of high-frequency content.
 - **Themes** - We already allow heavy theming, but we want to make it easier to export and share themes with the community.
 - **Mobile Support** – We are planning to release Disflux for iOS and Android in the future.
@@ -67,7 +62,7 @@ If you want to compile Plasma from source yourself, follow these steps:
 **Windows**
 1. Install [Git](https://git-scm.com/downloads)
 2. Install [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/).
-  - During installation, make sure to select package "Desktop development with C++"  
+    - During installation, make sure to select package "Desktop development with C++"  
 4. Install [Chocolatey](https://chocolatey.org/install) (open **PowerShell** as Admin and follow instructions on their site)
 5. Use **Chocolatey** to install required tools: `choco install cmake ninja llvm`
   
