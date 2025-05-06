@@ -11,23 +11,22 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   , compositorAttached(true)
 {
   if (OS_IS_WINDOWS) {
-    setResizable(true, true);
+    setResizable(false, true);
   }
 
   if (OS_IS_DARWIN) {
-    setResizable(true, true);
+    setResizable(false, true);
   }
 
   if (OS_IS_LINUX) {
     openGLContext.setComponentPaintingEnabled(true);
     openGLContext.setContinuousRepainting(false);
     openGLContext.attachTo(*getTopLevelComponent());
-    setResizable(true, true);
   }
 
   setConstraints(baseWidth, baseHeight + headerHeight);
   addAndMakeVisible(compositor);
-  setResizable(true, true);
+  setResizable(false, true);
 
   const auto startWidth = baseWidth * sizeFactor;
   const auto startHeight = (baseHeight + headerHeight) * sizeFactor;
@@ -138,6 +137,24 @@ void
 PluginEditor::attachCompositorAfterResize()
 {
   if (!compositorAttached) {
+    // Snap to the correct aspect ratio, considering header visibility
+    auto bounds = getLocalBounds();
+    bool headerVisible = compositor.isHeaderVisible();
+    int aspectHeight = headerVisible ? (baseHeight + headerHeight) : baseHeight;
+    const double aspect = (double)baseWidth / (double)aspectHeight;
+    int w = bounds.getWidth();
+    int h = bounds.getHeight();
+    double currentAspect = (double)w / (double)h;
+
+    if (currentAspect > aspect) {
+      // Too wide, adjust width
+      w = static_cast<int>(h * aspect);
+    } else if (currentAspect < aspect) {
+      // Too tall, adjust height
+      h = static_cast<int>(w / aspect);
+    }
+    setSize(w, h);
+
     // Set compositor bounds to fill the editor
     addAndMakeVisible(compositor);
     compositor.setBounds(getLocalBounds());
