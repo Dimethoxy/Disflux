@@ -1,7 +1,9 @@
 #pragma once
 
+#include "AudioSettings.h"
 #include <DmtHeader.h>
 #include <JuceHeader.h>
+
 //==============================================================================
 class PluginProcessor final : public juce::AudioProcessor
 {
