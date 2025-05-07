@@ -1,7 +1,6 @@
 build/
 output/
 *.DS_Store
-src/
 pkg/linux/**/pkg
 Disflux/
 *.tar.*
