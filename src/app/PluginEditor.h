@@ -2,8 +2,6 @@
 
 #include "PluginProcessor.h"
 #include <DmtHeader.h>
-#include <juce_events/juce_events.h>
-#include <juce_gui_basics/juce_gui_basics.h>
 
 //==============================================================================
 class PluginEditor

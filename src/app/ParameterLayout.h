@@ -11,8 +11,8 @@ createParameterLayout()
 
   juce::String uid = "";
 
-  // Version hints for safe parameter addition in AudioUnit hosts
-  constexpr int versionHint = 10100; // 01 01 00 = 1.1.0
+  // Generate version hint from JUCE plugin version info
+  constexpr int versionHint = 1;
 
   return juce::AudioProcessorValueTreeState::ParameterLayout{
     std::make_unique<ParameterGroup>(Model::globalParameterGroup(versionHint)),
