@@ -1,6 +1,6 @@
 # Maintainer: Lunix (David Hess) <davidhess336@gmx.de>
 pkgname='dimethoxy-disflux-bin'
-pkgver=1.0.1
+pkgver=1.1.0
 pkgrel=1
 pkgdesc="Transient Smearing Audio Effect for VST3, LV2 and CLAP compatible hosts"
 arch=('x86_64')

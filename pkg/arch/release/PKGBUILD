@@ -3,7 +3,7 @@
 
 pkgname=dimethoxy-disflux
 # pkgver is generated from the latest git commit; the initial dummy version is 0.0.0.
-pkgver=1.0.1
+pkgver=1.1.0
 pkgrel=1
 pkgdesc="Transient Smearing Audio Effect for VST3, LV2 and CLAP compatible hosts"
 arch=('x86_64')
