@@ -7,20 +7,20 @@ struct dmt::Settings::Audio
     container.add<bool>("Audio.UseOutputLowpass", true);
 
   static inline auto& outputHighpassFrequency =
-    container.add<float>("Audio.OutputLowpassFrequency", 20.0f);
+    container.add<float>("Audio.OutputLowpassFrequency", 20.0f, 20.0, 20000.0);
 
   static inline auto& frequencySmoothness =
-    container.add<float>("Audio.FrequencySmoothness", 0.2f);
+    container.add<float>("Audio.FrequencySmoothness", 0.2f, 0.001, 1.0);
 
   static inline auto& spreadSmoothness =
-    container.add<float>("Audio.SpreadSmoothness", 0.02f);
+    container.add<float>("Audio.SpreadSmoothness", 0.02f, 0.001, 1.0);
 
   static inline auto& pinchSmoothness =
-    container.add<float>("Audio.PinchSmoothness", 0.02f);
+    container.add<float>("Audio.PinchSmoothness", 0.02f, 0.001, 1.0);
 
   static inline auto& mixSmoothness =
-    container.add<float>("Audio.MixSmoothness", 0.02f);
+    container.add<float>("Audio.MixSmoothness", 0.02f, 0.001, 1.0);
 
   static inline auto& smoothingInterval =
-    container.add<int>("Audio.SmoothingInterval", 32);
+    container.add<int>("Audio.SmoothingInterval", 32, 1, 1024);
 };
