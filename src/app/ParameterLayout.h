@@ -15,7 +15,7 @@ createParameterLayout()
   constexpr int versionHint = 10100; // 01 01 00 = 1.1.0
 
   return juce::AudioProcessorValueTreeState::ParameterLayout{
-    std::make_unique<ParameterGroup>(Model::globalParameterGroup()),
+    std::make_unique<ParameterGroup>(Model::globalParameterGroup(versionHint)),
     std::make_unique<ParameterGroup>(
       Model::disfluxParameterGroup(uid, versionHint)),
   };
