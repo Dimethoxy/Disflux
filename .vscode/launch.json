@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch AudioPluginHost (Debug JUCE Plugin)",
+      "name": "Launch AudioPluginHost Linux",
       "type": "cppdbg",
       "request": "launch",
       "program": "/data/development/juce/extras/AudioPluginHost/Builds/LinuxMakefile/build/AudioPluginHost",
@@ -19,6 +19,18 @@
           "ignoreFailures": true
         }
       ]
+    },
+    {
+      "name": "Launch AudioPluginHost MacOS",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "/Applications/AudioPluginHost.app/Contents/MacOS/AudioPluginHost",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "lldb"
     }
   ]
 }
