@@ -30,7 +30,7 @@ struct dmt::Settings::Audio
   constexpr static float MIN_PINCH_SMOOTHNESS = 0.0f;
   constexpr static float MAX_PINCH_SMOOTHNESS = 1.0f;
   static inline auto& pinchSmoothness =
-    container.add<float>("Audio.PinchSmoothness", 0.02f);
+    container.add<float>("Audio.PinchSmoothness", 0.2f);
 
   constexpr static float MIN_MIX_SMOOTHNESS = 0.0f;
   constexpr static float MAX_MIX_SMOOTHNESS = 1.0f;
