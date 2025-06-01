@@ -1,8 +1,8 @@
 # Disflux
 
 > [!WARNING]  
-> Because of a bug Disflux is currently crashing constantly on certain Windows systems. 
-> We are very sorry about this and are working hard on fixing it.
+> Because of a bug Disflux is currently crashing constantly on certain Windows systems. \
+> We are very sorry about this and are working hard on fixing it. \
 > There will be an update fixing this soon!
 
 Disflux is a wild audio effect plugin that takes your transients and smears them through time, adding serious punch and weight. If you're creating Hard Techno or Rawstyle and need your kicks to hit like a freaking train, Disflux is your new best friend. We're talking aggressive, distorted, gated kicks that smack like no tomorrow.
