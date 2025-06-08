@@ -31,6 +31,17 @@
       "environment": [],
       "externalConsole": false,
       "MIMode": "lldb"
+    },
+    {
+      "name": "Launch FL Studio (Windows)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "S:\\other-programms\\flstudio\\FL64.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "console": "internalConsole"
     }
   ]
 }
