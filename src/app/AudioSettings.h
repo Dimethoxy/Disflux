@@ -34,11 +34,7 @@ struct dmt::Settings::Audio
 
   constexpr static float MIN_MIX_SMOOTHNESS = 0.0f;
   constexpr static float MAX_MIX_SMOOTHNESS = 1.0f;
-  static inline auto& mixSmoothness =
-    container.add<float>("Audio.MixSmoothness", 0.02f);
 
-  constexpr static int MIN_SMOOTHING_INTERVAL = 1;
-  constexpr static int MAX_SMOOTHING_INTERVAL = 64;
   static inline auto& smoothingInterval =
     container.add<int>("Audio.SmoothingInterval", 32);
 };

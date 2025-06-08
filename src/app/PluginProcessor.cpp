@@ -18,7 +18,6 @@ PluginProcessor::PluginProcessor()
                      dmt::Settings::Audio::frequencySmoothness,
                      dmt::Settings::Audio::spreadSmoothness,
                      dmt::Settings::Audio::pinchSmoothness,
-                     dmt::Settings::Audio::mixSmoothness,
                      dmt::Settings::Audio::useOutputHighpass,
                      dmt::Settings::Audio::outputHighpassFrequency,
                      dmt::Settings::Audio::smoothingInterval)
