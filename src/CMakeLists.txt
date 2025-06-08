@@ -3,7 +3,7 @@
 #==============================================================================
 
 cmake_minimum_required(VERSION 3.22)
-project(DisfluxPlugin VERSION 1.0.0)
+project(DisfluxPlugin VERSION 1.1.1)
 
 # If we are on MacOS, we need to build for arm64 and x86_64
 if (APPLE)
