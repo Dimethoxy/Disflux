@@ -1,7 +1,7 @@
 # Disflux
 
 > [!WARNING]  
-> Because of a bug Disflux is currently crashing constantly on certain Windows systems. \
+> Because of a bug Disflux is currently crashing on systems with NVIDIA GPUs and Windows. \
 > We are very sorry about this and are working hard on fixing it. \
 > There will be an update fixing this soon!
 
