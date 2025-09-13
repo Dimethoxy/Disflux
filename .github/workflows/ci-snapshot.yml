@@ -22,7 +22,7 @@ env:
   PROJECT_NAME: Disflux
   BUNDLE_NAME: disflux
   BUNDLE_ID: com.dimethoxy.disflux
-  VERSION: 1.1.1
+  VERSION: 1.1.1 # Disflux-Version
   BUILD_DIR: build
   DISPLAY: :0 # Linux pluginval needs this
   HOMEBREW_NO_INSTALL_CLEANUP: 1
