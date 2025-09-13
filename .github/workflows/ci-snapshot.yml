@@ -421,7 +421,7 @@ jobs:
   #=========================================================================================
   release:
     runs-on: ubuntu-latest
-    needs: [build-windows, build-ubuntu, build-archlinux]
+    needs: [build-windows, build-ubuntu, build-macos, build-archlinux]
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
