@@ -116,135 +116,135 @@ jobs:
   #=========================================================================================
   # macOS Build
   #=========================================================================================
-  # build-macos:
-  #   runs-on: macos-latest
-  #   steps:
-  #     - name: Export Variables
-  #       run: |
-  #         echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release" >> $GITHUB_ENV
-  #         echo "MAC_PACKAGE=${{env.BUNDLE_NAME}}-snapshot-macos.pkg" >> $GITHUB_ENV
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Export Variables
+        run: |
+          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release" >> $GITHUB_ENV
+          echo "MAC_PACKAGE=${{env.BUNDLE_NAME}}-snapshot-macos.pkg" >> $GITHUB_ENV
 
-  #     - name: Checkout Code
-  #       uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-  #     - name: Set Up Mac
-  #       run: brew install ninja osxutils
+      - name: Set Up Mac
+        run: brew install ninja osxutils
 
-  #     - name: Select CMake Preset
-  #       run: |
-  #         cmake --preset "Mac Release" \
-  #           -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+      - name: Select CMake Preset
+        run: |
+          cmake --preset "Mac Release" \
+            -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
 
-  #     - name: Build
-  #       run: cmake --build build --config "Release"
+      - name: Build
+        run: cmake --build build --config "Release"
 
-  #     - name: Copy Build Artifacts
-  #       run: |
-  #         mkdir -p artifacts
-  #         cp -r ${{env.BUILD_ARTIFACTS_DIR}}/VST3/${{env.PROJECT_NAME}}.vst3 \
-  #               artifacts/
-  #         cp -r ${{env.BUILD_ARTIFACTS_DIR}}/CLAP/${{env.PROJECT_NAME}}.clap \
-  #               artifacts/
-  #         cp -r ${{env.BUILD_ARTIFACTS_DIR}}/AU/${{env.PROJECT_NAME}}.component \
-  #               artifacts/
-  #       shell: bash
+      - name: Copy Build Artifacts
+        run: |
+          mkdir -p artifacts
+          cp -r ${{env.BUILD_ARTIFACTS_DIR}}/VST3/${{env.PROJECT_NAME}}.vst3 \
+                artifacts/
+          cp -r ${{env.BUILD_ARTIFACTS_DIR}}/CLAP/${{env.PROJECT_NAME}}.clap \
+                artifacts/
+          cp -r ${{env.BUILD_ARTIFACTS_DIR}}/AU/${{env.PROJECT_NAME}}.component \
+                artifacts/
+        shell: bash
 
-  #     - name: Import Certificates
-  #       uses: sudara/basic-macos-keychain-action@v1
-  #       id: keychain
-  #       with:
-  #         dev-id-app-cert: ${{ secrets.DEV_ID_APP_CERT }}
-  #         dev-id-app-password: ${{ secrets.DEV_ID_PASSWORD }}
-  #         dev-id-installer-cert: ${{ secrets.DEV_ID_INSTALL_CERT }}
-  #         dev-id-installer-password: ${{ secrets.DEV_ID_PASSWORD }}
+      - name: Import Certificates
+        uses: sudara/basic-macos-keychain-action@v1
+        id: keychain
+        with:
+          dev-id-app-cert: ${{ secrets.DEV_ID_APP_CERT }}
+          dev-id-app-password: ${{ secrets.DEV_ID_PASSWORD }}
+          dev-id-installer-cert: ${{ secrets.DEV_ID_INSTALL_CERT }}
+          dev-id-installer-password: ${{ secrets.DEV_ID_PASSWORD }}
 
-  #     - name: Codesign (macOS)
-  #       run: |
-  #         # Set variables
-  #         VST3_BIN="artifacts/${{env.PROJECT_NAME}}.vst3/Contents/MacOS/${{env.PROJECT_NAME}}"
-  #         CLAP_BIN="artifacts/${{env.PROJECT_NAME}}.clap/Contents/MacOS/${{env.PROJECT_NAME}}"
-  #         AU_BIN="artifacts/${{env.PROJECT_NAME}}.component/Contents/MacOS/${{env.PROJECT_NAME}}"
+      - name: Codesign (macOS)
+        run: |
+          # Set variables
+          VST3_BIN="artifacts/${{env.PROJECT_NAME}}.vst3/Contents/MacOS/${{env.PROJECT_NAME}}"
+          CLAP_BIN="artifacts/${{env.PROJECT_NAME}}.clap/Contents/MacOS/${{env.PROJECT_NAME}}"
+          AU_BIN="artifacts/${{env.PROJECT_NAME}}.component/Contents/MacOS/${{env.PROJECT_NAME}}"
 
-  #         # Codesign the binaries
-  #         codesign \
-  #           --force -s "${{secrets.DEVELOPER_ID_APPLICATION}}" \
-  #           -v "$VST3_BIN" \
-  #           --deep --strict --options=runtime --timestamp
-  #         codesign \
-  #           --force -s "${{secrets.DEVELOPER_ID_APPLICATION}}" \
-  #           -v "$CLAP_BIN" \
-  #           --deep --strict --options=runtime --timestamp
-  #         codesign \
-  #           --force -s "${{secrets.DEVELOPER_ID_APPLICATION}}" \
-  #           -v "$AU_BIN" \
-  #           --deep --strict --options=runtime --timestamp
-  #       shell: bash
+          # Codesign the binaries
+          codesign \
+            --force -s "${{secrets.DEVELOPER_ID_APPLICATION}}" \
+            -v "$VST3_BIN" \
+            --deep --strict --options=runtime --timestamp
+          codesign \
+            --force -s "${{secrets.DEVELOPER_ID_APPLICATION}}" \
+            -v "$CLAP_BIN" \
+            --deep --strict --options=runtime --timestamp
+          codesign \
+            --force -s "${{secrets.DEVELOPER_ID_APPLICATION}}" \
+            -v "$AU_BIN" \
+            --deep --strict --options=runtime --timestamp
+        shell: bash
 
-  #     - name: Create Installer
-  #       run: |
-  #         # Set variables
-  #         VST3_PATH="artifacts/${{env.PROJECT_NAME}}.vst3"
-  #         CLAP_PATH="artifacts/${{env.PROJECT_NAME}}.clap"
-  #         AU_PATH="artifacts/${{env.PROJECT_NAME}}.component"
-  #         PACKAGE_NAME="${{env.PROJECT_NAME}}-snapshot-macos.pkg"
+      - name: Create Installer
+        run: |
+          # Set variables
+          VST3_PATH="artifacts/${{env.PROJECT_NAME}}.vst3"
+          CLAP_PATH="artifacts/${{env.PROJECT_NAME}}.clap"
+          AU_PATH="artifacts/${{env.PROJECT_NAME}}.component"
+          PACKAGE_NAME="${{env.PROJECT_NAME}}-snapshot-macos.pkg"
 
-  #         # Create the packaging directory
-  #         mkdir -p packaging
+          # Create the packaging directory
+          mkdir -p packaging
 
-  #         # Create the distribution file
-  #         envsubst < pkg/mac/distribution.xml > packaging/distribution.xml
+          # Create the distribution file
+          envsubst < pkg/mac/distribution.xml > packaging/distribution.xml
 
-  #         # Create the VST subpackage
-  #         pkgbuild \
-  #           --identifier "${{env.BUNDLE_ID}}.vst3.pkg" \
-  #           --version "$VERSION" \
-  #           --component "$VST3_PATH" \
-  #           --install-location "/Library/Audio/Plug-Ins/VST3" \
-  #           "packaging/${{env.PROJECT_NAME}}.vst3.pkg"
+          # Create the VST subpackage
+          pkgbuild \
+            --identifier "${{env.BUNDLE_ID}}.vst3.pkg" \
+            --version "$VERSION" \
+            --component "$VST3_PATH" \
+            --install-location "/Library/Audio/Plug-Ins/VST3" \
+            "packaging/${{env.PROJECT_NAME}}.vst3.pkg"
 
-  #         # Create the CLAP subpackage
-  #         pkgbuild \
-  #           --identifier "${{env.BUNDLE_ID}}.clap.pkg" \
-  #           --version "$VERSION" \
-  #           --component "$CLAP_PATH" \
-  #           --install-location "/Library/Audio/Plug-Ins/CLAP" \
-  #           "packaging/${{env.PROJECT_NAME}}.clap.pkg"
+          # Create the CLAP subpackage
+          pkgbuild \
+            --identifier "${{env.BUNDLE_ID}}.clap.pkg" \
+            --version "$VERSION" \
+            --component "$CLAP_PATH" \
+            --install-location "/Library/Audio/Plug-Ins/CLAP" \
+            "packaging/${{env.PROJECT_NAME}}.clap.pkg"
 
-  #         # Create the AU subpackage
-  #         pkgbuild \
-  #           --identifier "${{env.BUNDLE_ID}}.au.pkg" \
-  #           --version "$VERSION" \
-  #           --component "$AU_PATH" \
-  #           --install-location "/Library/Audio/Plug-Ins/Components" \
-  #           "packaging/${{env.PROJECT_NAME}}.au.pkg"
+          # Create the AU subpackage
+          pkgbuild \
+            --identifier "${{env.BUNDLE_ID}}.au.pkg" \
+            --version "$VERSION" \
+            --component "$AU_PATH" \
+            --install-location "/Library/Audio/Plug-Ins/Components" \
+            "packaging/${{env.PROJECT_NAME}}.au.pkg"
 
-  #         # Create the main package
-  #         cd packaging
-  #         productbuild \
-  #           --resources ./resources \
-  #           --distribution distribution.xml \
-  #           --sign "${{secrets.DEVELOPER_ID_INSTALLER}}" \
-  #           --timestamp "${{env.PROJECT_NAME}}.pkg"
+          # Create the main package
+          cd packaging
+          productbuild \
+            --resources ./resources \
+            --distribution distribution.xml \
+            --sign "${{secrets.DEVELOPER_ID_INSTALLER}}" \
+            --timestamp "${{env.PROJECT_NAME}}.pkg"
 
-  #         # Notarize the package
-  #         xcrun notarytool submit "${{env.PROJECT_NAME}}.pkg" \
-  #           --apple-id ${{secrets.NOTARIZATION_USERNAME}} \
-  #           --password ${{secrets.NOTARIZATION_PASSWORD}} \
-  #           --team-id ${{secrets.TEAM_ID}} \
-  #           --wait
+          # Notarize the package
+          xcrun notarytool submit "${{env.PROJECT_NAME}}.pkg" \
+            --apple-id ${{secrets.NOTARIZATION_USERNAME}} \
+            --password ${{secrets.NOTARIZATION_PASSWORD}} \
+            --team-id ${{secrets.TEAM_ID}} \
+            --wait
 
-  #         # Staple the package
-  #         xcrun stapler staple "${{env.PROJECT_NAME}}.pkg"
+          # Staple the package
+          xcrun stapler staple "${{env.PROJECT_NAME}}.pkg"
 
-  #         # Move the package to the artifacts directory
-  #         mv ${{env.PROJECT_NAME}}.pkg ../artifacts/${{env.MAC_PACKAGE}}
-  #       shell: bash
+          # Move the package to the artifacts directory
+          mv ${{env.PROJECT_NAME}}.pkg ../artifacts/${{env.MAC_PACKAGE}}
+        shell: bash
 
-  #     - name: Upload Artifacts
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: artifacts-macos
-  #         path: artifacts
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-macos
+          path: artifacts
 
   #=========================================================================================
   # Ubuntu Linux Build
