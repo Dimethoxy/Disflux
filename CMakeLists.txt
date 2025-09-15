@@ -19,7 +19,7 @@ CPMAddPackage(
 CPMAddPackage(
     NAME DMT
     GITHUB_REPOSITORY Dimethoxy/DMT
-    GIT_TAG main
+    GIT_TAG 25.1.3
     SOURCE_DIR ${EXT_DIR}/dmt
 )
 CPMAddPackage(
@@ -52,3 +52,4 @@ endif()
 add_definitions(-D_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING)
 
 add_subdirectory(src)
+
