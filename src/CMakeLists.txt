@@ -8,6 +8,9 @@ project(DisfluxPlugin VERSION 1.1.1) # Disflux-Version
 # If we are on MacOS, we need to build for arm64 and x86_64
 if (APPLE)
     set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
+    # Apparently macOS 12.0 is the minimum for reliable C++23 support
+    # But we yolo it and just hope for the best on older macOS versions
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15")
 endif()
 
 # Option to disable update notification (default OFF)

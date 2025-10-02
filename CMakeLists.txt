@@ -7,6 +7,12 @@ project(Disflux VERSION 1.1.1) # Disflux-Version
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS TRUE) 
 set(EXT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
+
+# Set macOS deployment target for older macOS compatibility
+if(APPLE)
+    # macOS 12.0 (Monterey) is the minimum for reliable C++23 support
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "12.0" CACHE STRING "Minimum macOS deployment target")
+endif()
 include(cmake/get_cpm.cmake)
 
 # Add external dependencies
@@ -19,7 +25,7 @@ CPMAddPackage(
 CPMAddPackage(
     NAME DMT
     GITHUB_REPOSITORY Dimethoxy/DMT
-    GIT_TAG 25.1.3
+    GIT_TAG v25.1.3
     SOURCE_DIR ${EXT_DIR}/dmt
 )
 CPMAddPackage(
