@@ -15,7 +15,7 @@
     "charconv": "cpp",
     "chrono": "cpp",
     "cinttypes": "cpp",
-    "clocale": "cpp",
+    "clocale": "cpp",6
     "cmath": "cpp",
     "codecvt": "cpp",
     "compare": "cpp",
@@ -94,5 +94,8 @@
     "${workspaceFolder}/external/dmt",
     "${workspaceFolder}/external/melatonin_perfetto",
     "${workspaceFolder}/external/juce/extras/Projucer/JuceLibraryCode"
-  ]
+  ],
+  "git.autoRepositoryDetection": true,
+  "git.detectSubmodules": true,
+  "git.openRepositoryInParentFolders": "always"
 }
