@@ -50,7 +50,7 @@ private:
   Image image;
   bool isResizing = false;
   //==============================================================================
-  dmt::gui::panel::DisfluxPanel<float> disfluxPanel;
+  dmt::gui::window::Layout mainLayout;
   dmt::gui::window::Compositor compositor;
   //==============================================================================
   juce::Image compositorSnapshot;
