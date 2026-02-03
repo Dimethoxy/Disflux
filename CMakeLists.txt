@@ -23,12 +23,6 @@ CPMAddPackage(
     SOURCE_DIR ${EXT_DIR}/juce
 )
 CPMAddPackage(
-    NAME DMT
-    GITHUB_REPOSITORY Dimethoxy/DMT
-    GIT_TAG main
-    SOURCE_DIR ${EXT_DIR}/dmt
-)
-CPMAddPackage(
     NAME CLAP_JUCE
     GITHUB_REPOSITORY free-audio/clap-juce-extensions
     GIT_TAG main
