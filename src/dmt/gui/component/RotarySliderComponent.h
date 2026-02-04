@@ -48,7 +48,7 @@
 #define DMT_EXCLUDE_SLIDER_GRAPHICS 0
 
 // Define to 1 to exclude title/info labels
-#define DMT_EXCLUDE_SLIDER_LABELS 0
+#define DMT_EXCLUDE_SLIDER_LABELS 1
 
 //==============================================================================
 

@@ -32,7 +32,7 @@
 //==============================================================================
 
 // Define to 1 to exclude DisfluxDisplay from the build
-#define DMT_EXCLUDE_DISFLUX_DISPLAY 1
+#define DMT_EXCLUDE_DISFLUX_DISPLAY 0
 
 //==============================================================================
 
