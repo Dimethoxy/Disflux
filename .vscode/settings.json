@@ -15,7 +15,7 @@
     "charconv": "cpp",
     "chrono": "cpp",
     "cinttypes": "cpp",
-    "clocale": "cpp",6
+    "clocale": "cpp",
     "cmath": "cpp",
     "codecvt": "cpp",
     "compare": "cpp",
