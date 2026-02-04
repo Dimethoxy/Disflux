@@ -4,8 +4,9 @@
             "name": "Linux",
             "includePath": [
                 "${default}",
-                "${workspaceFolder}/external/dmt",
-                "${workspaceFolder}/external/melatonin_perfetto"
+                "${workspaceFolder}/external/melatonin_perfetto",
+                "${workspaceFolder}/src/dmt",
+                "${workspaceFolder}/external/juce/modules"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang"

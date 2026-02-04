@@ -53,7 +53,8 @@ target_sources(${PROJECT_NAME}
 # Add the external libraries
 target_include_directories(${PROJECT_NAME}
     PUBLIC
-        ${CMAKE_SOURCE_DIR}/external/dmt
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/src/dmt
         ${CMAKE_SOURCE_DIR}/external/melatonin_perfetto
         ${CMAKE_SOURCE_DIR}/external/tomlplusplus
 )
@@ -61,32 +62,32 @@ target_include_directories(${PROJECT_NAME}
 # Add fonts and icons as binary data so they can be used in the app
 juce_add_binary_data(FontBinaryData
     SOURCES
-    ${CMAKE_SOURCE_DIR}/external/dmt/fonts/poppins/Poppins-Thin.ttf
-    ${CMAKE_SOURCE_DIR}/external/dmt/fonts/poppins/Poppins-ExtraLight.ttf
-    ${CMAKE_SOURCE_DIR}/external/dmt/fonts/poppins/Poppins-Light.ttf
-    ${CMAKE_SOURCE_DIR}/external/dmt/fonts/poppins/Poppins-Regular.ttf
-    ${CMAKE_SOURCE_DIR}/external/dmt/fonts/poppins/Poppins-Medium.ttf
-    ${CMAKE_SOURCE_DIR}/external/dmt/fonts/poppins/Poppins-SemiBold.ttf
-    ${CMAKE_SOURCE_DIR}/external/dmt/fonts/poppins/Poppins-Bold.ttf
-    ${CMAKE_SOURCE_DIR}/external/dmt/fonts/poppins/Poppins-ExtraBold.ttf
-    ${CMAKE_SOURCE_DIR}/external/dmt/fonts/poppins/Poppins-Black.ttf
-    ${CMAKE_SOURCE_DIR}/external/dmt/fonts/sedgwick_ave_display/SedgwickAveDisplay-Regular.ttf
-    ${CMAKE_SOURCE_DIR}/external/dmt/icons/speed.svg
-    ${CMAKE_SOURCE_DIR}/external/dmt/icons/back.svg
-    ${CMAKE_SOURCE_DIR}/external/dmt/icons/height.svg
-    ${CMAKE_SOURCE_DIR}/external/dmt/icons/thickness.svg
-    ${CMAKE_SOURCE_DIR}/external/dmt/icons/gear.svg
-    ${CMAKE_SOURCE_DIR}/external/dmt/icons/angles_up.svg
-    ${CMAKE_SOURCE_DIR}/external/dmt/icons/bypass.svg
-    ${CMAKE_SOURCE_DIR}/external/dmt/icons/download.svg
-    ${CMAKE_SOURCE_DIR}/external/dmt/icons/presets.svg
-    ${CMAKE_SOURCE_DIR}/external/dmt/icons/close.svg
-    ${CMAKE_SOURCE_DIR}/external/dmt/icons/reload.svg
-    ${CMAKE_SOURCE_DIR}/external/dmt/icons/save.svg
-    ${CMAKE_SOURCE_DIR}/external/dmt/icons/error.svg
-    ${CMAKE_SOURCE_DIR}/external/dmt/icons/warning.svg
-    ${CMAKE_SOURCE_DIR}/external/dmt/icons/success.svg
-    ${CMAKE_SOURCE_DIR}/external/dmt/icons/info.svg
+    ${CMAKE_SOURCE_DIR}/src/dmt/fonts/poppins/Poppins-Thin.ttf
+    ${CMAKE_SOURCE_DIR}/src/dmt/fonts/poppins/Poppins-ExtraLight.ttf
+    ${CMAKE_SOURCE_DIR}/src/dmt/fonts/poppins/Poppins-Light.ttf
+    ${CMAKE_SOURCE_DIR}/src/dmt/fonts/poppins/Poppins-Regular.ttf
+    ${CMAKE_SOURCE_DIR}/src/dmt/fonts/poppins/Poppins-Medium.ttf
+    ${CMAKE_SOURCE_DIR}/src/dmt/fonts/poppins/Poppins-SemiBold.ttf
+    ${CMAKE_SOURCE_DIR}/src/dmt/fonts/poppins/Poppins-Bold.ttf
+    ${CMAKE_SOURCE_DIR}/src/dmt/fonts/poppins/Poppins-ExtraBold.ttf
+    ${CMAKE_SOURCE_DIR}/src/dmt/fonts/poppins/Poppins-Black.ttf
+    ${CMAKE_SOURCE_DIR}/src/dmt/fonts/sedgwick_ave_display/SedgwickAveDisplay-Regular.ttf
+    ${CMAKE_SOURCE_DIR}/src/dmt/icons/speed.svg
+    ${CMAKE_SOURCE_DIR}/src/dmt/icons/back.svg
+    ${CMAKE_SOURCE_DIR}/src/dmt/icons/height.svg
+    ${CMAKE_SOURCE_DIR}/src/dmt/icons/thickness.svg
+    ${CMAKE_SOURCE_DIR}/src/dmt/icons/gear.svg
+    ${CMAKE_SOURCE_DIR}/src/dmt/icons/angles_up.svg
+    ${CMAKE_SOURCE_DIR}/src/dmt/icons/bypass.svg
+    ${CMAKE_SOURCE_DIR}/src/dmt/icons/download.svg
+    ${CMAKE_SOURCE_DIR}/src/dmt/icons/presets.svg
+    ${CMAKE_SOURCE_DIR}/src/dmt/icons/close.svg
+    ${CMAKE_SOURCE_DIR}/src/dmt/icons/reload.svg
+    ${CMAKE_SOURCE_DIR}/src/dmt/icons/save.svg
+    ${CMAKE_SOURCE_DIR}/src/dmt/icons/error.svg
+    ${CMAKE_SOURCE_DIR}/src/dmt/icons/warning.svg
+    ${CMAKE_SOURCE_DIR}/src/dmt/icons/success.svg
+    ${CMAKE_SOURCE_DIR}/src/dmt/icons/info.svg
 )
 
 # Link the libraries
