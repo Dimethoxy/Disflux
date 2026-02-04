@@ -29,7 +29,9 @@
 //==============================================================================
 
 #pragma once
+
 //==============================================================================
+
 #include "gui/component/AbstractSliderComponent.h"
 #include "gui/widget/Label.h"
 #include "gui/widget/RotarySlider.h"
@@ -39,13 +41,22 @@
 #include "utility/Settings.h"
 #include "utility/Unit.h"
 #include <JuceHeader.h>
+
+//==============================================================================
+
+// Define to 1 to exclude the main slider graphics
+#define DMT_EXCLUDE_SLIDER_GRAPHICS 1
+
+// Define to 1 to exclude title/info labels
+#define DMT_EXCLUDE_SLIDER_LABELS 0
+
 //==============================================================================
 
 namespace dmt {
 namespace gui {
 namespace component {
-//==============================================================================
 
+//==============================================================================
 /**
  * @brief Composite rotary slider component with parameter binding and context
  * menu.
@@ -97,7 +108,9 @@ public:
     TRACER("RotarySliderComponent::RotarySliderComponent");
     slider.addListener(this);
     updateLabel(static_cast<float>(slider.getValue()));
+#if DMT_EXCLUDE_SLIDER_GRAPHICS == 0
     addAndMakeVisible(slider);
+#endif
     // Set up context menu callback for host automation and parameter actions
     slider.onContextMenuRequested = [this]() {
       this->showContextMenuForSlider();
@@ -119,14 +132,18 @@ public:
     auto sliderBounds = bounds;
     const auto sliderSize =
       static_cast<int>(rawSliderSize * sliderBounds.getHeight());
+#if DMT_EXCLUDE_SLIDER_GRAPHICS == 0
     slider.setBounds(sliderBounds.removeFromTop(sliderSize));
+#endif
     const int labelPadding = static_cast<int>(padding * 0.5f);
     auto labelsBounds = bounds.reduced(labelPadding);
     const auto labelsSize =
       static_cast<int>(rawLabelsSize * labelsBounds.getHeight());
     labelsBounds = labelsBounds.removeFromBottom(labelsSize);
+#if DMT_EXCLUDE_SLIDER_LABELS == 0
     this->titleLabel.setBounds(labelsBounds);
     this->infoLabel.setBounds(labelsBounds);
+#endif
   }
 
   /**

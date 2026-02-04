@@ -29,7 +29,9 @@
 //==============================================================================
 
 #pragma once
+
 //==============================================================================
+
 #include "gui/component/AbstractSliderComponent.h"
 #include "gui/widget/Label.h"
 #include "gui/widget/LinearSlider.h"
@@ -39,12 +41,22 @@
 #include "utility/Settings.h"
 #include "utility/Unit.h"
 #include <JuceHeader.h>
+
 //==============================================================================
+
+// Define to 1 to exclude the main slider graphics
+#define DMT_EXCLUDE_SLIDER_GRAPHICS 1
+
+// Define to 1 to exclude title/info labels
+#define DMT_EXCLUDE_SLIDER_LABELS 0
+
+//==============================================================================
+
 namespace dmt {
 namespace gui {
 namespace component {
-//==============================================================================
 
+//==============================================================================
 /**
  * @brief Composite slider component with optional SVG title and parameter
  * binding.
@@ -101,12 +113,20 @@ public:
     TRACER("LinearSliderComponent::LinearSliderComponent");
     slider.addListener(this);
     updateLabel(static_cast<float>(slider.getValue()));
+#if DMT_EXCLUDE_SLIDER_GRAPHICS == 0
     addAndMakeVisible(slider);
+#endif
+#if DMT_EXCLUDE_SLIDER_LABELS == 0
     addAndMakeVisible(this->infoLabel);
+#endif
 
     if (_svgTitle) {
       titleIcon = dmt::icons::getIcon(_param);
+#if DMT_EXCLUDE_SLIDER_LABELS == 0
       this->titleLabel.setVisible(false);
+#else
+      this->titleLabel.setVisible(false);
+#endif
     }
 
     this->parameter = _apvts.getParameter(_param);
@@ -147,7 +167,9 @@ public:
         const auto titleSliderBounds =
           titleLabelBounds.removeFromTop(titleLabelHeight)
             .reduced(titleLabelOffset);
+#if DMT_EXCLUDE_SLIDER_LABELS == 0
         this->titleLabel.setBounds(titleSliderBounds);
+#endif
         auto infoLabelBounds = sliderBounds;
         const auto infoLabelHeight =
           static_cast<int32_t>(2 * infoFontSize * this->size);
@@ -155,20 +177,26 @@ public:
         const auto infoSliderBounds =
           infoLabelBounds.removeFromBottom(infoLabelHeight)
             .reduced(infoLabelOffset);
+#if DMT_EXCLUDE_SLIDER_LABELS == 0
         this->infoLabel.setBounds(infoSliderBounds);
+#endif
       }
       case Orientation::Vertical: {
+#if DMT_EXCLUDE_SLIDER_LABELS == 0
         this->titleLabel.setBounds(
           bounds.withTrimmedTop(static_cast<int32_t>(padding)));
         this->infoLabel.setBounds(
           bounds.withTrimmedBottom(static_cast<int32_t>(padding)));
+#endif
 
         auto sliderBounds = bounds;
         sliderBounds.removeFromTop(
           static_cast<int32_t>(titleFontSize * this->size + padding));
         sliderBounds.removeFromBottom(
           static_cast<int32_t>(infoFontSize * this->size + padding));
+#if DMT_EXCLUDE_SLIDER_GRAPHICS == 0
         slider.setBounds(sliderBounds);
+#endif
       }
     }
   }
@@ -194,12 +222,14 @@ public:
 
     constexpr float baseSvgPadding = 2.0f;
     if (svgTitle) {
+#if DMT_EXCLUDE_SLIDER_GRAPHICS == 0
       juce::Rectangle<float> iconArea =
         bounds.removeFromTop(slider.getY()).toFloat();
       iconArea = iconArea.withY(iconArea.getY() + 6.0f * this->size);
       iconArea = iconArea.reduced((svgPadding + baseSvgPadding) * this->size);
       titleIcon->drawWithin(
         _g, iconArea, juce::RectanglePlacement::centred, 1.0f);
+#endif
     }
   }
 
