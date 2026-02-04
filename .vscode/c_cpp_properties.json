@@ -1,16 +1,15 @@
 {
-    "configurations": [
-        {
-            "name": "Linux",
-            "includePath": [
-                "${default}",
-                "${workspaceFolder}/external/melatonin_perfetto",
-                "${workspaceFolder}/src/dmt",
-                "${workspaceFolder}/external/juce/modules"
-            ],
-            "defines": [],
-            "compilerPath": "/usr/bin/clang"
-        }
-    ],
-    "version": 4
+  "configurations": [
+    {
+      "name": "Linux",
+      "includePath": [
+        "${workspaceFolder}/external/**",
+        "${workspaceFolder}/src/**"
+      ],
+      "defines": [],
+      "compilerPath": "/usr/bin/clang",
+      "intelliSenseMode": "linux-gcc-x64"
+    }
+  ],
+  "version": 4
 }
