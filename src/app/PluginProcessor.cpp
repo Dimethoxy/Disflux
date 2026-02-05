@@ -18,7 +18,6 @@ PluginProcessor::PluginProcessor()
   , disfluxProcessor(apvts,
                      dmt::Settings::Audio::frequencySmoothness,
                      dmt::Settings::Audio::spreadSmoothness,
-                     dmt::Settings::Audio::pinchSmoothness,
                      dmt::Settings::Audio::useOutputHighpass,
                      dmt::Settings::Audio::outputHighpassFrequency,
                      dmt::Settings::Audio::smoothingInterval)
