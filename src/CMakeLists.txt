@@ -3,7 +3,7 @@
 #==============================================================================
 
 cmake_minimum_required(VERSION 3.22)
-project(DisfluxPlugin VERSION 1.1.1) # Disflux-Version
+project(DisfluxPlugin VERSION 1.1.2) # Disflux-Version
 
 # If we are on MacOS, we need to build for arm64 and x86_64
 if (APPLE)
@@ -41,7 +41,7 @@ juce_add_plugin(${PROJECT_NAME}
     PLUGIN_CODE DFLX
     LV2URI "https://dimethoxy.com/plugins/disflux"      
     BUNDLE_ID com.dimethoxy.disflux           
-    )
+)
 
 # Add the main source files
 target_sources(${PROJECT_NAME}
@@ -145,7 +145,7 @@ message("JUCE header file generated!")
 if(MSVC)
     target_compile_definitions(${PROJECT_NAME}
         PRIVATE
-            _SILENCE_CXX23_ALIGEND_STORAGE_DEPRECATION_WARNING
+            _SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING
     )
 endif()
 
