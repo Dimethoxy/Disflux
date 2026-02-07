@@ -5,10 +5,6 @@
 #include <JuceHeader.h>
 
 //==============================================================================
-
-#define DMT_EXCLUDE_DISFLUX_PROCESSING 1
-
-//==============================================================================
 class PluginProcessor final : public juce::AudioProcessor
 {
 public:
@@ -57,9 +53,7 @@ public:
 
   //==============================================================================
   dmt::dsp::data::FifoAudioBuffer<float> oscilloscopeBuffer;
-#if DMT_EXCLUDE_DISFLUX_PROCESSING == 0
   dmt::dsp::effect::DisfluxProcessor disfluxProcessor;
-#endif
 
   //==============================================================================
   // Store scale factor for editor window

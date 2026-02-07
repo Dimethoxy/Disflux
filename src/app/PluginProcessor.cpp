@@ -14,14 +14,13 @@ PluginProcessor::PluginProcessor()
         )
   , apvts(*this, nullptr, ProjectInfo::projectName, createParameterLayout())
   , oscilloscopeBuffer(2, 4096)
-#if DMT_EXCLUDE_DISFLUX_PROCESSING == 0
   , disfluxProcessor(apvts,
                      dmt::Settings::Audio::frequencySmoothness,
+                     dmt::Settings::Audio::pinchSmoothness,
                      dmt::Settings::Audio::spreadSmoothness,
                      dmt::Settings::Audio::useOutputHighpass,
                      dmt::Settings::Audio::outputHighpassFrequency,
                      dmt::Settings::Audio::smoothingInterval)
-#endif
 {
 #if PERFETTO
   MelatoninPerfetto::get().beginSession();
@@ -118,9 +117,7 @@ PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
   juce::ignoreUnused(sampleRate, samplesPerBlock);
 
-#if DMT_EXCLUDE_DISFLUX_PROCESSING == 0
   disfluxProcessor.prepare(sampleRate);
-#endif
 }
 
 void
@@ -180,9 +177,7 @@ PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   bool isBypassed = bypassParam->load() > 0.5f;
 
   if (!isBypassed) {
-#if DMT_EXCLUDE_DISFLUX_PROCESSING == 0
     disfluxProcessor.processBlock(buffer);
-#endif
   }
   oscilloscopeBuffer.addToFifo(buffer);
 }
