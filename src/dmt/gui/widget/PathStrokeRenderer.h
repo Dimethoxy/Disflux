@@ -48,16 +48,15 @@ namespace widget {
  * @tparam SampleType The sample type (e.g., float, double) used for audio data.
  *
  * @details
- * This renderer builds a continuous JUCE Path from the audio samples and
- * strokes it with a configurable thickness. It produces high-quality,
- * anti-aliased waveform visuals at the cost of higher CPU usage compared to
- * simpler rendering strategies.
+ * This is a very simple renderer that draws a path with one point for each
+ * sample. It's non-hardware-accelerated, and produces high-quality visuals at
+ * the cost of increased CPU usage.
  *
  * The renderer maintains persistent state (currentX and currentSample) between
  * frames to ensure visual continuity of the waveform across render calls.
  * Sub-pixel positioning is preserved to avoid visual jitter.
  *
- * Samples are read directly from the ring buffer — no data is copied.
+ * Samples are read directly from the ring buffer, no data is copied.
  */
 template<typename SampleType>
 class PathStrokeRenderer : public OscilloscopeRenderer<SampleType>
@@ -89,37 +88,90 @@ public:
                    int _channel,
                    const RenderContext& _context) override
   {
-    // Maintain sub-pixel continuity across frames
     currentX = currentX - static_cast<int>(currentX) + _context.drawStartX;
+    const auto path = buildPath(_ringBuffer, _channel, _context);
+    strokePath(_graphics, path, _context);
+  }
 
-    const float startY =
-      static_cast<float>(_context.halfHeight) +
-      currentSample * _context.halfHeight * _context.amplitude;
-    const auto startPoint = juce::Point<float>(currentX, startY);
+  //============================================================================
+private:
+  //============================================================================
+  /**
+   * @brief Converts a sample value to a Y pixel coordinate.
+   *
+   * @param _sample The sample value to convert.
+   * @param _halfHeight The vertical center of the drawing area in pixels.
+   * @param _amplitude The amplitude scaling factor.
+   *
+   * @return The Y coordinate in pixels.
+   */
+  [[nodiscard]] inline float sampleToY(SampleType _sample,
+                                       int _halfHeight,
+                                       float _amplitude) const noexcept
+  {
+    return static_cast<float>(_halfHeight) + _sample * _halfHeight * _amplitude;
+  }
 
+  //============================================================================
+  /**
+   * @brief Builds a continuous path from the ring buffer samples.
+   *
+   * @param _ringBuffer Reference to the ring buffer containing audio samples.
+   * @param _channel The audio channel index to read from.
+   * @param _context Pre-computed rendering parameters for this frame.
+   *
+   * @return The constructed JUCE Path representing the waveform segment.
+   *
+   * @details
+   * Reads samples directly from the ring buffer and advances the persistent
+   * currentX position to maintain sub-pixel continuity between frames.
+   */
+  [[nodiscard]] inline juce::Path buildPath(RingBuffer& _ringBuffer,
+                                            int _channel,
+                                            const RenderContext& _context)
+  {
     juce::Path path;
-    path.startNewSubPath(startPoint);
+    path.startNewSubPath(
+      currentX,
+      sampleToY(currentSample, _context.halfHeight, _context.amplitude));
 
     for (size_t i = 0; i < static_cast<size_t>(_context.sampleCount); ++i) {
       const int sampleIndex = _context.firstSampleIndex + static_cast<int>(i);
       currentSample = _ringBuffer.getSample(_channel, sampleIndex);
       currentX += _context.pixelsPerSample;
-      const float y = static_cast<float>(_context.halfHeight) +
-                      currentSample * _context.halfHeight * _context.amplitude;
-      const auto point = juce::Point<float>(currentX, y);
-      path.lineTo(point);
+      path.lineTo(
+        currentX,
+        sampleToY(currentSample, _context.halfHeight, _context.amplitude));
     }
 
+    return path;
+  }
+
+  //============================================================================
+  /**
+   * @brief Strokes the given path onto the graphics context.
+   *
+   * @param _graphics The JUCE Graphics context targeting the oscilloscope
+   *                  image.
+   * @param _path The waveform path to stroke.
+   * @param _context Pre-computed rendering parameters for this frame.
+   *
+   * @details
+   * Configures the stroke type with mitered joints and square end caps,
+   * then paints the path in white.
+   */
+  inline void strokePath(juce::Graphics& _graphics,
+                         const juce::Path& _path,
+                         const RenderContext& _context) const
+  {
     juce::PathStrokeType strokeType(_context.thickness * _context.sizeFactor,
                                     juce::PathStrokeType::JointStyle::mitered,
                                     juce::PathStrokeType::EndCapStyle::square);
 
     _graphics.setColour(juce::Colours::white);
-    _graphics.strokePath(path, strokeType);
+    _graphics.strokePath(_path, strokeType);
   }
 
-  //============================================================================
-private:
   //============================================================================
   /** Last sample value for waveform continuity between frames. */
   SampleType currentSample = static_cast<SampleType>(0.0f);
