@@ -31,7 +31,9 @@
 
 //==============================================================================
 
+#include "gui/widget/PathStrokeRenderer.h"
 #include <JuceHeader.h>
+#include <memory>
 
 //==============================================================================
 
@@ -72,6 +74,7 @@ public:
   using PixelFormat = juce::Image::PixelFormat;
   using ReadWriteLock = juce::ReadWriteLock;
   using Settings = dmt::Settings;
+  using Renderer = OscilloscopeRenderer<SampleType>;
 
   //==============================================================================
   /**
@@ -91,6 +94,7 @@ public:
     , ringBuffer(_ringBuffer)
     , channel(_channel)
     , size(_sizeFactor)
+    , renderer(std::make_unique<PathStrokeRenderer<SampleType>>())
   {
     startThread();
   }
@@ -188,6 +192,23 @@ public:
   }
 
   //==============================================================================
+  /**
+   * @brief Sets the rendering strategy for the oscilloscope.
+   *
+   * @param _newRenderer A unique pointer to the new renderer implementation.
+   *
+   * @details
+   * Swaps the current rendering strategy under the write lock to ensure
+   * thread safety with the rendering thread. The previous renderer is
+   * destroyed when the new one is set.
+   */
+  inline void setRenderer(std::unique_ptr<Renderer> _newRenderer)
+  {
+    const ScopedWriteLock writeLock(imageLock);
+    renderer = std::move(_newRenderer);
+  }
+
+  //==============================================================================
 protected:
   //==============================================================================
   /**
@@ -282,32 +303,18 @@ protected:
       width - pixelToDraw + 10, 0, pixelToDraw, height);
     image.clear(clearRect, juce::Colours::transparentBlack);
 
-    // Generate path for new samples
-    currentX = currentX - static_cast<int>(currentX) + width - pixelToDraw;
-    float pixelsPerSample = 1.0f / samplesPerPixel;
-
-    const float startY = halfHeight + currentSample * halfHeight * amplitude;
-    const auto startPoint = juce::Point<float>(currentX, startY);
-
-    juce::Path path;
-    path.startNewSubPath(startPoint);
-
-    for (size_t i = 0; i < static_cast<size_t>(samplesToDraw); ++i) {
-      const int sampleIndex = firstSamplesToDraw + static_cast<int>(i);
-      currentSample = ringBuffer.getSample(channel, sampleIndex);
-      currentX += pixelsPerSample;
-      const float y = halfHeight + currentSample * halfHeight * amplitude;
-      const auto point = juce::Point<float>(currentX, y);
-      path.lineTo(point);
-    }
-
-    juce::PathStrokeType strokeType(thickness * size,
-                                    juce::PathStrokeType::JointStyle::mitered,
-                                    juce::PathStrokeType::EndCapStyle::square);
-
+    // Delegate drawing to the active renderer
     juce::Graphics imageGraphics(image);
-    imageGraphics.setColour(juce::Colours::white);
-    imageGraphics.strokePath(path, strokeType);
+    const typename Renderer::RenderContext context{ firstSamplesToDraw,
+                                                    samplesToDraw,
+                                                    static_cast<float>(
+                                                      width - pixelToDraw),
+                                                    1.0f / samplesPerPixel,
+                                                    halfHeight,
+                                                    amplitude,
+                                                    thickness,
+                                                    size };
+    renderer->draw(imageGraphics, ringBuffer, channel, context);
   }
 
   //==============================================================================
@@ -323,8 +330,7 @@ private:
   Image image = Image(PixelFormat::ARGB, 1, 1, true);
   ReadWriteLock imageLock;
 
-  SampleType currentSample = static_cast<SampleType>(0.0f);
-  float currentX = 0.0f;
+  std::unique_ptr<Renderer> renderer;
   float rawSamplesPerPixel = 10.0f;
   float amplitude = 1.0f;
   float thickness = 3.0f;
