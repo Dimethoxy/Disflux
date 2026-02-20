@@ -28,14 +28,18 @@
 
 #pragma once
 
+//==============================================================================
+
 #include "dsp/data/FifoAudioBuffer.h"
 #include "gui/display/OscilloscopeDisplay.h"
 #include <JuceHeader.h>
 
 //==============================================================================
+
 namespace dmt {
 namespace gui {
 namespace display {
+
 //==============================================================================
 
 /**
