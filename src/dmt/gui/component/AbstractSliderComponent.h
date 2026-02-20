@@ -52,8 +52,8 @@ namespace component {
  *
  * @details
  * Encapsulates common logic for parameter binding, title/info labels, unit
- * display, and context menu. Derived classes should implement layout, painting,
- * and slider instantiation.
+ * display, and context menu. Derived classes should implement layout,
+ * painting, and slider instantiation.
  */
 template<typename Derived, typename SliderType>
 class AbstractSliderComponent
