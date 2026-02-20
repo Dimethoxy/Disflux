@@ -1,11 +1,36 @@
-/**
- * @file AbstractSliderComponent.h
- * @description
- * @author
- * @copyright
+//==============================================================================
+/* ██████╗ ██╗███╗   ███╗███████╗████████╗██╗  ██╗ ██████╗ ██╗  ██╗██╗   ██╗
+ * ██╔══██╗██║████╗ ████║██╔════╝╚══██╔══╝██║  ██║██╔═══██╗╚██╗██╔╝╚██╗ ██╔╝
+ * ██║  ██║██║██╔████╔██║█████╗     ██║   ███████║██║   ██║ ╚███╔╝  ╚████╔╝
+ * ██║  ██║██║██║╚██╔╝██║██╔══╝     ██║   ██╔══██║██║   ██║ ██╔██╗   ╚██╔╝
+ * ██████╔╝██║██║ ╚═╝ ██║███████╗   ██║   ██║  ██║╚██████╔╝██╔╝ ██╗   ██║
+ * ╚═════╝ ╚═╝╚═╝     ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝
+ * Copyright (C) 2024 Dimethoxy Audio (https://dimethoxy.com)
+ *
+ * This file is part of the Dimethoxy Library, a collection of essential
+ * classes used across various Dimethoxy projects.
+ * These files are primarily designed for internal use within our repositories.
+ *
+ * License:
+ * This code is licensed under the GPLv3 license. You are permitted to use and
+ * modify this code under the terms of this license.
+ * You must adhere GPLv3 license for any project using this code or parts of it.
+ * Your are not allowed to use this code in any closed-source project.
+ *
+ * Description:
+ * AbstractSliderComponent provides a base class for slider components with
+ * parameter binding, labels, and context menu support. It encapsulates common
+ * logic for displaying the parameter value with units and showing the host
+ * context menu.
+ *
+ * Authors:
+ * Lunix-420 (Primary Author)
  */
+//==============================================================================
 
 #pragma once
+
+//==============================================================================
 
 #include "gui/widget/Label.h"
 #include "utility/Fonts.h"
@@ -14,10 +39,13 @@
 #include "utility/Unit.h"
 #include <JuceHeader.h>
 
+//==============================================================================
+
 namespace dmt {
 namespace gui {
 namespace component {
 
+//==============================================================================
 /**
  * @brief Abstract base class for slider components with parameter binding,
  * labels, and context menu.
