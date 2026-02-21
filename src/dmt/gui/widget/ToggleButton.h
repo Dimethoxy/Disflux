@@ -1,16 +1,15 @@
 //==============================================================================
-/*
- * ██████  ██ ███    ███ ███████ ████████ ██   ██  ██████  ██   ██ ██    ██
- * ██   ██ ██ ████  ████ ██         ██    ██   ██ ██    ██  ██ ██   ██  ██
- * ██   ██ ██ ██ ████ ██ █████      ██    ██   ███████ ██    ██   ███     ████
- * ██   ██ ██ ██  ██  ██ ██         ██    ██   ██ ██    ██  ██ ██     ██
- * ██████  ██ ██      ██ ███████    ██    ██   ██  ██████  ██   ██    ██
- *
+/* ██████╗ ██╗███╗   ███╗███████╗████████╗██╗  ██╗ ██████╗ ██╗  ██╗██╗   ██╗
+ * ██╔══██╗██║████╗ ████║██╔════╝╚══██╔══╝██║  ██║██╔═══██╗╚██╗██╔╝╚██╗ ██╔╝
+ * ██║  ██║██║██╔████╔██║█████╗     ██║   ███████║██║   ██║ ╚███╔╝  ╚████╔╝
+ * ██║  ██║██║██║╚██╔╝██║██╔══╝     ██║   ██╔══██║██║   ██║ ██╔██╗   ╚██╔╝
+ * ██████╔╝██║██║ ╚═╝ ██║███████╗   ██║   ██║  ██║╚██████╔╝██╔╝ ██╗   ██║
+ * ╚═════╝ ╚═╝╚═╝     ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝
  * Copyright (C) 2024 Dimethoxy Audio (https://dimethoxy.com)
  *
- * This file is part of the Dimethoxy Library, a collection of essential
- * classes used across various Dimethoxy projects.
- * These files are primarily designed for internal use within our repositories.
+ * Part of the Dimethoxy Library, primarily intended for Dimethoxy plugins.
+ * External use is permitted but not recommended.
+ * No support or compatibility guarantees are provided.
  *
  * License:
  * This code is licensed under the GPLv3 license. You are permitted to use and
@@ -92,9 +91,9 @@ public:
                         bool _shouldDrawBackground = true,
                         bool _shouldDrawShadow = true,
                         bool _alternativeIconHover = false) noexcept
-    : AbstractButton(_name, 
-                     _iconName, 
-                     _tooltip, 
+    : AbstractButton(_name,
+                     _iconName,
+                     _tooltip,
                      _shouldDrawBorder,
                      _shouldDrawBackground,
                      _shouldDrawShadow,

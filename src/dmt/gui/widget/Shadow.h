@@ -1,16 +1,15 @@
 //==============================================================================
-/*
- * ██████  ██ ███    ███ ███████ ████████ ██   ██  ██████  ██   ██ ██    ██
- * ██   ██ ██ ████  ████ ██         ██    ██   ██ ██    ██  ██ ██   ██  ██
- * ██   ██ ██ ██ ████ ██ █████      ██    ███████ ██    ██   ███     ████
- * ██   ██ ██ ██  ██  ██ ██         ██    ██   ██ ██    ██  ██ ██     ██
- * ██████  ██ ██      ██ ███████    ██    ██   ██  ██████  ██   ██    ██
- *
+/* ██████╗ ██╗███╗   ███╗███████╗████████╗██╗  ██╗ ██████╗ ██╗  ██╗██╗   ██╗
+ * ██╔══██╗██║████╗ ████║██╔════╝╚══██╔══╝██║  ██║██╔═══██╗╚██╗██╔╝╚██╗ ██╔╝
+ * ██║  ██║██║██╔████╔██║█████╗     ██║   ███████║██║   ██║ ╚███╔╝  ╚████╔╝
+ * ██║  ██║██║██║╚██╔╝██║██╔══╝     ██║   ██╔══██║██║   ██║ ██╔██╗   ╚██╔╝
+ * ██████╔╝██║██║ ╚═╝ ██║███████╗   ██║   ██║  ██║╚██████╔╝██╔╝ ██╗   ██║
+ * ╚═════╝ ╚═╝╚═╝     ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝
  * Copyright (C) 2024 Dimethoxy Audio (https://dimethoxy.com)
  *
- * This file is part of the Dimethoxy Library, a collection of essential
- * classes used across various Dimethoxy projects.
- * These files are primarily designed for internal use within our repositories.
+ * Part of the Dimethoxy Library, primarily intended for Dimethoxy plugins.
+ * External use is permitted but not recommended.
+ * No support or compatibility guarantees are provided.
  *
  * License:
  * This code is licensed under the GPLv3 license. You are permitted to use and
@@ -26,17 +25,22 @@
  * Lunix-420 (Primary Author)
  */
 //==============================================================================
+
 #pragma once
+
 //==============================================================================
+
 #include "utility/Scaleable.h"
 #include "utility/Settings.h"
 #include <JuceHeader.h>
+
 //==============================================================================
+
 namespace dmt {
 namespace gui {
 namespace widget {
-//==============================================================================
 
+//==============================================================================
 /**
  * @brief Component for rendering drop shadows on arbitrary paths.
  *
