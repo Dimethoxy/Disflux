@@ -62,10 +62,10 @@
     </LAYOUT>
   </FILTER>
   <FILTER uid="5" x="0.4419642857142857" y="0.6309963099630996" useARA="0"
-          uiLastX_Normal="5865" uiLastY_Normal="440" uiopen_Normal="0">
+          uiLastX_Normal="5343" uiLastY_Normal="512" uiopen_Normal="0">
     <PLUGIN name="Disflux" format="VST3" category="Fx|Analyzer" manufacturer="Dimethoxy"
-            version="1.1.1" file="/data/development/dimethoxy/disflux/build/src/DisfluxPlugin_artefacts/Debug/VST3/Disflux.vst3/Contents/x86_64-linux/Disflux.so"
-            uniqueId="d80b948a" isInstrument="0" fileTime="19c2645edb8" infoUpdateTime="19c83e59f4d"
+            version="1.1.2" file="/data/development/dimethoxy/disflux/build/src/DisfluxPlugin_artefacts/Debug/VST3/Disflux.vst3/Contents/x86_64-linux/Disflux.so"
+            uniqueId="d80b948a" isInstrument="0" fileTime="19c840e61c8" infoUpdateTime="19c84118a88"
             numInputs="2" numOutputs="2" isShell="0" hasARAExtension="0"
             uid="b6163bd1"/>
     <STATE>630.VMjLgzl....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9LCN33BQqEiXrcmUiMSPt3RPh4BUAkTUP0TPP4hPpYTVtPjcCUDTToUdYYTXvb1UPMGNVMFcQcjKwTjQgASUF4RPp4RPt3hKt3hKt3hcqLjKPUjZTEDLD4RPHAkVpEDTtHEUtD0aM0VVxU0QjYTRWk0cUcUVz0jUj4BVWgkbUcUVtPDTBQjKt3hKt3hKtnFQP4hKUAkTEQ0TtPjYt7VTF4RP1AUPDsVLhw1cVM1LvPkVyDjYic1cVM1ZAAkKIAkKt3hKt3hKt3xMq3hKTETRUAUSAAkKBolQY4BQlMTQPQkV4kkQgAyYGQ0azDCVtEjYic1cVM1ZAAkKIAkKt3hKt3hKt3xMq3hKTETRUAUSAAkKBolQY4BQ1MTQPQkV4kkQgAyYxPkcIcUVmEkQtDSQFEFLUYjKAolKA4hKt3hKt3hKuEDQt.UQpQUPvPjKAgDTZoVPP4hSTYWTxgCaXc1crAEMAcEV40zQtDSQFEFLUYjKAolKA4hKt3hKt3hKt3hKt.UQpQUPvPjKAgDTZoVPP4BSTYWTxgCaXc1cwD0YqwVXtf0UXIWUWkkKDAkPD4hKt3hKt3hKt3hKt3hKt3hKt3hKt3hKJUELPUTPqI1aYcEV5UkQQcVTWgkKDAkKBs1QhcVSxHlKDAkKC4BTG4hKt3hKt3hKt3FUUMTUDQEdqw1XmE0UYQTQFM1YAwyKIMzasA2atUlaz4COuX0TTMCTrU2Yo41TzEFck4C.</STATE>
@@ -91,7 +91,6 @@
       </OUTPUTS>
     </LAYOUT>
   </FILTER>
-  <CONNECTION srcFilter="2" srcChannel="4096" dstFilter="6" dstChannel="4096"/>
   <CONNECTION srcFilter="6" srcChannel="0" dstFilter="5" dstChannel="0"/>
   <CONNECTION srcFilter="6" srcChannel="1" dstFilter="5" dstChannel="1"/>
 </FILTERGRAPH>

@@ -156,16 +156,16 @@ private:
    * @param _context Pre-computed rendering parameters for this frame.
    *
    * @details
-   * Configures the stroke type with mitered joints and square end caps,
-   * then paints the path in white.
+   * Configures the stroke type with beveled joints and rounded end caps,
+   * and uses a solid white colour for the stroke.
    */
   inline void strokePath(juce::Graphics& _graphics,
                          const juce::Path& _path,
                          const RenderContext& _context) const
   {
     juce::PathStrokeType strokeType(_context.thickness * _context.sizeFactor,
-                                    juce::PathStrokeType::JointStyle::mitered,
-                                    juce::PathStrokeType::EndCapStyle::square);
+                                    juce::PathStrokeType::JointStyle::beveled,
+                                    juce::PathStrokeType::EndCapStyle::rounded);
 
     // Generate random color for testing
     // juce::Random random;

@@ -249,6 +249,7 @@ protected:
     }
 
     image = Image(PixelFormat::ARGB, _width + 10, _height, true);
+    subPixelOffset = 0.0f;
 
     juce::Graphics imageGraphics(image);
     imageGraphics.setColour(juce::Colours::white);
@@ -285,7 +286,10 @@ protected:
     const int samplesToDraw = jmin(samplesToRead, maxSamplesToDraw);
     const int firstSamplesToDraw = readPosition;
 
-    const int pixelToDraw = static_cast<int>(samplesToDraw / samplesPerPixel);
+    const float exactPixelsToDraw =
+      static_cast<float>(samplesToDraw) / samplesPerPixel;
+    const float totalShift = exactPixelsToDraw + subPixelOffset;
+    const int pixelToDraw = static_cast<int>(totalShift);
     ringBuffer.incrementReadPosition(channel, samplesToDraw);
 
     // Image move
@@ -304,15 +308,17 @@ protected:
 
     // Delegate drawing to the active renderer
     juce::Graphics imageGraphics(image);
-    const typename Renderer::RenderContext context{ firstSamplesToDraw,
-                                                    samplesToDraw,
-                                                    static_cast<float>(
-                                                      width - pixelToDraw),
-                                                    1.0f / samplesPerPixel,
-                                                    halfHeight,
-                                                    amplitude,
-                                                    thickness,
-                                                    size };
+    const typename Renderer::RenderContext context{
+      firstSamplesToDraw,
+      samplesToDraw,
+      static_cast<float>(width - pixelToDraw) + subPixelOffset,
+      1.0f / samplesPerPixel,
+      halfHeight,
+      amplitude,
+      thickness,
+      size
+    };
+    subPixelOffset = totalShift - static_cast<float>(pixelToDraw);
     renderer->draw(imageGraphics, ringBuffer, channel, context);
   }
 
@@ -330,6 +336,7 @@ private:
   ReadWriteLock imageLock;
 
   std::unique_ptr<Renderer> renderer;
+  float subPixelOffset = 0.0f;
   float rawSamplesPerPixel = 10.0f;
   float amplitude = 1.0f;
   float thickness = 3.0f;
