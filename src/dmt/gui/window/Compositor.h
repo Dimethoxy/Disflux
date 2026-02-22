@@ -192,8 +192,7 @@ public:
     tooltip.setBounds(bounds);
     tooltip.setAlwaysOnTop(true);
 
-    // Main layout - always apply the global window padding so the content
-    // margin remains consistent whether the header is visible or hidden.
+    // Main layout
     const auto padding = rawPadding * size;
     if (header.isVisible()) {
       const auto headerHeight = rawHeaderHeight * size;
@@ -209,8 +208,8 @@ public:
       mainLayout.setBounds(contentBounds);
       settingsPanel.setBounds(contentBounds);
 
-      borderButton.setVisible(
-        false); // Hide the BorderButton when header visible
+      // Hide the BorderButton when header visible
+      borderButton.setVisible(false);
     } else {
       // If the header is hidden, keep the same margin around the layout
       const auto padded = bounds.reduced(padding);
