@@ -211,13 +211,13 @@ private:
         const float binX = std::min(sampleX, nextBinBoundary - 0.5f);
 
         if (bin.count == 1) {
-          // Single sample in bin — draw one point
+          // Single sample in bin, draw one point
           path.lineTo(binX,
                       this->sampleToY(bin.minSample,
                                       _context.halfHeight,
                                       _context.amplitude));
         } else {
-          // Multiple samples — draw min and max in temporal order
+          // Multiple samples, draw min and max in temporal order
           if (bin.minFirst()) {
             path.lineTo(binX,
                         this->sampleToY(bin.minSample,
