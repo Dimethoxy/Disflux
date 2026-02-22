@@ -87,7 +87,7 @@ public:
                    int _channel,
                    const RenderContext& _context) override
   {
-    currentX = currentX - static_cast<int>(currentX) + _context.drawStartX;
+    currentX = _context.drawStartX;
     const auto path = buildPath(_ringBuffer, _channel, _context);
     strokePath(_graphics, path, _context);
   }
@@ -166,6 +166,15 @@ private:
     juce::PathStrokeType strokeType(_context.thickness * _context.sizeFactor,
                                     juce::PathStrokeType::JointStyle::mitered,
                                     juce::PathStrokeType::EndCapStyle::square);
+
+    // Generate random color for testing
+    // juce::Random random;
+    // float red = random.nextFloat();
+    // float green = random.nextFloat();
+    // float blue = random.nextFloat();
+    // juce::Colour randomColour =
+    //   juce::Colour::fromFloatRGBA(red, green, blue, 1.0f);
+    // _graphics.setColour(randomColour);
 
     _graphics.setColour(juce::Colours::white);
     _graphics.strokePath(_path, strokeType);
