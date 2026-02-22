@@ -43,11 +43,7 @@
 
 //==============================================================================
 
-// Define to 1 to exclude the main slider graphics
-#define DMT_EXCLUDE_SLIDER_GRAPHICS 0
-
-// Define to 1 to exclude title/info labels
-#define DMT_EXCLUDE_SLIDER_LABELS 0
+// Slider graphics and labels are always included; remove conditional macros
 
 //==============================================================================
 
@@ -112,20 +108,12 @@ public:
     TRACER("LinearSliderComponent::LinearSliderComponent");
     slider.addListener(this);
     updateLabel(static_cast<float>(slider.getValue()));
-#if DMT_EXCLUDE_SLIDER_GRAPHICS == 0
     addAndMakeVisible(slider);
-#endif
-#if DMT_EXCLUDE_SLIDER_LABELS == 0
     addAndMakeVisible(this->infoLabel);
-#endif
 
     if (_svgTitle) {
       titleIcon = dmt::icons::getIcon(_param);
-#if DMT_EXCLUDE_SLIDER_LABELS == 0
       this->titleLabel.setVisible(false);
-#else
-      this->titleLabel.setVisible(false);
-#endif
     }
 
     this->parameter = _apvts.getParameter(_param);
@@ -166,9 +154,7 @@ public:
         const auto titleSliderBounds =
           titleLabelBounds.removeFromTop(titleLabelHeight)
             .reduced(titleLabelOffset);
-#if DMT_EXCLUDE_SLIDER_LABELS == 0
         this->titleLabel.setBounds(titleSliderBounds);
-#endif
         auto infoLabelBounds = sliderBounds;
         const auto infoLabelHeight =
           static_cast<int32_t>(2 * infoFontSize * this->size);
@@ -176,26 +162,20 @@ public:
         const auto infoSliderBounds =
           infoLabelBounds.removeFromBottom(infoLabelHeight)
             .reduced(infoLabelOffset);
-#if DMT_EXCLUDE_SLIDER_LABELS == 0
         this->infoLabel.setBounds(infoSliderBounds);
-#endif
       }
       case Orientation::Vertical: {
-#if DMT_EXCLUDE_SLIDER_LABELS == 0
         this->titleLabel.setBounds(
           bounds.withTrimmedTop(static_cast<int32_t>(padding)));
         this->infoLabel.setBounds(
           bounds.withTrimmedBottom(static_cast<int32_t>(padding)));
-#endif
 
         auto sliderBounds = bounds;
         sliderBounds.removeFromTop(
           static_cast<int32_t>(titleFontSize * this->size + padding));
         sliderBounds.removeFromBottom(
           static_cast<int32_t>(infoFontSize * this->size + padding));
-#if DMT_EXCLUDE_SLIDER_GRAPHICS == 0
         slider.setBounds(sliderBounds);
-#endif
       }
     }
   }

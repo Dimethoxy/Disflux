@@ -43,11 +43,7 @@
 
 //==============================================================================
 
-// Define to 1 to exclude the main slider graphics
-#define DMT_EXCLUDE_SLIDER_GRAPHICS 0
-
-// Define to 1 to exclude title/info labels
-#define DMT_EXCLUDE_SLIDER_LABELS 0
+// Slider graphics and labels are always included; remove conditional macros
 
 //==============================================================================
 
@@ -107,9 +103,7 @@ public:
     TRACER("RotarySliderComponent::RotarySliderComponent");
     slider.addListener(this);
     updateLabel(static_cast<float>(slider.getValue()));
-#if DMT_EXCLUDE_SLIDER_GRAPHICS == 0
     addAndMakeVisible(slider);
-#endif
     // Set up context menu callback for host automation and parameter actions
     slider.onContextMenuRequested = [this]() {
       this->showContextMenuForSlider();
@@ -131,18 +125,14 @@ public:
     auto sliderBounds = bounds;
     const auto sliderSize =
       static_cast<int>(rawSliderSize * sliderBounds.getHeight());
-#if DMT_EXCLUDE_SLIDER_GRAPHICS == 0
     slider.setBounds(sliderBounds.removeFromTop(sliderSize));
-#endif
     const int labelPadding = static_cast<int>(padding * 0.5f);
     auto labelsBounds = bounds.reduced(labelPadding);
     const auto labelsSize =
       static_cast<int>(rawLabelsSize * labelsBounds.getHeight());
     labelsBounds = labelsBounds.removeFromBottom(labelsSize);
-#if DMT_EXCLUDE_SLIDER_LABELS == 0
     this->titleLabel.setBounds(labelsBounds);
     this->infoLabel.setBounds(labelsBounds);
-#endif
   }
 
   /**
