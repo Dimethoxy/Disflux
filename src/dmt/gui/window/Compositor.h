@@ -192,14 +192,15 @@ public:
     tooltip.setBounds(bounds);
     tooltip.setAlwaysOnTop(true);
 
-    // Main layout
+    // Main layout - always apply the global window padding so the content
+    // margin remains consistent whether the header is visible or hidden.
+    const auto padding = rawPadding * size;
     if (header.isVisible()) {
       const auto headerHeight = rawHeaderHeight * size;
       const auto headerBounds = juce::Rectangle(bounds).removeFromTop(
         static_cast<int>(headerHeight * 2.0f));
       header.setBounds(headerBounds);
 
-      const auto padding = rawPadding * size;
       const auto contentHeight =
         bounds.getHeight() - headerHeight - 2 * padding;
       const auto contentBounds =
@@ -209,15 +210,16 @@ public:
       settingsPanel.setBounds(contentBounds);
 
       borderButton.setVisible(
-        false); // Hide the BorderButton when the header is visible
+        false); // Hide the BorderButton when header visible
     } else {
-      // If the header is hidden, the main layout takes the full bounds
-      mainLayout.setBounds(bounds);
-      settingsPanel.setBounds(bounds);
+      // If the header is hidden, keep the same margin around the layout
+      const auto padded = bounds.reduced(padding);
+      mainLayout.setBounds(padded);
+      settingsPanel.setBounds(padded);
 
       // Show the BorderButton at the top with half the height of the header
       const auto borderButtonHeight = rawBorderButtonHeight * size;
-      borderButton.setBounds(juce::Rectangle<int>(bounds).removeFromTop(
+      borderButton.setBounds(juce::Rectangle<int>(padded).removeFromTop(
         static_cast<int>(borderButtonHeight)));
       borderButton.setVisible(true);
       borderButton.setAlwaysOnTop(true);

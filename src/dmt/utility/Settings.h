@@ -126,7 +126,7 @@ public:
   static inline auto& displayUpdateNotifications =
     container.add<bool>("General.DisplayUpdateNotifications", true);
   static inline auto& themeVersion =
-    container.add<int>("General.ThemeVersion", 1);
+    container.add<int>("General.ThemeVersion", 2);
 
 private:
   //==============================================================================
@@ -171,7 +171,7 @@ public:
   struct Window
   {
     //==============================================================================
-    static inline auto& margin = container.add<float>("Window.Margin", 5.0f);
+    static inline auto& margin = container.add<float>("Window.Margin", 10.0f);
     static inline auto& backgroundColour =
       container.add<Colour>("Window.BackgroundColour", Colours::background);
   };
