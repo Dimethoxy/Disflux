@@ -139,45 +139,83 @@ public:
     slider.setAlwaysOnTop(true);
     switch (orientation) {
       case Orientation::Horizontal: {
-        const int32_t rawHorizontalSliderOffset =
-          static_cast<int32_t>(1.0f * this->size);
-        const juce::Point<int32_t> offset(0, rawHorizontalSliderOffset);
-        const auto centre = bounds.getCentre() + offset;
-        auto sliderBounds =
-          bounds.reduced(static_cast<int32_t>(padding)).withCentre(centre);
-        slider.setBounds(
-          bounds.reduced(static_cast<int32_t>(padding)).withCentre(centre));
-        auto titleLabelBounds = sliderBounds;
-        const auto titleLabelHeight =
-          static_cast<int32_t>(2 * titleFontSize * this->size);
-        const auto titleLabelOffset = static_cast<int32_t>(4 * this->size);
-        const auto titleSliderBounds =
-          titleLabelBounds.removeFromTop(titleLabelHeight)
-            .reduced(titleLabelOffset);
-        this->titleLabel.setBounds(titleSliderBounds);
-        auto infoLabelBounds = sliderBounds;
-        const auto infoLabelHeight =
-          static_cast<int32_t>(2 * infoFontSize * this->size);
-        const auto infoLabelOffset = static_cast<int32_t>(9 * this->size);
-        const auto infoSliderBounds =
-          infoLabelBounds.removeFromBottom(infoLabelHeight)
-            .reduced(infoLabelOffset);
-        this->infoLabel.setBounds(infoSliderBounds);
+        layoutHorizontal(bounds, padding);
+        break;
       }
       case Orientation::Vertical: {
-        this->titleLabel.setBounds(
-          bounds.withTrimmedTop(static_cast<int32_t>(padding)));
-        this->infoLabel.setBounds(
-          bounds.withTrimmedBottom(static_cast<int32_t>(padding)));
-
-        auto sliderBounds = bounds;
-        sliderBounds.removeFromTop(
-          static_cast<int32_t>(titleFontSize * this->size + padding));
-        sliderBounds.removeFromBottom(
-          static_cast<int32_t>(infoFontSize * this->size + padding));
-        slider.setBounds(sliderBounds);
+        layoutVertical(bounds, padding);
+        break;
       }
     }
+  }
+
+  /**
+   * @brief Lays out the child components for horizontal orientation.
+   *
+   * @param bounds The bounds of the component.
+   * @param padding The padding to apply around the components.
+   *
+   * @details
+   * Arranges the slider in the center with title and info labels above and
+   * below, respectively. Padding and font sizes are scaled for DPI awareness.
+   */
+  void layoutHorizontal(juce::Rectangle<int> bounds, float padding) noexcept
+  {
+    // Calculate the center point and offset for the slider
+    const int rawHorizontalSliderOffset = static_cast<int>(this->size);
+    const juce::Point<int> offset(0, rawHorizontalSliderOffset);
+    const auto centre = bounds.getCentre() + offset;
+
+    // Main slider bounds
+    auto sliderBounds =
+      bounds.reduced(static_cast<int>(padding)).withCentre(centre);
+    slider.setBounds(
+      bounds.reduced(static_cast<int>(padding)).withCentre(centre));
+
+    // Title label bounds
+    auto titleLabelBounds = sliderBounds;
+    const auto titleLabelHeight =
+      static_cast<int>(2 * titleFontSize * this->size);
+    const auto titleLabelOffset = static_cast<int>(4 * this->size);
+    const auto titleSliderBounds =
+      titleLabelBounds.removeFromTop(titleLabelHeight)
+        .reduced(titleLabelOffset);
+    this->titleLabel.setBounds(titleSliderBounds);
+
+    // Info label bounds
+    auto infoLabelBounds = sliderBounds;
+    const auto infoLabelHeight =
+      static_cast<int>(2 * infoFontSize * this->size);
+    const auto infoLabelOffset = static_cast<int>(9 * this->size);
+    const auto infoSliderBounds =
+      infoLabelBounds.removeFromBottom(infoLabelHeight)
+        .reduced(infoLabelOffset);
+    this->infoLabel.setBounds(infoSliderBounds);
+  }
+
+  /**
+   * @brief Lays out the child components for vertical orientation.
+   *
+   * @param bounds The bounds of the component.
+   * @param padding The padding to apply around the components.
+   *
+   * @details
+   * Arranges the slider in the center with title and info labels above and
+   * below, respectively. Padding and font sizes are scaled for DPI awareness.
+   */
+  void layoutVertical(juce::Rectangle<int> bounds, float padding) noexcept
+  {
+    this->titleLabel.setBounds(
+      bounds.withTrimmedTop(static_cast<int>(padding)));
+    this->infoLabel.setBounds(
+      bounds.withTrimmedBottom(static_cast<int>(padding)));
+
+    auto sliderBounds = bounds;
+    sliderBounds.removeFromTop(
+      static_cast<int>(titleFontSize * this->size + padding));
+    sliderBounds.removeFromBottom(
+      static_cast<int>(infoFontSize * this->size + padding));
+    slider.setBounds(sliderBounds);
   }
 
   /**
@@ -201,14 +239,12 @@ public:
 
     constexpr float baseSvgPadding = 2.0f;
     if (svgTitle) {
-#if DMT_EXCLUDE_SLIDER_GRAPHICS == 0
       juce::Rectangle<float> iconArea =
         bounds.removeFromTop(slider.getY()).toFloat();
       iconArea = iconArea.withY(iconArea.getY() + 6.0f * this->size);
       iconArea = iconArea.reduced((svgPadding + baseSvgPadding) * this->size);
       titleIcon->drawWithin(
         _g, iconArea, juce::RectanglePlacement::centred, 1.0f);
-#endif
     }
   }
 
@@ -234,8 +270,8 @@ public:
    * Used for interactive placement or resizing. Ensures minimum size and
    * orientation-specific layout.
    */
-  inline void setBoundsByPoints(juce::Point<int32_t> _primaryPoint,
-                                juce::Point<int32_t> _secondaryPoint) noexcept
+  inline void setBoundsByPoints(juce::Point<int> _primaryPoint,
+                                juce::Point<int> _secondaryPoint) noexcept
   {
     TRACER("LinearSliderComponent::setBoundsByPoints");
     const float padding = 2.0f * rawPadding * this->size;
@@ -243,21 +279,20 @@ public:
     const float minWidth = 40 * this->size;
 
     const auto centre = (_primaryPoint + _secondaryPoint).toFloat() / 2.0f;
-    const int32_t pointDistance =
-      _primaryPoint.getDistanceFrom(_secondaryPoint);
+    const int pointDistance = _primaryPoint.getDistanceFrom(_secondaryPoint);
 
     switch (orientation) {
       case Orientation::Horizontal: {
-        setBounds(juce::Rectangle<int32_t>()
-                    .withSize(pointDistance, static_cast<int32_t>(minHeight))
-                    .expanded(static_cast<int32_t>(padding))
+        setBounds(juce::Rectangle<int>()
+                    .withSize(pointDistance, static_cast<int>(minHeight))
+                    .expanded(static_cast<int>(padding))
                     .withCentre(centre.toInt()));
         return;
       }
       case Orientation::Vertical: {
-        setBounds(juce::Rectangle<int32_t>()
-                    .withSize(static_cast<int32_t>(minWidth), pointDistance)
-                    .expanded(static_cast<int32_t>(padding))
+        setBounds(juce::Rectangle<int>()
+                    .withSize(static_cast<int>(minWidth), pointDistance)
+                    .expanded(static_cast<int>(padding))
                     .withCentre(centre.toInt()));
         return;
       }

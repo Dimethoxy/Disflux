@@ -119,7 +119,7 @@ public:
       _g.fillAll(*backgroundColour);
 
     // Draw bounds debug
-    _g.setColour(juce::Colours::red);
+    _g.setColour(juce::Colours::magenta);
     if (Settings::debugBounds)
       _g.drawRect(bounds, 1);
 
