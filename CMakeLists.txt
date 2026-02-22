@@ -3,7 +3,7 @@
 #==============================================================================
 
 cmake_minimum_required(VERSION 3.30)
-project(Disflux VERSION 1.1.1) # Disflux-Version
+project(Disflux VERSION 1.1.2) # Disflux-Version
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS TRUE) 
 set(EXT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
@@ -21,12 +21,6 @@ CPMAddPackage(
     GITHUB_REPOSITORY juce-framework/JUCE
     GIT_TAG master
     SOURCE_DIR ${EXT_DIR}/juce
-)
-CPMAddPackage(
-    NAME DMT
-    GITHUB_REPOSITORY Dimethoxy/DMT
-    GIT_TAG v25.1.3
-    SOURCE_DIR ${EXT_DIR}/dmt
 )
 CPMAddPackage(
     NAME CLAP_JUCE

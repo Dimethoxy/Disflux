@@ -5,11 +5,14 @@
 PluginEditor::PluginEditor(PluginProcessor& p)
   : AudioProcessorEditor(&p)
   , p(p)
-  , sizeFactor(p.scaleFactor) // reference to processor's scaleFactor
-  , disfluxPanel(p.apvts, p.oscilloscopeBuffer)
-  , compositor("DisFlux", disfluxPanel, p.apvts, p.properties, sizeFactor)
+  , sizeFactor(p.scaleFactor)
+  , mainLayout({}, {})
+  , compositor("DisFlux", mainLayout, p.apvts, p.properties, sizeFactor)
   , compositorAttached(true)
 {
+  mainLayout.addPanel<dmt::gui::panel::DisfluxPanel<float>>(
+    0, 0, 1, 1, p.apvts, p.oscilloscopeBuffer);
+
   if (OS_IS_WINDOWS) {
     setResizable(false, true);
   }

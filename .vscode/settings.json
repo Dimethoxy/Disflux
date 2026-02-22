@@ -89,5 +89,13 @@
     "typeinfo": "cpp",
     "valarray": "cpp",
     "variant": "cpp"
-  }
+  },
+  "C_Cpp.default.includePath": [
+    "${workspaceFolder}/external/dmt",
+    "${workspaceFolder}/external/melatonin_perfetto",
+    "${workspaceFolder}/external/juce/extras/Projucer/JuceLibraryCode"
+  ],
+  "git.autoRepositoryDetection": true,
+  "git.detectSubmodules": true,
+  "git.openRepositoryInParentFolders": "always"
 }

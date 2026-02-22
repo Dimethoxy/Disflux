@@ -1,0 +1,15 @@
+{
+  "configurations": [
+    {
+      "name": "Linux",
+      "includePath": [
+        "${workspaceFolder}/external/**",
+        "${workspaceFolder}/src/**"
+      ],
+      "defines": [],
+      "compilerPath": "/usr/bin/clang",
+      "intelliSenseMode": "linux-gcc-x64"
+    }
+  ],
+  "version": 4
+}

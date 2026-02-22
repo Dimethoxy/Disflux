@@ -16,7 +16,7 @@
       "name": "Launch AudioPluginHost Linux",
       "type": "cppdbg",
       "request": "launch",
-      "program": "/data/development/juce/extras/AudioPluginHost/Builds/LinuxMakefile/build/AudioPluginHost",
+      "program": "/data/development/dimethoxy/juce/extras/AudioPluginHost/Builds/LinuxMakefile/build/AudioPluginHost",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
