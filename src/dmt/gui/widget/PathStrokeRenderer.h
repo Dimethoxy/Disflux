@@ -168,16 +168,22 @@ private:
                                     juce::PathStrokeType::EndCapStyle::rounded);
 
     // Generate random color for testing
-    // juce::Random random;
-    // float red = random.nextFloat();
-    // float green = random.nextFloat();
-    // float blue = random.nextFloat();
-    // juce::Colour randomColour =
-    //   juce::Colour::fromFloatRGBA(red, green, blue, 1.0f);
-    // _graphics.setColour(randomColour);
+    bool enableRainbowMode = false;
+    if (enableRainbowMode) {
+      juce::Random random;
+      float red = random.nextFloat();
+      float green = random.nextFloat();
+      float blue = random.nextFloat();
+      juce::Colour randomColour =
+        juce::Colour::fromFloatRGBA(red, green, blue, 1.0f);
+      _graphics.setColour(randomColour);
+    }
 
-    _graphics.setColour(juce::Colours::white);
-    _graphics.strokePath(_path, strokeType);
+    // Regular white stroke for normal operation
+    if (!enableRainbowMode) {
+      _graphics.setColour(juce::Colours::white);
+      _graphics.strokePath(_path, strokeType);
+    }
   }
 
   //============================================================================
