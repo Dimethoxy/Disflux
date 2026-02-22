@@ -59,6 +59,9 @@ namespace widget {
  *
  * Renderers may maintain their own persistent state between frames (e.g.,
  * sub-pixel position tracking) to ensure visual continuity.
+ *
+ * Common helper functions for coordinate conversion and path stroking are
+ * provided here to avoid duplication across renderer implementations.
  */
 template<typename SampleType>
 class OscilloscopeRenderer
@@ -131,6 +134,56 @@ public:
                     RingBuffer& _ringBuffer,
                     int _channel,
                     const RenderContext& _context) = 0;
+
+  //============================================================================
+protected:
+  //============================================================================
+  /**
+   * @brief Converts a sample value to a Y pixel coordinate.
+   *
+   * @param _sample The sample value to convert.
+   * @param _halfHeight The vertical center of the drawing area in pixels.
+   * @param _amplitude The amplitude scaling factor.
+   *
+   * @return The Y coordinate in pixels.
+   */
+  [[nodiscard]] inline float sampleToY(SampleType _sample,
+                                       int _halfHeight,
+                                       float _amplitude) const noexcept
+  {
+    return static_cast<float>(_halfHeight) + _sample * _halfHeight * _amplitude;
+  }
+
+  //============================================================================
+  /**
+   * @brief Strokes the given path onto the graphics context.
+   *
+   * @param _graphics The JUCE Graphics context targeting the oscilloscope
+   *                  image.
+   * @param _path The waveform path to stroke.
+   * @param _context Pre-computed rendering parameters for this frame.
+   *
+   * @details
+   * Configures the stroke type with beveled joints and rounded end caps,
+   * and uses a solid white colour for the stroke.
+   */
+  inline void strokePath(juce::Graphics& _graphics,
+                         const juce::Path& _path,
+                         const RenderContext& _context) const
+  {
+    juce::PathStrokeType strokeType(_context.thickness * _context.sizeFactor,
+                                    juce::PathStrokeType::JointStyle::beveled,
+                                    juce::PathStrokeType::EndCapStyle::rounded);
+    _graphics.setColour(juce::Colours::white);
+    _graphics.strokePath(_path, strokeType);
+  }
+
+  //============================================================================
+  /** Last sample value for waveform continuity between frames. */
+  SampleType currentSample = static_cast<SampleType>(0.0f);
+
+  /** Current X position with sub-pixel precision for visual continuity. */
+  float currentX = 0.0f;
 };
 
 } // namespace widget

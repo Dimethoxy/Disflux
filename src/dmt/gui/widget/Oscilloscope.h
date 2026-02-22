@@ -30,6 +30,7 @@
 
 //==============================================================================
 
+#include "gui/widget/MinMaxRenderer.h"
 #include "gui/widget/PathStrokeRenderer.h"
 #include <JuceHeader.h>
 #include <memory>
@@ -93,7 +94,7 @@ public:
     , ringBuffer(_ringBuffer)
     , channel(_channel)
     , size(_sizeFactor)
-    , renderer(std::make_unique<PathStrokeRenderer<SampleType>>())
+    , renderer(std::make_unique<MinMaxRenderer<SampleType>>())
   {
     startThread();
   }

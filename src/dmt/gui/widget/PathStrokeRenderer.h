@@ -79,7 +79,7 @@ public:
    * @details
    * Builds a continuous path from the provided samples, maintaining sub-pixel
    * continuity with the previous frame via the persistent currentX state.
-   * The path is stroked with mitered joints and square end caps for a clean
+   * The path is stroked with beveled joints and rounded end caps for a clean
    * waveform appearance.
    */
   inline void draw(juce::Graphics& _graphics,
@@ -87,30 +87,13 @@ public:
                    int _channel,
                    const RenderContext& _context) override
   {
-    currentX = _context.drawStartX;
+    this->currentX = _context.drawStartX;
     const auto path = buildPath(_ringBuffer, _channel, _context);
-    strokePath(_graphics, path, _context);
+    this->strokePath(_graphics, path, _context);
   }
 
   //============================================================================
 private:
-  //============================================================================
-  /**
-   * @brief Converts a sample value to a Y pixel coordinate.
-   *
-   * @param _sample The sample value to convert.
-   * @param _halfHeight The vertical center of the drawing area in pixels.
-   * @param _amplitude The amplitude scaling factor.
-   *
-   * @return The Y coordinate in pixels.
-   */
-  [[nodiscard]] inline float sampleToY(SampleType _sample,
-                                       int _halfHeight,
-                                       float _amplitude) const noexcept
-  {
-    return static_cast<float>(_halfHeight) + _sample * _halfHeight * _amplitude;
-  }
-
   //============================================================================
   /**
    * @brief Builds a continuous path from the ring buffer samples.
@@ -130,68 +113,23 @@ private:
                                             const RenderContext& _context)
   {
     juce::Path path;
-    path.startNewSubPath(
-      currentX,
-      sampleToY(currentSample, _context.halfHeight, _context.amplitude));
+    path.startNewSubPath(this->currentX,
+                         this->sampleToY(this->currentSample,
+                                         _context.halfHeight,
+                                         _context.amplitude));
 
     for (size_t i = 0; i < static_cast<size_t>(_context.sampleCount); ++i) {
       const int sampleIndex = _context.firstSampleIndex + static_cast<int>(i);
-      currentSample = _ringBuffer.getSample(_channel, sampleIndex);
-      currentX += _context.pixelsPerSample;
-      path.lineTo(
-        currentX,
-        sampleToY(currentSample, _context.halfHeight, _context.amplitude));
+      this->currentSample = _ringBuffer.getSample(_channel, sampleIndex);
+      this->currentX += _context.pixelsPerSample;
+      path.lineTo(this->currentX,
+                  this->sampleToY(this->currentSample,
+                                  _context.halfHeight,
+                                  _context.amplitude));
     }
 
     return path;
   }
-
-  //============================================================================
-  /**
-   * @brief Strokes the given path onto the graphics context.
-   *
-   * @param _graphics The JUCE Graphics context targeting the oscilloscope
-   *                  image.
-   * @param _path The waveform path to stroke.
-   * @param _context Pre-computed rendering parameters for this frame.
-   *
-   * @details
-   * Configures the stroke type with beveled joints and rounded end caps,
-   * and uses a solid white colour for the stroke.
-   */
-  inline void strokePath(juce::Graphics& _graphics,
-                         const juce::Path& _path,
-                         const RenderContext& _context) const
-  {
-    juce::PathStrokeType strokeType(_context.thickness * _context.sizeFactor,
-                                    juce::PathStrokeType::JointStyle::beveled,
-                                    juce::PathStrokeType::EndCapStyle::rounded);
-
-    // Generate random color for testing
-    bool enableRainbowMode = false;
-    if (enableRainbowMode) {
-      juce::Random random;
-      float red = random.nextFloat();
-      float green = random.nextFloat();
-      float blue = random.nextFloat();
-      juce::Colour randomColour =
-        juce::Colour::fromFloatRGBA(red, green, blue, 1.0f);
-      _graphics.setColour(randomColour);
-    }
-
-    // Regular white stroke for normal operation
-    if (!enableRainbowMode) {
-      _graphics.setColour(juce::Colours::white);
-      _graphics.strokePath(_path, strokeType);
-    }
-  }
-
-  //============================================================================
-  /** Last sample value for waveform continuity between frames. */
-  SampleType currentSample = static_cast<SampleType>(0.0f);
-
-  /** Current X position with sub-pixel precision for visual continuity. */
-  float currentX = 0.0f;
 };
 
 } // namespace widget
