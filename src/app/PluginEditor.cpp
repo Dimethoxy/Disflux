@@ -1,5 +1,47 @@
 #include "PluginEditor.h"
 #include "PluginProcessor.h"
+// Use JUCE OpenGL helpers / function pointers
+#include <chrono>
+#include <juce_opengl/juce_opengl.h>
+#include <thread>
+
+namespace {
+// Filter out notification-level GL debug messages
+static void KHRONOS_APIENTRY
+juceFilteredGLDebugCallback(GLenum source,
+                            GLenum type,
+                            GLuint id,
+                            GLenum severity,
+                            GLsizei length,
+                            const GLchar* message,
+                            const void* userParam)
+{
+  // Ignore low-priority notifications
+  if (severity == juce::gl::GL_DEBUG_SEVERITY_NOTIFICATION)
+    return;
+
+  // Log other messages so we don't lose important info
+  juce::String msg =
+    (message != nullptr) ? juce::String(message) : juce::String();
+  DBG("OpenGL DBG message: " << msg);
+
+  // Keep JUCE's behaviour for serious errors
+  if (type == juce::gl::GL_DEBUG_TYPE_ERROR &&
+      severity == juce::gl::GL_DEBUG_SEVERITY_HIGH)
+    jassertfalse;
+}
+
+} // anonymous namespace
+
+//==============================================================================
+void
+PluginEditor::handleHeaderVisibilityChange(bool isHeaderVisible)
+{
+  const int adjustedHeight =
+    isHeaderVisible ? baseHeight + headerHeight : baseHeight;
+  setConstraints(baseWidth, adjustedHeight);
+  setSize(baseWidth * sizeFactor, adjustedHeight * sizeFactor);
+}
 
 //==============================================================================
 PluginEditor::PluginEditor(PluginProcessor& p)
@@ -25,6 +67,36 @@ PluginEditor::PluginEditor(PluginProcessor& p)
     openGLContext.setComponentPaintingEnabled(true);
     openGLContext.setContinuousRepainting(false);
     openGLContext.attachTo(*getTopLevelComponent());
+    std::thread([this]() {
+      for (int i = 0; i < 200; ++i) {
+        if (openGLContext.isAttached() &&
+            openGLContext.getRawContext() != nullptr)
+          break;
+        std::this_thread::sleep_for(std::chrono::milliseconds(25));
+      }
+
+      if (!openGLContext.isAttached() ||
+          openGLContext.getRawContext() == nullptr)
+        return;
+
+      openGLContext.executeOnGLThread(
+        [](juce::OpenGLContext&) {
+          if (juce::gl::glDebugMessageControl) {
+            juce::gl::glDebugMessageControl(
+              juce::gl::GL_DEBUG_SOURCE_API,
+              juce::gl::GL_DEBUG_TYPE_OTHER,
+              juce::gl::GL_DEBUG_SEVERITY_NOTIFICATION,
+              0,
+              nullptr,
+              juce::gl::GL_FALSE);
+          }
+
+          if (juce::gl::glDebugMessageCallback)
+            juce::gl::glDebugMessageCallback(juceFilteredGLDebugCallback,
+                                             nullptr);
+        },
+        true);
+    }).detach();
   }
 
   setConstraints(baseWidth, baseHeight + headerHeight);
