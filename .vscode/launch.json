@@ -53,6 +53,18 @@
       "cwd": "${workspaceFolder}",
       "environment": [],
       "console": "internalConsole"
+    },
+    {
+      "name": "Launch Bitwig Studio (Linux)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "/usr/bin/bitwig-studio",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": true,
+      "MIMode": "gdb"
     }
   ]
 }
