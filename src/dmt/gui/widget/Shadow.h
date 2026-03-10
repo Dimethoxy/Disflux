@@ -106,11 +106,21 @@ public:
       return;
 
     if (!needsRepaint) {
-      _g.drawImageAt(image, 0, 0);
+      _g.drawImage(image,
+                   0.0f,
+                   0.0f,
+                   static_cast<float>(getWidth()),
+                   static_cast<float>(getHeight()),
+                   0,
+                   0,
+                   image.getWidth(),
+                   image.getHeight());
       return;
     }
 
     juce::Graphics imageGraphics(image);
+    imageGraphics.addTransform(juce::AffineTransform::scale(scale, scale));
+    imageGraphics.fillAll(juce::Colours::transparentBlack);
     imageGraphics.setColour(*colour); // dereference pointer
 
     if (inner)
@@ -119,7 +129,15 @@ public:
       drawOuterForPath(imageGraphics, path);
 
     needsRepaint = false;
-    _g.drawImageAt(image, 0, 0);
+    _g.drawImage(image,
+                 0.0f,
+                 0.0f,
+                 static_cast<float>(getWidth()),
+                 static_cast<float>(getHeight()),
+                 0,
+                 0,
+                 image.getWidth(),
+                 image.getHeight());
   }
 
   //==============================================================================
@@ -136,7 +154,11 @@ public:
     TRACER("Shadow::resized");
     if (getWidth() == 0 || getHeight() == 0)
       return;
-    image = Image(PixelFormat::ARGB, getWidth(), getHeight(), true);
+
+    image = Image(PixelFormat::ARGB,
+                  juce::jmax(1, juce::roundToInt(getWidth() * scale)),
+                  juce::jmax(1, juce::roundToInt(getHeight() * scale)),
+                  true);
     needsRepaint = true;
   }
 

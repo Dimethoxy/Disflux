@@ -320,8 +320,8 @@ private:
       return;
 
     // HiDPI support: render background images at higher resolution
-    const int hiResWidth = static_cast<int>(_innerBounds.getWidth() * scale);
-    const int hiResHeight = static_cast<int>(_innerBounds.getHeight() * scale);
+    const int hiResWidth = int(_innerBounds.getWidth() * scale);
+    const int hiResHeight = int(_innerBounds.getHeight() * scale);
 
     backgroundImage = Image(Image::ARGB, hiResWidth, hiResHeight, true);
     backgroundImageComponent.setBounds(_innerBounds);
@@ -353,8 +353,8 @@ private:
       return;
 
     // Render the icon images at higher resolution
-    const int hiResWidth = static_cast<int>(iconArea.getWidth() * scale);
-    const int hiResHeight = static_cast<int>(iconArea.getHeight() * scale);
+    const int hiResWidth = int(iconArea.getWidth() * scale);
+    const int hiResHeight = int(iconArea.getHeight() * scale);
 
     iconImage = juce::Image(juce::Image::ARGB, hiResWidth, hiResHeight, true);
     iconImageComponent.setBounds(iconArea);

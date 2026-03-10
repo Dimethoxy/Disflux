@@ -223,8 +223,8 @@ protected:
     }
 
     // HiDPI support: render cached image at higher resolution
-    const int hiResWidth = static_cast<int>(width * scale);
-    const int hiResHeight = static_cast<int>(height * scale);
+    const int hiResWidth = juce::jmax(1, juce::roundToInt(width * scale));
+    const int hiResHeight = juce::jmax(1, juce::roundToInt(height * scale));
 
     cachedImage = Image(juce::Image::ARGB, hiResWidth, hiResHeight, true);
     Graphics g(cachedImage);
@@ -234,7 +234,7 @@ protected:
     g.fillAll(backgroundColour);
 
     const auto fontSize = static_cast<int>(rawFontSize * size);
-    const auto font = fonts.medium.withHeight(fontSize);
+    const auto font = fonts.bold.withHeight(fontSize);
 
     g.setFont(font);
     g.setColour(fontColour);
