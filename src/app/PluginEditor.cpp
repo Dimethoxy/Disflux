@@ -1,9 +1,5 @@
 #include "PluginEditor.h"
 #include "PluginProcessor.h"
-// Use JUCE OpenGL helpers / function pointers
-#include <chrono>
-#include <juce_opengl/juce_opengl.h>
-#include <thread>
 
 namespace {
 // Filter out notification-level GL debug messages
@@ -32,16 +28,6 @@ juceFilteredGLDebugCallback(GLenum source,
 }
 
 } // anonymous namespace
-
-//==============================================================================
-void
-PluginEditor::handleHeaderVisibilityChange(bool isHeaderVisible)
-{
-  const int adjustedHeight =
-    isHeaderVisible ? baseHeight + headerHeight : baseHeight;
-  setConstraints(baseWidth, adjustedHeight);
-  setSize(baseWidth * sizeFactor, adjustedHeight * sizeFactor);
-}
 
 //==============================================================================
 PluginEditor::PluginEditor(PluginProcessor& p)
