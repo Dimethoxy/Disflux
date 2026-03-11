@@ -167,7 +167,6 @@ PluginEditor::resized()
   p.setSizeFactor(newSize);
 
   // Debounced resizing logic
-  static bool firstDraw = true;
   if (firstDraw) {
     // On first draw, skip debounce and just layout normally
     compositor.setBounds(getLocalBounds());
