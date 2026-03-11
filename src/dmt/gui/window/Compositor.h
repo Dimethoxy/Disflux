@@ -193,7 +193,7 @@ public:
     tooltip.setAlwaysOnTop(true);
 
     // Main layout
-    const auto padding = rawPadding * size;
+    const auto padding = rawPadding * size * 0.5f;
     if (header.isVisible()) {
       const auto headerHeight = rawHeaderHeight * size;
       const auto headerBounds = juce::Rectangle(bounds).removeFromTop(

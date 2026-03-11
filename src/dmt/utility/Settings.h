@@ -172,7 +172,7 @@ public:
   struct Window
   {
     //==============================================================================
-    static inline auto& margin = container.add<float>("Window.Margin", 7.0f);
+    static inline auto& margin = container.add<float>("Window.Margin", 10.0f);
     static inline auto& backgroundColour =
       container.add<Colour>("Window.BackgroundColour", Colours::background);
   };
