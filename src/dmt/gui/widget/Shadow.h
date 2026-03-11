@@ -105,6 +105,8 @@ public:
     if (!visibility)
       return;
 
+    refreshCachedImageIfNeeded();
+
     if (!needsRepaint) {
       _g.drawImage(image,
                    0.0f,
@@ -152,14 +154,7 @@ public:
   inline void resized() override
   {
     TRACER("Shadow::resized");
-    if (getWidth() == 0 || getHeight() == 0)
-      return;
-
-    image = Image(PixelFormat::ARGB,
-                  juce::jmax(1, juce::roundToInt(getWidth() * scale)),
-                  juce::jmax(1, juce::roundToInt(getHeight() * scale)),
-                  true);
-    needsRepaint = true;
+    refreshCachedImageIfNeeded(true);
   }
 
   //==============================================================================
@@ -270,6 +265,30 @@ protected:
   }
 
 private:
+  inline void refreshCachedImageIfNeeded(bool forceRepaint = false)
+  {
+    if (getWidth() == 0 || getHeight() == 0)
+      return;
+
+    const auto currentScale = static_cast<float>(scale);
+    const auto scaledWidth =
+      juce::jmax(1, juce::roundToInt(getWidth() * currentScale));
+    const auto scaledHeight =
+      juce::jmax(1, juce::roundToInt(getHeight() * currentScale));
+
+    const auto scaleChanged =
+      !juce::approximatelyEqual(lastRenderedScale, currentScale);
+    const auto imageSizeChanged =
+      image.getWidth() != scaledWidth || image.getHeight() != scaledHeight;
+
+    if (!forceRepaint && !scaleChanged && !imageSizeChanged)
+      return;
+
+    image = Image(PixelFormat::ARGB, scaledWidth, scaledHeight, true);
+    lastRenderedScale = currentScale;
+    needsRepaint = true;
+  }
+
   //==============================================================================
   // Members initialized in the initializer list
   const bool& visibility;
@@ -282,6 +301,7 @@ private:
   juce::Point<int> offset = { 0, 0 };
   juce::Path path;
   bool needsRepaint = true;
+  float lastRenderedScale = 0.0f;
 
   Image image = Image(PixelFormat::ARGB, 1, 1, true);
 
