@@ -33,7 +33,7 @@ juceFilteredGLDebugCallback(GLenum source,
 PluginEditor::PluginEditor(PluginProcessor& p)
   : AudioProcessorEditor(&p)
   , p(p)
-  , sizeFactor(p.scaleFactor)
+  , sizeFactor(p.sizeFactor)
   , mainLayout({}, {})
   , compositor("DisFlux", mainLayout, p.apvts, p.properties, sizeFactor)
   , compositorAttached(true)
@@ -164,7 +164,7 @@ PluginEditor::resized()
 
   // Update the processor's scale factor
   sizeFactor = newSize;
-  p.setScaleFactor(newSize);
+  p.setSizeFactor(newSize);
 
   // Debounced resizing logic
   static bool firstDraw = true;
