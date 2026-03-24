@@ -215,6 +215,9 @@ public:
    */
   [[nodiscard]] float getScaleFactor() const noexcept
   {
+    // TODO: Component Scale factor is fucked, for now we just use the main
+    // display's scale factor using the fallback
+    /*
     const auto* component = static_cast<const juce::Component*>(getSelf());
 
     if (component != nullptr) {
@@ -224,6 +227,7 @@ public:
       if (std::isfinite(componentScale) && componentScale > 0.0f)
         return componentScale;
     }
+    */
 
     return getFallbackScaleFactor();
   }
