@@ -218,7 +218,7 @@ public:
 
       // Show the BorderButton at the top with half the height of the header
       const auto borderButtonHeight = rawBorderButtonHeight * size;
-      borderButton.setBounds(juce::Rectangle<int>(padded).removeFromTop(
+      borderButton.setBounds(juce::Rectangle<int>(bounds).removeFromTop(
         static_cast<int>(borderButtonHeight)));
       borderButton.setVisible(true);
       borderButton.setAlwaysOnTop(true);
