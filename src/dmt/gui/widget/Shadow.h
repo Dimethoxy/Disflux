@@ -105,12 +105,24 @@ public:
     if (!visibility)
       return;
 
+    refreshCachedImageIfNeeded();
+
     if (!needsRepaint) {
-      _g.drawImageAt(image, 0, 0);
+      _g.drawImage(image,
+                   0.0f,
+                   0.0f,
+                   static_cast<float>(getWidth()),
+                   static_cast<float>(getHeight()),
+                   0,
+                   0,
+                   image.getWidth(),
+                   image.getHeight());
       return;
     }
 
     juce::Graphics imageGraphics(image);
+    imageGraphics.addTransform(juce::AffineTransform::scale(scale, scale));
+    imageGraphics.fillAll(juce::Colours::transparentBlack);
     imageGraphics.setColour(*colour); // dereference pointer
 
     if (inner)
@@ -119,7 +131,15 @@ public:
       drawOuterForPath(imageGraphics, path);
 
     needsRepaint = false;
-    _g.drawImageAt(image, 0, 0);
+    _g.drawImage(image,
+                 0.0f,
+                 0.0f,
+                 static_cast<float>(getWidth()),
+                 static_cast<float>(getHeight()),
+                 0,
+                 0,
+                 image.getWidth(),
+                 image.getHeight());
   }
 
   //==============================================================================
@@ -134,10 +154,7 @@ public:
   inline void resized() override
   {
     TRACER("Shadow::resized");
-    if (getWidth() == 0 || getHeight() == 0)
-      return;
-    image = Image(PixelFormat::ARGB, getWidth(), getHeight(), true);
-    needsRepaint = true;
+    refreshCachedImageIfNeeded(true);
   }
 
   //==============================================================================
@@ -248,6 +265,30 @@ protected:
   }
 
 private:
+  inline void refreshCachedImageIfNeeded(bool forceRepaint = false)
+  {
+    if (getWidth() == 0 || getHeight() == 0)
+      return;
+
+    const auto currentScale = static_cast<float>(scale);
+    const auto scaledWidth =
+      juce::jmax(1, juce::roundToInt(getWidth() * currentScale));
+    const auto scaledHeight =
+      juce::jmax(1, juce::roundToInt(getHeight() * currentScale));
+
+    const auto scaleChanged =
+      !juce::approximatelyEqual(lastRenderedScale, currentScale);
+    const auto imageSizeChanged =
+      image.getWidth() != scaledWidth || image.getHeight() != scaledHeight;
+
+    if (!forceRepaint && !scaleChanged && !imageSizeChanged)
+      return;
+
+    image = Image(PixelFormat::ARGB, scaledWidth, scaledHeight, true);
+    lastRenderedScale = currentScale;
+    needsRepaint = true;
+  }
+
   //==============================================================================
   // Members initialized in the initializer list
   const bool& visibility;
@@ -260,6 +301,7 @@ private:
   juce::Point<int> offset = { 0, 0 };
   juce::Path path;
   bool needsRepaint = true;
+  float lastRenderedScale = 0.0f;
 
   Image image = Image(PixelFormat::ARGB, 1, 1, true);
 

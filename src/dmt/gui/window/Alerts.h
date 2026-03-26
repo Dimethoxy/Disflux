@@ -307,12 +307,13 @@ protected:
   inline void renderAlertToImage(AlertData& _alert)
   {
     TRACER("Alerts::renderAlertToImage");
+
     const auto alertWidth = rawAlertWidth * size;
     const auto alertHeight = rawAlertHeight * size;
 
     // HiDPI support: render at higher resolution
-    const int hiResWidth = static_cast<int>(alertWidth * scale);
-    const int hiResHeight = static_cast<int>(alertHeight * scale);
+    const int hiResWidth = int(alertWidth * scale);
+    const int hiResHeight = int(alertHeight * scale);
 
     _alert.cachedComponentImage =
       juce::Image(juce::Image::ARGB, hiResWidth, hiResHeight, true);

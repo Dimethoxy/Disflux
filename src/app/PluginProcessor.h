@@ -57,9 +57,9 @@ public:
 
   //==============================================================================
   // Store scale factor for editor window
-  float scaleFactor = 1.0f;
-  float getScaleFactor() const { return scaleFactor; }
-  void setScaleFactor(float newScale) { scaleFactor = newScale; }
+  float sizeFactor = 1.0f;
+  float getSizeFactor() const { return sizeFactor; }
+  void setSizeFactor(float newSize) { sizeFactor = newSize; }
 
 private:
 #if PERFETTO

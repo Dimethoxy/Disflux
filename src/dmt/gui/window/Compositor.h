@@ -193,7 +193,7 @@ public:
     tooltip.setAlwaysOnTop(true);
 
     // Main layout
-    const auto padding = rawPadding * size;
+    const auto padding = rawPadding * size * 0.5f;
     if (header.isVisible()) {
       const auto headerHeight = rawHeaderHeight * size;
       const auto headerBounds = juce::Rectangle(bounds).removeFromTop(
@@ -218,7 +218,7 @@ public:
 
       // Show the BorderButton at the top with half the height of the header
       const auto borderButtonHeight = rawBorderButtonHeight * size;
-      borderButton.setBounds(juce::Rectangle<int>(padded).removeFromTop(
+      borderButton.setBounds(juce::Rectangle<int>(bounds).removeFromTop(
         static_cast<int>(borderButtonHeight)));
       borderButton.setVisible(true);
       borderButton.setAlwaysOnTop(true);

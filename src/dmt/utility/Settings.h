@@ -172,7 +172,7 @@ public:
   struct Window
   {
     //==============================================================================
-    static inline auto& margin = container.add<float>("Window.Margin", 7.0f);
+    static inline auto& margin = container.add<float>("Window.Margin", 10.0f);
     static inline auto& backgroundColour =
       container.add<Colour>("Window.BackgroundColour", Colours::background);
   };
@@ -208,13 +208,18 @@ public:
     static inline auto& height = container.add<int>("Header.Height", 50);
     static inline auto& borderButtonBackgroundColour =
       container.add<Colour>("Header.BorderButtonBackgroundColour",
-                            Colours::primary);
+                            Colours::success);
+    static inline auto& borderButtonBorderColour =
+      container.add<Colour>("Header.BorderButtonBorderColour",
+                            Colours::success.darker(0.5f));
     static inline auto& borderButtonFontColour =
       container.add<Colour>("Header.BorderButtonFontColour", Colours::shadow);
     static inline auto& borderButtonFontSize =
-      container.add<float>("Header.BorderButtonFontSize", 22.0f);
+      container.add<float>("Header.BorderButtonFontSize", 20.0f);
     static inline auto& borderButtonHeight =
       container.add<int>("Header.BorderButtonHeight", 25);
+    static inline auto& borderButtonBorderThickness =
+      container.add<float>("Header.BorderButtonBorderThickness", 3.0f);
   };
 
   //==============================================================================

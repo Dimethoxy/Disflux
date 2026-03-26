@@ -45,7 +45,8 @@ private:
   int lastWidth = baseWidth;
   int lastHeight = baseHeight;
   double ratio = baseWidth / baseHeight;
-  float& sizeFactor = p.scaleFactor;
+  float& sizeFactor = p.sizeFactor;
+  bool firstDraw = true;
   //==============================================================================
   Image image;
   bool isResizing = false;

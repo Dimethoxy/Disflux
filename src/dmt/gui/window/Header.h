@@ -308,7 +308,7 @@ private:
   // Members initialized in the initializer list
   Shadow outerShadow;
   Shadow innerShadow;
-  Fonts fonts; // <-- Moved this above Label title
+  Fonts fonts;
   Label title;
   CallbackButton settingsButton;
   CallbackButton settingsExitButton;
