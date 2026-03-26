@@ -33,6 +33,7 @@
 #include "utility/Scaleable.h"
 #include "utility/Settings.h"
 #include <JuceHeader.h>
+#include <melatonin_blur/melatonin_blur.h>
 
 //==============================================================================
 
@@ -228,15 +229,8 @@ protected:
   inline void drawInnerForPath(juce::Graphics& _g, juce::Path _target)
   {
     TRACER("Shadow::drawInnerForPath");
-    juce::Graphics::ScopedSaveState saveState(_g);
-    juce::Path shadowPath(_target);
-    shadowPath.addRectangle(_target.getBounds().expanded(10 * scale));
-    shadowPath.setUsingNonZeroWinding(false);
-    _g.reduceClipRegion(_target);
-    juce::DropShadow ds(*colour,
-                        static_cast<int>(radius * size * scale),
-                        offset * scale); // dereference pointer
-    ds.drawForPath(_g, shadowPath);
+    updateShadowParameters();
+    innerShadowRenderer.render(_g, _target);
   }
 
   //==============================================================================
@@ -258,13 +252,28 @@ protected:
     shadowPath.addRectangle(_target.getBounds().expanded(10 * scale));
     shadowPath.setUsingNonZeroWinding(false);
     _g.reduceClipRegion(shadowPath);
-    juce::DropShadow ds(*colour,
-                        static_cast<int>(radius * size * scale),
-                        offset * scale); // dereference pointer
-    ds.drawForPath(_g, _target);
+    updateShadowParameters();
+    outerShadowRenderer.render(_g, _target);
   }
 
 private:
+  inline void updateShadowParameters()
+  {
+    const auto scaledRadius = static_cast<double>(radius * size * scale);
+    const auto scaledOffset = juce::Point<float>(
+      static_cast<float>(offset.x) * static_cast<float>(scale),
+      static_cast<float>(offset.y) * static_cast<float>(scale));
+
+    if (inner) {
+      innerShadowRenderer.setColor(*colour).setRadius(scaledRadius).setOffset(
+        scaledOffset);
+      return;
+    }
+
+    outerShadowRenderer.setColor(*colour).setRadius(scaledRadius).setOffset(
+      scaledOffset);
+  }
+
   inline void refreshCachedImageIfNeeded(bool forceRepaint = false)
   {
     if (getWidth() == 0 || getHeight() == 0)
@@ -302,6 +311,9 @@ private:
   juce::Path path;
   bool needsRepaint = true;
   float lastRenderedScale = 0.0f;
+
+  melatonin::DropShadow outerShadowRenderer;
+  melatonin::InnerShadow innerShadowRenderer;
 
   Image image = Image(PixelFormat::ARGB, 1, 1, true);
 
