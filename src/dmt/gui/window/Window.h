@@ -29,7 +29,6 @@
 
 //==============================================================================
 
-#include "./AbstractEditor.h"
 #include "./Alerts.h"
 #include "./Compositor.h"
 #include "./Header.h"
