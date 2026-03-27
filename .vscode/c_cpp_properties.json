@@ -2,9 +2,10 @@
   "configurations": [
     {
       "name": "Linux",
+      "compileCommands": "${workspaceFolder}/build/compile_commands.json",
       "includePath": [
-        "${workspaceFolder}/external/**",
-        "${workspaceFolder}/src/**"
+        "${workspaceFolder}/src/**",
+        "${workspaceFolder}/external/**"
       ],
       "defines": [],
       "compilerPath": "/usr/bin/clang",
