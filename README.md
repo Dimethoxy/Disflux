@@ -10,7 +10,6 @@ If it feels familiar, that's no accident. Disflux is a lovingly crafted take on 
   <img src="https://raw.githubusercontent.com/Dimethoxy/Disflux/refs/heads/main/resources/preview.webp" alt="Image of the GUI" style="width: 60%;">
 </div>
 
-
 ## 🔥 Features
 
 - **Free & Open-Source** – No paywalls, no restrictions.
@@ -27,10 +26,8 @@ If it feels familiar, that's no accident. Disflux is a lovingly crafted take on 
 ## 🚧 Coming Soon
 
 Here are some of the exciting things you can expect in future updates:
-   
-- **Bug Fixes** – We are actively working on fixing bugs and improving stability.
+
 - **Preset Menu** – Add functionality to select and save presets.
-- **Performance** – While performance is already solid, we’re working to optimize it even further.
 - **Oversampling** – Implementing oversampling to minimize aliasing and improve the quality of high-frequency content.
 - **Themes** - We already allow heavy theming, but we want to make it easier to export and share themes with the community.
 - **Mobile Support** – We are planning to release Disflux for iOS and Android in the future.
@@ -54,21 +51,25 @@ If you want to compile Plasma from source yourself, follow these steps:
 ### 1. Prerequisites
 
 **Ubuntu**
+
 - Install build tools: `sudo apt-get install build-essential cmake ninja-build`
 - Install dependencies: `sudo apt install libasound2-dev libjack-jackd2-dev ladspa-sdk libcurl4-openssl-dev libfreetype-dev libfontconfig1-dev libx11-dev libxcomposite-dev libxcursor-dev libxext-dev libxinerama-dev libxrandr-dev libxrender-dev libwebkit2gtk-4.1-dev libglu1-mesa-dev mesa-common-dev curl`
 
-**MacOS** 
+**MacOS**
+
 1. Install [Homebrew](https://brew.sh/)
 2. Install build tools: `brew install ninja osxutils`
 
 **Windows**
+
 1. Install [Git](https://git-scm.com/downloads)
 2. Install [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/).
-    - During installation, make sure to select package "Desktop development with C++"  
-4. Install [Chocolatey](https://chocolatey.org/install) (open **PowerShell** as Admin and follow instructions on their site)
-5. Use **Chocolatey** to install required tools: `choco install cmake ninja llvm`
-  
+   - During installation, make sure to select package "Desktop development with C++"
+3. Install [Chocolatey](https://chocolatey.org/install) (open **PowerShell** as Admin and follow instructions on their site)
+4. Use **Chocolatey** to install required tools: `choco install cmake ninja llvm`
+
 ### 2. Clone the Repository
+
 ```bash
 git clone https://github.com/yourusername/Disflux.git
 cd Disflux
@@ -79,16 +80,19 @@ cd Disflux
 Run CMake to configure the project. Use the appropriate preset for your platform:
 
 **Ubuntu**
+
 ```bash
 cmake --preset "Linux Release"
 ```
 
 **MacOS**
+
 ```bash
 cmake --preset "Mac Release" -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
 ```
 
 **Windows**
+
 ```bash
 cmake --preset "Windows Release"
 ```
@@ -96,6 +100,7 @@ cmake --preset "Windows Release"
 ### 4. Build the project
 
 After configuring with CMake, build the project using the following command:
+
 ```bash
 cmake --build build --config "Release"
 ```
@@ -103,13 +108,13 @@ cmake --build build --config "Release"
 ### 5. Locate the Build Artifacts
 
 After the build process completes, you can find the compiled artifacts in the build directory under the following paths:
+
 - **VST3:** `build/src/DisfluxPlugin_artefacts/Release/VST3/Disflux.vst3`
 - **CLAP:** `build/src/DisfluxPlugin_artefacts/Release/CLAP/Disflux.clap`
 - **LV2:** `build/src/DisfluxPlugin_artefacts/Release/LV2/Disflux.lv2`
 - **AU:** `build/src/DisfluxPlugin_artefacts/Release/AU/Disflux.component`
 
 You can move these to your plugin folder.
-
 
 ## 🔐 Privacy
 
