@@ -22,18 +22,8 @@ public:
   juce::AudioProcessorEditor* createEditor() override;
 
   //==============================================================================
-  dmt::configuration::Properties properties;
-  dmt::version::Manager versionManager;
-
-  //==============================================================================
   dmt::dsp::data::FifoAudioBuffer<float> oscilloscopeBuffer;
   dmt::dsp::effect::DisfluxProcessor disfluxProcessor;
-
-  //==============================================================================
-  // Store scale factor for editor window
-  float sizeFactor = 1.0f;
-  float getSizeFactor() const { return sizeFactor; }
-  void setSizeFactor(float newSize) { sizeFactor = newSize; }
 
 private:
   //==============================================================================

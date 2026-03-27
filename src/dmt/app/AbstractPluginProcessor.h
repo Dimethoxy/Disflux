@@ -1,5 +1,7 @@
 #pragma once
 
+#include "configuration/Properties.h"
+#include "version/Manager.h"
 #include <JuceHeader.h>
 
 namespace dmt {
@@ -25,6 +27,7 @@ public:
 #if PERFETTO
     MelatoninPerfetto::get().beginSession();
 #endif
+    properties.initialize();
   }
 
   //==============================================================================
@@ -144,6 +147,16 @@ public:
   //==============================================================================
   juce::AudioProcessorValueTreeState apvts;
 
+  //==============================================================================
+  dmt::configuration::Properties properties;
+  dmt::version::Manager versionManager;
+
+  //==============================================================================
+  float sizeFactor = 1.0f;
+  float getSizeFactor() const { return sizeFactor; }
+  void setSizeFactor(float newSize) { sizeFactor = newSize; }
+
+  //==============================================================================
 private:
 #if PERFETTO
   std::unique_ptr<perfetto::TracingSession> tracingSession;

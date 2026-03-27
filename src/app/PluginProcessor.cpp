@@ -13,7 +13,6 @@ PluginProcessor::PluginProcessor()
                      dmt::Settings::Audio::outputHighpassFrequency,
                      dmt::Settings::Audio::smoothingInterval)
 {
-  properties.initialize();
 }
 
 PluginProcessor::~PluginProcessor() = default;
@@ -81,5 +80,3 @@ createPluginFilter()
 {
   return new PluginProcessor();
 }
-
-// KEEP
