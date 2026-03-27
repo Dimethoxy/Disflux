@@ -282,7 +282,7 @@ private:
    */
   void setSizeFactor(const float& newSize) noexcept override
   {
-    if (&newSize != &internalSize) {
+    if (!juce::approximatelyEqual(newSize, internalSize)) {
       internalSize = newSize;
     }
   }

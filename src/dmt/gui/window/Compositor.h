@@ -178,6 +178,7 @@ public:
   void resized() noexcept override
   {
     TRACER("Compositor::resized");
+    propagateSizeFactor();
     const auto bounds = getLocalBounds();
 
     // Alerts
@@ -408,6 +409,8 @@ public:
     TRACER("Compositor::resetSettingsCallback");
     properties.resetToFallback();
 
+    propagateSizeFactor();
+
     // Gotta call this first to recalculate the global size
     const auto& parent = getParentComponent();
     if (parent != nullptr) {
@@ -462,6 +465,7 @@ public:
   void valueEditorListenerCallback() override
   {
     TRACER("Compositor::valueEditorListenerCallback");
+    propagateSizeFactor();
     resizedRecursively(this);
   }
 
@@ -572,6 +576,15 @@ public:
   void propagateSizeFactor() noexcept
   {
     TRACER("Compositor::propagateSizeFactor");
+    if (isPropagatingSizeFactor)
+      return;
+
+    if (juce::approximatelyEqual(lastPropagatedSizeFactor, sizeFactor))
+      return;
+
+    const juce::ScopedValueSetter<bool> isPropagatingGuard(
+      isPropagatingSizeFactor, true);
+    lastPropagatedSizeFactor = sizeFactor;
     setSizeFactorRecursively(this);
   }
 
@@ -656,6 +669,7 @@ protected:
   {
     if (!c)
       return;
+    c->removeComponentListener(this);
     c->addComponentListener(this);
     for (auto* child : c->getChildren())
       if (auto* cc = dynamic_cast<juce::Component*>(child))
@@ -737,6 +751,9 @@ protected:
    */
   void componentChildrenChanged(juce::Component& component) override
   {
+    if (isPropagatingSizeFactor)
+      return;
+
     addListenerToChildren(&component);
     propagateSizeFactor();
   }
@@ -759,6 +776,8 @@ private:
   int baseHeight = 0;
   int baseWidth = 0;
   const float& sizeFactor;
+  float lastPropagatedSizeFactor = std::numeric_limits<float>::quiet_NaN();
+  bool isPropagatingSizeFactor = false;
 
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Compositor)

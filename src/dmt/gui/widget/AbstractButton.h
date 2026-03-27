@@ -140,6 +140,13 @@ public:
     hoverIconImageComponent.setVisible(false);
 
     addMouseListener(this, true);
+
+    // Reorder the components
+    innerShadow.toBack();
+    outerShadow.toBack();
+    clickedBackgroundImageComponent.toBack();
+    hoverBackgroundImageComponent.toBack();
+    backgroundImageComponent.toBack();
   }
 
   //==============================================================================
@@ -164,8 +171,19 @@ public:
     TRACER("AbstractButton::resized");
     auto bounds = getLocalBounds();
     const auto buttonPadding = rawButtonPadding * size;
-    auto innerBounds = bounds.reduced(buttonPadding);
+    const auto innerBounds = bounds.reduced(buttonPadding);
     const auto cornerRadius = rawCornerRadius * size;
+    const auto currentScale = static_cast<float>(scale);
+
+    if (innerBounds == lastInnerBounds &&
+        juce::approximatelyEqual(cornerRadius, lastCornerRadius) &&
+        juce::approximatelyEqual(currentScale, lastScaleFactor)) {
+      return;
+    }
+
+    lastInnerBounds = innerBounds;
+    lastCornerRadius = cornerRadius;
+    lastScaleFactor = currentScale;
 
     setShadowBounds(innerBounds, cornerRadius);
     setBackgroundBounds(innerBounds);
@@ -292,13 +310,6 @@ private:
     innerShadowPath.addRoundedRectangle(_innerBounds, _cornerRadius);
     innerShadow.setPath(innerShadowPath);
     innerShadow.setBoundsRelative(0.0f, 0.0f, 1.0f, 1.0f);
-
-    // Reorder the components
-    innerShadow.toBack();
-    outerShadow.toBack();
-    clickedBackgroundImageComponent.toBack();
-    hoverBackgroundImageComponent.toBack();
-    backgroundImageComponent.toBack();
   }
 
   //==============================================================================
@@ -472,6 +483,9 @@ private:
   ImageComponent iconImageComponent;
   Image hoverIconImage;
   ImageComponent hoverIconImageComponent;
+  juce::Rectangle<int> lastInnerBounds;
+  float lastCornerRadius = -1.0f;
+  float lastScaleFactor = -1.0f;
 
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AbstractButton)
