@@ -140,6 +140,13 @@ public:
     hoverIconImageComponent.setVisible(false);
 
     addMouseListener(this, true);
+
+    // Reorder the components
+    innerShadow.toBack();
+    outerShadow.toBack();
+    clickedBackgroundImageComponent.toBack();
+    hoverBackgroundImageComponent.toBack();
+    backgroundImageComponent.toBack();
   }
 
   //==============================================================================
@@ -292,13 +299,6 @@ private:
     innerShadowPath.addRoundedRectangle(_innerBounds, _cornerRadius);
     innerShadow.setPath(innerShadowPath);
     innerShadow.setBoundsRelative(0.0f, 0.0f, 1.0f, 1.0f);
-
-    // Reorder the components
-    innerShadow.toBack();
-    outerShadow.toBack();
-    clickedBackgroundImageComponent.toBack();
-    hoverBackgroundImageComponent.toBack();
-    backgroundImageComponent.toBack();
   }
 
   //==============================================================================
