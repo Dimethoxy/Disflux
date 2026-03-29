@@ -17,6 +17,7 @@
 //==============================================================================
 #include "../melatonin_perfetto/melatonin_perfetto/melatonin_perfetto.h"
 //==============================================================================
+#include "./app/App.h"
 #include "./configuration/Configuration.h"
 #include "./dsp/Dsp.h"
 #include "./gui/Gui.h"
