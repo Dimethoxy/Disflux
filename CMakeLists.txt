@@ -3,16 +3,14 @@
 #==============================================================================
 
 cmake_minimum_required(VERSION 3.30)
-project(Disflux VERSION 1.2.0) # Disflux-Version
+file(READ "${CMAKE_CURRENT_LIST_DIR}/VERSION.md" DISFLUX_VERSION)
+string(STRIP "${DISFLUX_VERSION}" DISFLUX_VERSION)
+project(Disflux VERSION ${DISFLUX_VERSION}) # Disflux-Version
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS TRUE) 
 set(EXT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
 
 # Set macOS deployment target for older macOS compatibility
-if(APPLE)
-    # macOS 12.0 (Monterey) is the minimum for reliable C++23 support
-    set(CMAKE_OSX_DEPLOYMENT_TARGET "12.0" CACHE STRING "Minimum macOS deployment target")
-endif()
 include(cmake/get_cpm.cmake)
 
 # Add external dependencies

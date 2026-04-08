@@ -3,14 +3,18 @@
 #==============================================================================
 
 cmake_minimum_required(VERSION 3.22)
-project(DisfluxPlugin VERSION 1.2.0) # Disflux-Version
+if(NOT DEFINED DISFLUX_VERSION)
+    file(READ "${CMAKE_CURRENT_LIST_DIR}/../VERSION.md" DISFLUX_VERSION)
+    string(STRIP "${DISFLUX_VERSION}" DISFLUX_VERSION)
+endif()
+project(DisfluxPlugin VERSION ${DISFLUX_VERSION}) # Disflux-Version
 
 # If we are on MacOS, we need to build for arm64 and x86_64
 if (APPLE)
     set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
     # Apparently macOS 12.0 is the minimum for reliable C++23 support
     # But we yolo it and just hope for the best on older macOS versions
-    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15")
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13")
 endif()
 
 # Option to disable update notification (default OFF)
