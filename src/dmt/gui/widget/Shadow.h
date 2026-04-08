@@ -249,7 +249,7 @@ protected:
     TRACER("Shadow::drawOuterForPath");
     juce::Graphics::ScopedSaveState saveState(_g);
     juce::Path shadowPath(_target);
-    shadowPath.addRectangle(_target.getBounds().expanded(10 * scale));
+    shadowPath.addRectangle(_target.getBounds().expanded(10.0f));
     shadowPath.setUsingNonZeroWinding(false);
     _g.reduceClipRegion(shadowPath);
     updateShadowParameters();
@@ -259,19 +259,22 @@ protected:
 private:
   inline void updateShadowParameters()
   {
-    const auto scaledRadius = static_cast<double>(radius * size * scale);
-    const auto scaledOffset = juce::Point<float>(
-      static_cast<float>(offset.x) * static_cast<float>(scale),
-      static_cast<float>(offset.y) * static_cast<float>(scale));
+    // Rendering uses a graphics transform for HiDPI, so keep shadow parameters
+    // in logical units to avoid applying scale twice.
+    const auto scaledRadius = static_cast<double>(radius * size);
+    const auto scaledOffset = juce::Point<float>(static_cast<float>(offset.x),
+                                                 static_cast<float>(offset.y));
 
     if (inner) {
-      innerShadowRenderer.setColor(*colour).setRadius(scaledRadius).setOffset(
-        scaledOffset);
+      innerShadowRenderer.setColor(*colour)
+        .setRadius(scaledRadius)
+        .setOffset(scaledOffset);
       return;
     }
 
-    outerShadowRenderer.setColor(*colour).setRadius(scaledRadius).setOffset(
-      scaledOffset);
+    outerShadowRenderer.setColor(*colour)
+      .setRadius(scaledRadius)
+      .setOffset(scaledOffset);
   }
 
   inline void refreshCachedImageIfNeeded(bool forceRepaint = false)
