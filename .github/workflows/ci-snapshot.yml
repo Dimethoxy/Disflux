@@ -22,7 +22,6 @@ env:
   PROJECT_NAME: Disflux
   BUNDLE_NAME: disflux
   BUNDLE_ID: com.dimethoxy.disflux
-  VERSION: 1.2.0 # Disflux-Version
   BUILD_DIR: build
   DISPLAY: :0 # Linux pluginval needs this
   HOMEBREW_NO_INSTALL_CLEANUP: 1
@@ -45,6 +44,10 @@ jobs:
 
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Read Version
+        run: |
+          echo "VERSION=$(tr -d '[:space:]' < VERSION.md)" >> $GITHUB_ENV
 
       - name: Setup MSVC
         uses: TheMrMilchmann/setup-msvc-dev@v3
@@ -126,6 +129,10 @@ jobs:
 
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Read Version
+        run: |
+          echo "VERSION=$(tr -d '[:space:]' < VERSION.md)" >> $GITHUB_ENV
 
       - name: Set Up Mac
         run: brew install ninja osxutils
@@ -261,6 +268,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Read Version
+        run: |
+          echo "VERSION=$(tr -d '[:space:]' < VERSION.md)" >> $GITHUB_ENV
+
       - name: Set Up Linux
         run: |
           sudo apt-get update
@@ -338,7 +349,7 @@ jobs:
 
           # Set PACKAGE_NAME for envsubst
            export PACKAGE_NAME=${{env.BUNDLE_NAME}}-snapshot
-          export PACKAGE_VERSION=${{env.VERSION}}
+          export PACKAGE_VERSION=$VERSION
 
           # Replace PACKAGE_NAME in control file and copy to Debian package directory
           envsubst < $UBUNTU_CONTROL_FILE > $UBUNTU_PACKAGE_DIR/DEBIAN/control
@@ -375,6 +386,10 @@ jobs:
 
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Read Version
+        run: |
+          echo "VERSION=$(tr -d '[:space:]' < VERSION.md)" >> $GITHUB_ENV
 
       - name: Create user for build process
         run: |
