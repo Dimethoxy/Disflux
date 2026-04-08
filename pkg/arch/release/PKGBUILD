@@ -18,7 +18,7 @@ sha256sums=('SKIP')
 # Build and runtime dependencies – adjust as necessary for your project.
 makedepends=('gcc' 'git' 'cmake' 'ninja' 'pkg-config' 'alsa-lib' 'jack' 'ladspa' 
      'curl' 'freetype2' 'fontconfig' 'libx11' 'libxcomposite' 'libxcursor' 
-     'libxext' 'libxinerama' 'libxrandr' 'libxrender' 'webkit2gtk' 'glu' 'mesa' 'libxml2')
+     'libxext' 'libxinerama' 'libxrandr' 'libxrender' 'webkit2gtk-4.1' 'glu' 'mesa' 'libxml2')
 depends=('curl')
 
 build() {
