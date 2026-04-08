@@ -570,16 +570,21 @@ public:
    * components that implement the IScaleable interface receive the updated
    * size factor.
    *
+   * @param force If true, propagation runs even when the size factor itself
+   *              did not change. This is required for dynamically added
+   *              scaleable children.
+   *
    * @note This is typically triggered by the Compositor in response to
    *       hierarchy changes or user scaling actions.
    */
-  void propagateSizeFactor() noexcept
+  void propagateSizeFactor(const bool force = false) noexcept
   {
     TRACER("Compositor::propagateSizeFactor");
     if (isPropagatingSizeFactor)
       return;
 
-    if (juce::approximatelyEqual(lastPropagatedSizeFactor, sizeFactor))
+    if (!force &&
+        juce::approximatelyEqual(lastPropagatedSizeFactor, sizeFactor))
       return;
 
     const juce::ScopedValueSetter<bool> isPropagatingGuard(
@@ -755,7 +760,7 @@ protected:
       return;
 
     addListenerToChildren(&component);
-    propagateSizeFactor();
+    propagateSizeFactor(true);
   }
 
 private:
