@@ -3,7 +3,9 @@
 #==============================================================================
 
 cmake_minimum_required(VERSION 3.30)
-project(Disflux VERSION 1.2.0) # Disflux-Version
+file(READ "${CMAKE_CURRENT_LIST_DIR}/VERSION.md" DISFLUX_VERSION)
+string(STRIP "${DISFLUX_VERSION}" DISFLUX_VERSION)
+project(Disflux VERSION ${DISFLUX_VERSION}) # Disflux-Version
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS TRUE) 
 set(EXT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
