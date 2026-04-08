@@ -5,7 +5,7 @@
 
 //==============================================================================
 class PluginEditor
-  : public juce::AudioProcessorEditor
+  : public dmt::app::AbstractPluginEditor
   , private juce::Timer
 {
   using Image = juce::Image;

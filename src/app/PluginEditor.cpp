@@ -31,7 +31,7 @@ juceFilteredGLDebugCallback(GLenum source,
 
 //==============================================================================
 PluginEditor::PluginEditor(PluginProcessor& p)
-  : AudioProcessorEditor(&p)
+  : dmt::app::AbstractPluginEditor(p)
   , p(p)
   , sizeFactor(p.sizeFactor)
   , mainLayout({}, {})
