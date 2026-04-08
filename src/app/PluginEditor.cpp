@@ -1,42 +1,11 @@
 #include "PluginEditor.h"
 #include "PluginProcessor.h"
 
-namespace {
-// Filter out notification-level GL debug messages
-static void KHRONOS_APIENTRY
-juceFilteredGLDebugCallback(GLenum source,
-                            GLenum type,
-                            GLuint id,
-                            GLenum severity,
-                            GLsizei length,
-                            const GLchar* message,
-                            const void* userParam)
-{
-  // Ignore low-priority notifications
-  if (severity == juce::gl::GL_DEBUG_SEVERITY_NOTIFICATION)
-    return;
-
-  // Log other messages so we don't lose important info
-  juce::String msg =
-    (message != nullptr) ? juce::String(message) : juce::String();
-  DBG("OpenGL DBG message: " << msg);
-
-  // Keep JUCE's behaviour for serious errors
-  if (type == juce::gl::GL_DEBUG_TYPE_ERROR &&
-      severity == juce::gl::GL_DEBUG_SEVERITY_HIGH)
-    jassertfalse;
-}
-
-} // anonymous namespace
-
 //==============================================================================
 PluginEditor::PluginEditor(PluginProcessor& p)
-  : dmt::app::AbstractPluginEditor(p)
-  , p(p)
-  , sizeFactor(p.sizeFactor)
+  : dmt::app::AbstractPluginEditor(p, mainLayout)
   , mainLayout({}, {})
-  , compositor("DisFlux", mainLayout, p.apvts, p.properties, sizeFactor)
-  , compositorAttached(true)
+  , p(p)
 {
   mainLayout.addPanel<dmt::gui::panel::DisfluxPanel<float>>(
     0, 0, 1, 1, p.apvts, p.oscilloscopeBuffer);
@@ -174,72 +143,4 @@ PluginEditor::resized()
     return;
   }
   detachCompositorForResize();
-}
-
-void
-PluginEditor::detachCompositorForResize()
-{
-  if (compositorAttached) {
-    // Take a snapshot before detaching
-    updateCompositorSnapshot();
-
-    // Remove compositor from view
-    removeChildComponent(&compositor);
-    compositorAttached = false;
-  }
-
-  // Restart debounce timer (100ms)
-  stopTimer();
-  startTimer(100);
-}
-
-void
-PluginEditor::attachCompositorAfterResize()
-{
-  if (!compositorAttached) {
-    // Snap to the correct aspect ratio, considering header visibility
-    auto bounds = getLocalBounds();
-    bool headerVisible = compositor.isHeaderVisible();
-    int aspectHeight = headerVisible ? (baseHeight + headerHeight) : baseHeight;
-    const double aspect = (double)baseWidth / (double)aspectHeight;
-    int w = bounds.getWidth();
-    int h = bounds.getHeight();
-    double currentAspect = (double)w / (double)h;
-
-    if (currentAspect > aspect) {
-      // Too wide, adjust width
-      w = static_cast<int>(h * aspect);
-    } else if (currentAspect < aspect) {
-      // Too tall, adjust height
-      h = static_cast<int>(w / aspect);
-    }
-    setSize(w, h);
-
-    // Set compositor bounds to fill the editor
-    addAndMakeVisible(compositor);
-    compositor.setBounds(getLocalBounds());
-    compositorAttached = true;
-    repaint();
-  }
-}
-
-void
-PluginEditor::updateCompositorSnapshot()
-{
-  // Render compositor to an image at its current size
-  if (getWidth() > 0 && getHeight() > 0) {
-    compositorSnapshot =
-      juce::Image(juce::Image::ARGB, getWidth(), getHeight(), true);
-    juce::Graphics g(compositorSnapshot);
-    compositor.paintEntireComponent(g, true);
-  }
-}
-
-void
-PluginEditor::timerCallback()
-{
-  // Timer expired: reattach compositor and repaint
-  stopTimer();
-  attachCompositorAfterResize();
-  repaint();
 }

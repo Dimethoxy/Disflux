@@ -4,21 +4,12 @@
 #include <DmtHeader.h>
 
 //==============================================================================
-class PluginEditor
-  : public dmt::app::AbstractPluginEditor
-  , private juce::Timer
+class PluginEditor : public dmt::app::AbstractPluginEditor
 {
   using Image = juce::Image;
   using ImageComponent = juce::ImageComponent;
   using PixelFormat = juce::Image::PixelFormat;
   using OpenGLContext = juce::OpenGLContext;
-
-  // Window size
-  const int baseWidth = 500;
-  const int baseHeight = 270;
-
-  // Window header
-  const int& headerHeight = dmt::Settings::Header::height;
 
 public:
   explicit PluginEditor(PluginProcessor&);
@@ -30,32 +21,12 @@ public:
   void setConstraints(int width, int height);
   void handleHeaderVisibilityChange(bool isHeaderVisible);
 
-  // Debounced resizing
-  void timerCallback() override;
-  void detachCompositorForResize();
-  void attachCompositorAfterResize();
-  void updateCompositorSnapshot();
-
 private:
   //==============================================================================
   PluginProcessor& p;
   OpenGLContext openGLContext;
   //==============================================================================
-
-  int lastWidth = baseWidth;
-  int lastHeight = baseHeight;
-  double ratio = baseWidth / baseHeight;
-  float& sizeFactor = p.sizeFactor;
-  bool firstDraw = true;
-  //==============================================================================
-  Image image;
-  bool isResizing = false;
-  //==============================================================================
   dmt::gui::window::Layout mainLayout;
-  dmt::gui::window::Compositor compositor;
-  //==============================================================================
-  juce::Image compositorSnapshot;
-  bool compositorAttached = true;
-  //==============================================================================
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginEditor)
 };
