@@ -25,8 +25,6 @@ private:
   //==============================================================================
   PluginProcessor& p;
   OpenGLContext openGLContext;
-  //==============================================================================
-  dmt::gui::window::Layout mainLayout;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginEditor)
 };

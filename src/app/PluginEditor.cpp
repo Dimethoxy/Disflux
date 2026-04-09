@@ -3,12 +3,12 @@
 
 //==============================================================================
 PluginEditor::PluginEditor(PluginProcessor& p)
-  : dmt::app::AbstractPluginEditor(p, mainLayout)
-  , mainLayout({}, {})
+  : dmt::app::AbstractPluginEditor(p, [&p](dmt::gui::window::Layout& layout) {
+      layout.addPanel<dmt::gui::panel::DisfluxPanel<float>>(
+        0, 0, 1, 1, p.apvts, p.oscilloscopeBuffer);
+    })
   , p(p)
 {
-  mainLayout.addPanel<dmt::gui::panel::DisfluxPanel<float>>(
-    0, 0, 1, 1, p.apvts, p.oscilloscopeBuffer);
 
   if (OS_IS_WINDOWS) {
     setResizable(false, true);
@@ -55,7 +55,6 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   }
 
   setConstraints(baseWidth, baseHeight + headerHeight);
-  addAndMakeVisible(compositor);
   setResizable(false, true);
 
   const auto startWidth = baseWidth * sizeFactor;

@@ -3,6 +3,7 @@
 #include "./AbstractPluginProcessor.h"
 #include "gui/window/Compositor.h"
 #include <JuceHeader.h>
+#include <functional>
 
 namespace {
 // Filter out notification-level GL debug messages
@@ -39,13 +40,22 @@ class AbstractPluginEditor
   , protected juce::Timer
 {
 public:
+  // Strategy function type for layout initialization
+  using LayoutInitializer = std::function<void(dmt::gui::window::Layout&)>;
+
   AbstractPluginEditor(dmt::app::AbstractPluginProcessor& p,
-                       dmt::gui::window::Layout& mainLayout)
+                       LayoutInitializer&& layoutInit)
     : juce::AudioProcessorEditor(&p)
     , sizeFactor(p.sizeFactor)
-    , compositorAttached(true)
+    , mainLayout({}, {})
     , compositor("DisFlux", mainLayout, p.apvts, p.properties, sizeFactor)
+    , compositorAttached(true)
   {
+    // Initialize the layout via strategy function
+    layoutInit(mainLayout);
+
+    // Now that layout is fully configured, attach the compositor
+    addAndMakeVisible(compositor);
   }
 
   ~AbstractPluginEditor() override = default;
@@ -121,6 +131,8 @@ public:
     }
   }
 
+  dmt::gui::window::Layout& getMainLayout() { return mainLayout; }
+
 protected:
   const int& headerHeight = dmt::Settings::Header::height;
   const int baseWidth = 500;
@@ -137,6 +149,7 @@ protected:
   Image image;
   bool isResizing = false;
 
+  dmt::gui::window::Layout mainLayout;
   dmt::gui::window::Compositor compositor;
 };
 } // namespace app
