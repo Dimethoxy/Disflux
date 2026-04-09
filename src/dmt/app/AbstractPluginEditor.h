@@ -20,17 +20,22 @@ public:
   // Strategy function type for layout initialization
   using LayoutInitializer = std::function<void(dmt::gui::window::Layout&)>;
 
-  AbstractPluginEditor(dmt::app::AbstractPluginProcessor& p,
-                       LayoutInitializer&& layoutInit)
-    : juce::AudioProcessorEditor(&p)
-    , p(p)
+  AbstractPluginEditor(dmt::app::AbstractPluginProcessor& _p,
+                       juce::String _name,
+                       int _baseWidth,
+                       int _baseHeight,
+                       LayoutInitializer&& _layoutInit)
+    : juce::AudioProcessorEditor(&_p)
+    , p(_p)
+    , baseWidth(_baseWidth)
+    , baseHeight(_baseHeight)
     , sizeFactor(p.sizeFactor)
     , mainLayout({}, {})
-    , compositor("DisFlux", mainLayout, p.apvts, p.properties, sizeFactor)
+    , compositor(_name, mainLayout, p.apvts, p.properties, sizeFactor)
     , compositorAttached(true)
   {
     // Initialize the layout via strategy function
-    layoutInit(mainLayout);
+    _layoutInit(mainLayout);
 
     // Now that layout is fully configured, attach the compositor
     addAndMakeVisible(compositor);
@@ -269,8 +274,8 @@ protected:
   dmt::app::AbstractPluginProcessor& p;
 
   const int& headerHeight = dmt::Settings::Header::height;
-  const int baseWidth = 500;
-  const int baseHeight = 270;
+  const int baseWidth;
+  const int baseHeight;
   int lastWidth = baseWidth;
   int lastHeight = baseHeight;
   double ratio = baseWidth / baseHeight;
@@ -287,6 +292,8 @@ protected:
   dmt::gui::window::Compositor compositor;
 
   OpenGLContext openGLContext;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AbstractPluginEditor)
 };
 } // namespace app
 } // namespace dmt
