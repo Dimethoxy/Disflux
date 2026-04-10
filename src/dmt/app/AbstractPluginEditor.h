@@ -1,6 +1,6 @@
 #pragma once
 
-#include "./AbstractPluginProcessor.h"
+#include "app/AbstractPluginProcessor.h"
 #include "gui/window/Compositor.h"
 #include <JuceHeader.h>
 #include <functional>
@@ -100,7 +100,7 @@ public:
   ~AbstractPluginEditor() override = default;
 
   //==============================================================================
-  //
+  // JUCE overrides
 
   void paint(juce::Graphics& g)
   {
@@ -146,6 +146,9 @@ public:
     }
     detachCompositorForResize();
   }
+
+  //==============================================================================
+  // JUCE overrides
 
   void setConstraints(int width, int height)
   {
@@ -292,7 +295,6 @@ protected:
   dmt::gui::window::Compositor compositor;
 
   OpenGLContext openGLContext;
-
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AbstractPluginEditor)
 };
 } // namespace app
