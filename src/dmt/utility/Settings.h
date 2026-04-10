@@ -213,7 +213,8 @@ public:
       container.add<Colour>("Header.BorderButtonBorderColour",
                             Colours::success.darker(0.5f));
     static inline auto& borderButtonFontColour =
-      container.add<Colour>("Header.BorderButtonFontColour", Colours::shadow);
+      container.add<Colour>("Header.BorderButtonFontColour",
+                            Colours::background);
     static inline auto& borderButtonFontSize =
       container.add<float>("Header.BorderButtonFontSize", 20.0f);
     static inline auto& borderButtonHeight =
