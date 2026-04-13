@@ -3,11 +3,11 @@
 #==============================================================================
 
 cmake_minimum_required(VERSION 3.22)
-if(NOT DEFINED DISFLUX_VERSION)
-    file(READ "${CMAKE_CURRENT_LIST_DIR}/../VERSION.md" DISFLUX_VERSION)
-    string(STRIP "${DISFLUX_VERSION}" DISFLUX_VERSION)
+if(NOT DEFINED FILE_VERSION)
+    file(READ "${CMAKE_CURRENT_LIST_DIR}/../VERSION.md" FILE_VERSION)
+    string(STRIP "${FILE_VERSION}" FILE_VERSION)
 endif()
-project(DisfluxPlugin VERSION ${DISFLUX_VERSION}) # Disflux-Version
+project(DisfluxPlugin VERSION ${FILE_VERSION})
 
 # If we are on MacOS, we need to build for arm64 and x86_64
 if (APPLE)
