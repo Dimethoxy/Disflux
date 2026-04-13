@@ -1,5 +1,5 @@
 #==============================================================================
-# Oscilloscope Source Folder CMakeLists.txt file
+# Disflux Source Folder CMakeLists.txt file
 #==============================================================================
 
 cmake_minimum_required(VERSION 3.22)

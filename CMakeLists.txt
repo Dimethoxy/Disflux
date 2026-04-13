@@ -1,5 +1,5 @@
 #==============================================================================
-# Main CMakeLists.txt file for the Oscilloscope project
+# Main CMakeLists.txt file for the Disflux project
 #==============================================================================
 
 cmake_minimum_required(VERSION 3.30)
