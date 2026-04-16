@@ -1,14 +1,50 @@
+//==============================================================================
+/* ██████╗ ██╗███╗   ███╗███████╗████████╗██╗  ██╗ ██████╗ ██╗  ██╗██╗   ██╗
+ * ██╔══██╗██║████╗ ████║██╔════╝╚══██╔══╝██║  ██║██╔═══██╗╚██╗██╔╝╚██╗ ██╔╝
+ * ██║  ██║██║██╔████╔██║█████╗     ██║   ███████║██║   ██║ ╚███╔╝  ╚████╔╝
+ * ██║  ██║██║██║╚██╔╝██║██╔══╝     ██║   ██╔══██║██║   ██║ ██╔██╗   ╚██╔╝
+ * ██████╔╝██║██║ ╚═╝ ██║███████╗   ██║   ██║  ██║╚██████╔╝██╔╝ ██╗   ██║
+ * ╚═════╝ ╚═╝╚═╝     ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝
+ * Copyright (C) 2024 Dimethoxy Audio (https://dimethoxy.com)
+ *
+ * Part of the Dimethoxy Library, primarily intended for Dimethoxy plugins.
+ * External use is permitted but not recommended.
+ * No support or compatibility guarantees are provided.
+ *
+ * License:
+ * This code is licensed under the GPLv3 license. You are permitted to use and
+ * modify this code under the terms of this license.
+ * You must adhere GPLv3 license for any project using this code or parts of it.
+ * Your are not allowed to use this code in any closed-source project.
+ *
+ * Description:
+ * Layout is a GUI component that manages the arrangement of panels components
+ * in a grid layout. It allows for flexible panel placement and resizing based
+ * on specified column and row separators.
+ *
+ * Authors:
+ * Lunix-420 (Primary Author)
+ */
+//==============================================================================
+
 #pragma once
 
+//==============================================================================
+
 #include "dmt/gui/panel/AbstractPanel.h"
+
+//==============================================================================
 
 namespace dmt {
 namespace gui {
 namespace window {
 
+//==============================================================================
+
 using GridSeparatorLayout = std::vector<float>;
 
-// Layout is now a JUCE Component
+//==============================================================================
+
 class Layout : public juce::Component
 {
   using AbstractPanel = dmt::gui::panel::AbstractPanel;
@@ -89,7 +125,6 @@ public:
     auto panel = std::make_shared<PanelType>(std::forward<Args>(_args)...);
     panels.push_back(panel);
     panelSpans.emplace_back(_startCol, _startRow, _endCol, _endRow);
-    // Add to JUCE component tree
     addAndMakeVisible(panel.get());
   }
 

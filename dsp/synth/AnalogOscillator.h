@@ -1,22 +1,21 @@
 //==============================================================================
-/*
- * ██████  ██ ███    ███ ███████ ████████ ██   ██  ██████  ██   ██ ██    ██
- * ██   ██ ██ ████  ████ ██         ██    ██   ██ ██    ██  ██ ██   ██  ██
- * ██   ██ ██ ██ ████ ██ █████      ██    ███████ ██    ██   ███     ████
- * ██   ██ ██ ██  ██  ██ ██         ██    ██   ██ ██    ██  ██ ██     ██
- * ██████  ██ ██      ██ ███████    ██    ██   ██  ██████  ██   ██    ██
- *
+/* ██████╗ ██╗███╗   ███╗███████╗████████╗██╗  ██╗ ██████╗ ██╗  ██╗██╗   ██╗
+ * ██╔══██╗██║████╗ ████║██╔════╝╚══██╔══╝██║  ██║██╔═══██╗╚██╗██╔╝╚██╗ ██╔╝
+ * ██║  ██║██║██╔████╔██║█████╗     ██║   ███████║██║   ██║ ╚███╔╝  ╚████╔╝
+ * ██║  ██║██║██║╚██╔╝██║██╔══╝     ██║   ██╔══██║██║   ██║ ██╔██╗   ╚██╔╝
+ * ██████╔╝██║██║ ╚═╝ ██║███████╗   ██║   ██║  ██║╚██████╔╝██╔╝ ██╗   ██║
+ * ╚═════╝ ╚═╝╚═╝     ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝
  * Copyright (C) 2024 Dimethoxy Audio (https://dimethoxy.com)
  *
- * This file is part of the Dimethoxy Library, a collection of essential
- * classes used across various Dimethoxy projects.
- * These files are primarily designed for internal use within our repositories.
+ * Part of the Dimethoxy Library, primarily intended for Dimethoxy plugins.
+ * External use is permitted but not recommended.
+ * No support or compatibility guarantees are provided.
  *
  * License:
  * This code is licensed under the GPLv3 license. You are permitted to use and
- * modify this code under the terms of this license. You must adhere GPLv3
- * license for any project using this code or parts of it. Your are not allowed
- * to use this code in any closed-source project.
+ * modify this code under the terms of this license.
+ * You must adhere GPLv3 license for any project using this code or parts of it.
+ * Your are not allowed to use this code in any closed-source project.
  *
  * Description:
  * High-performance analog oscillator for real-time audio synthesis.
@@ -123,9 +122,10 @@ public:
    * @brief Sets the drive level for waveform distortion.
    * @param _newDrive The new drive level.
    */
-  inline void setDrive(const float _newDrive) noexcept { 
+  inline void setDrive(const float _newDrive) noexcept
+  {
     TRACER("AnalogOscillator::setDrive");
-    drive = _newDrive; 
+    drive = _newDrive;
   }
 
   //==============================================================================
@@ -133,9 +133,10 @@ public:
    * @brief Sets the bias level for waveform distortion.
    * @param _newBias The new bias level.
    */
-  inline void setBias(const float _newBias) noexcept { 
+  inline void setBias(const float _newBias) noexcept
+  {
     TRACER("AnalogOscillator::setBias");
-    bias = _newBias; 
+    bias = _newBias;
   }
 
   //==============================================================================
@@ -143,9 +144,10 @@ public:
    * @brief Sets the initial phase of the oscillator.
    * @param _newPhase The new phase value.
    */
-  inline void setPhase(const float _newPhase) noexcept { 
+  inline void setPhase(const float _newPhase) noexcept
+  {
     TRACER("AnalogOscillator::setPhase");
-    phase = _newPhase; 
+    phase = _newPhase;
   }
 
   //==============================================================================

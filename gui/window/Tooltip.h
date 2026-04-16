@@ -1,16 +1,15 @@
 //==============================================================================
-/*
- * ██████  ██ ███    ███ ███████ ████████ ██   ██  ██████  ██   ██ ██    ██
- * ██   ██ ██ ████  ████ ██         ██    ██   ██ ██    ██  ██ ██   ██  ██
- * ██   ██ ██ ██ ████ ██ █████      ██    ██   ██ ██    ██   ███     ████
- * ██   ██ ██ ██  ██  ██ ██         ██    ██   ██ ██    ██  ██ ██     ██
- * ██████  ██ ██      ██ ███████    ██    ██   ██  ██████  ██   ██    ██
- *
+/* ██████╗ ██╗███╗   ███╗███████╗████████╗██╗  ██╗ ██████╗ ██╗  ██╗██╗   ██╗
+ * ██╔══██╗██║████╗ ████║██╔════╝╚══██╔══╝██║  ██║██╔═══██╗╚██╗██╔╝╚██╗ ██╔╝
+ * ██║  ██║██║██╔████╔██║█████╗     ██║   ███████║██║   ██║ ╚███╔╝  ╚████╔╝
+ * ██║  ██║██║██║╚██╔╝██║██╔══╝     ██║   ██╔══██║██║   ██║ ██╔██╗   ╚██╔╝
+ * ██████╔╝██║██║ ╚═╝ ██║███████╗   ██║   ██║  ██║╚██████╔╝██╔╝ ██╗   ██║
+ * ╚═════╝ ╚═╝╚═╝     ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝
  * Copyright (C) 2024 Dimethoxy Audio (https://dimethoxy.com)
  *
- * This file is part of the Dimethoxy Library, a collection of essential
- * classes used across various Dimethoxy projects.
- * These files are primarily designed for internal use within our repositories.
+ * Part of the Dimethoxy Library, primarily intended for Dimethoxy plugins.
+ * External use is permitted but not recommended.
+ * No support or compatibility guarantees are provided.
  *
  * License:
  * This code is licensed under the GPLv3 license. You are permitted to use and
@@ -142,6 +141,7 @@ public:
   {
     TRACER("Tooltip::paint");
     if (!tooltipImage.isNull()) {
+
       const int imageWidth = tooltipImage.getWidth();
       const int imageHeight = tooltipImage.getHeight();
       const int width = getWidth();
@@ -152,17 +152,17 @@ public:
 
       // Flip horizontally if tooltip would go off right edge
       if (drawPositionX + imageWidth / scale > width)
-        drawPositionX = std::max(
-          0, lastMousePosition.x - static_cast<int>(imageWidth / scale));
+        drawPositionX =
+          std::max(0, lastMousePosition.x - int(imageWidth / scale));
 
       // Flip vertically if tooltip would go off bottom edge
       if (drawPositionY + imageHeight / scale > height)
-        drawPositionY = std::max(
-          0, lastMousePosition.y - static_cast<int>(imageHeight / scale));
+        drawPositionY =
+          std::max(0, lastMousePosition.y - int(imageHeight / scale));
 
       _graphics.drawImage(tooltipImage,
-                          static_cast<float>(drawPositionX),
-                          static_cast<float>(drawPositionY),
+                          float(drawPositionX),
+                          float(drawPositionY),
                           imageWidth / scale,
                           imageHeight / scale,
                           0,
@@ -248,6 +248,7 @@ protected:
   inline void renderTooltipImage(const juce::String& _text)
   {
     TRACER("Tooltip::renderTooltipImage");
+
     // Font size and style
     const auto fontSize = rawFontSize * size;
 

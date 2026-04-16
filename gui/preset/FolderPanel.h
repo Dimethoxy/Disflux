@@ -1,92 +1,116 @@
-/*
-  ==============================================================================
-
-    FolderPanel.h
-    Created: 28 Dec 2022 3:02:30pm
-    Author:  Lunix
-
-  ==============================================================================
+//==============================================================================
+/* ██████╗ ██╗███╗   ███╗███████╗████████╗██╗  ██╗ ██████╗ ██╗  ██╗██╗   ██╗
+ * ██╔══██╗██║████╗ ████║██╔════╝╚══██╔══╝██║  ██║██╔═══██╗╚██╗██╔╝╚██╗ ██╔╝
+ * ██║  ██║██║██╔████╔██║█████╗     ██║   ███████║██║   ██║ ╚███╔╝  ╚████╔╝
+ * ██║  ██║██║██║╚██╔╝██║██╔══╝     ██║   ██╔══██║██║   ██║ ██╔██╗   ╚██╔╝
+ * ██████╔╝██║██║ ╚═╝ ██║███████╗   ██║   ██║  ██║╚██████╔╝██╔╝ ██╗   ██║
+ * ╚═════╝ ╚═╝╚═╝     ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝
+ * Copyright (C) 2024 Dimethoxy Audio (https://dimethoxy.com)
+ *
+ * Part of the Dimethoxy Library, primarily intended for Dimethoxy plugins.
+ * External use is permitted but not recommended.
+ * No support or compatibility guarantees are provided.
+ *
+ * License:
+ * This code is licensed under the GPLv3 license. You are permitted to use and
+ * modify this code under the terms of this license.
+ * You must adhere GPLv3 license for any project using this code or parts of it.
+ * Your are not allowed to use this code in any closed-source project.
+ *
+ * Description:
+ * FolderPanel is a GUI component that provides an interface for managing preset
+ * folders.
+ *
+ * Authors:
+ * Lunix-420 (Primary Author)
+ */
+//==============================================================================
 */
 
 #pragma once
 
 #include <JuceHeader.h>
 
-//==============================================================================
+  //==============================================================================
 
-namespace dmt {
-namespace gui {
-namespace preset {
-class FolderPanel
-  : public juce::Component
-  , juce::Button::Listener
-  , juce::ComboBox::Listener
+  namespace dmt
 {
-public:
-  FolderPanel()
+  namespace gui {
+  namespace preset {
+  class FolderPanel
+    : public juce::Component
+    , juce::Button::Listener
+    , juce::ComboBox::Listener
   {
-    configureButton(newButton, "New");
-    configureButton(previousFolderButton, "<");
-    configureButton(nextFolderButton, ">");
-    configureButton(deleteButton, "Delete");
+  public:
+    FolderPanel()
+    {
+      configureButton(newButton, "New");
+      configureButton(previousFolderButton, "<");
+      configureButton(nextFolderButton, ">");
+      configureButton(deleteButton, "Delete");
 
-    folderListBox.setTextWhenNothingSelected("No Folder Selected");
-    folderListBox.setTextWhenNoChoicesAvailable("No Folder Available");
-    folderListBox.setMouseCursor(juce::MouseCursor::PointingHandCursor);
-    addAndMakeVisible(folderListBox);
-    folderListBox.addListener(this);
-  }
+      folderListBox.setTextWhenNothingSelected("No Folder Selected");
+      folderListBox.setTextWhenNoChoicesAvailable("No Folder Available");
+      folderListBox.setMouseCursor(juce::MouseCursor::PointingHandCursor);
+      addAndMakeVisible(folderListBox);
+      folderListBox.addListener(this);
+    }
 
-  ~FolderPanel() override
-  {
-    newButton.removeListener(this);
-    previousFolderButton.removeListener(this);
-    nextFolderButton.removeListener(this);
-    deleteButton.removeListener(this);
-    folderListBox.removeListener(this);
-  }
+    ~FolderPanel() override
+    {
+      newButton.removeListener(this);
+      previousFolderButton.removeListener(this);
+      nextFolderButton.removeListener(this);
+      deleteButton.removeListener(this);
+      folderListBox.removeListener(this);
+    }
 
-  void paint(juce::Graphics&) override {}
+    void paint(juce::Graphics&) override {}
 
-  void resized() override
-  {
-    auto padding = 1;
-    const auto container = getLocalBounds().reduced(padding);
-    auto bounds = container;
+    void resized() override
+    {
+      auto padding = 1;
+      const auto container = getLocalBounds().reduced(padding);
+      auto bounds = container;
 
-    newButton.setBounds(
-      bounds.removeFromLeft(container.proportionOfWidth(0.2)).reduced(padding));
-    previousFolderButton.setBounds(
-      bounds.removeFromLeft(container.proportionOfWidth(0.1)).reduced(padding));
-    folderListBox.setBounds(
-      bounds.removeFromLeft(container.proportionOfWidth(0.4)).reduced(padding));
-    nextFolderButton.setBounds(
-      bounds.removeFromLeft(container.proportionOfWidth(0.1)).reduced(padding));
-    deleteButton.setBounds(bounds.reduced(padding));
-  }
+      newButton.setBounds(
+        bounds.removeFromLeft(container.proportionOfWidth(0.2))
+          .reduced(padding));
+      previousFolderButton.setBounds(
+        bounds.removeFromLeft(container.proportionOfWidth(0.1))
+          .reduced(padding));
+      folderListBox.setBounds(
+        bounds.removeFromLeft(container.proportionOfWidth(0.4))
+          .reduced(padding));
+      nextFolderButton.setBounds(
+        bounds.removeFromLeft(container.proportionOfWidth(0.1))
+          .reduced(padding));
+      deleteButton.setBounds(bounds.reduced(padding));
+    }
 
-private:
-  void buttonClicked(juce::Button* button) override {}
+  private:
+    void buttonClicked(juce::Button* button) override {}
 
-  void comboBoxChanged(juce::ComboBox* comboBoxThatHasChanged) override {}
+    void comboBoxChanged(juce::ComboBox* comboBoxThatHasChanged) override {}
 
-  void configureButton(juce::Button& button, const juce::String& buttontext)
-  {
-    button.setButtonText(buttontext);
-    button.setMouseCursor(juce::MouseCursor::PointingHandCursor);
-    addAndMakeVisible(button);
-    button.addListener(this);
-  }
+    void configureButton(juce::Button& button, const juce::String& buttontext)
+    {
+      button.setButtonText(buttontext);
+      button.setMouseCursor(juce::MouseCursor::PointingHandCursor);
+      addAndMakeVisible(button);
+      button.addListener(this);
+    }
 
-  juce::TextButton newButton;
-  juce::TextButton previousFolderButton;
-  juce::TextButton nextFolderButton;
-  juce::TextButton deleteButton;
+    juce::TextButton newButton;
+    juce::TextButton previousFolderButton;
+    juce::TextButton nextFolderButton;
+    juce::TextButton deleteButton;
 
-  juce::ComboBox folderListBox;
+    juce::ComboBox folderListBox;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FolderPanel)
-};
-} // namespace preset
-} // namespace gui
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FolderPanel)
+  };
+  } // namespace preset
+  } // namespace gui
 } // namespace dmt

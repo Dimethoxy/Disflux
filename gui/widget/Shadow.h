@@ -1,16 +1,15 @@
 //==============================================================================
-/*
- * ██████  ██ ███    ███ ███████ ████████ ██   ██  ██████  ██   ██ ██    ██
- * ██   ██ ██ ████  ████ ██         ██    ██   ██ ██    ██  ██ ██   ██  ██
- * ██   ██ ██ ██ ████ ██ █████      ██    ███████ ██    ██   ███     ████
- * ██   ██ ██ ██  ██  ██ ██         ██    ██   ██ ██    ██  ██ ██     ██
- * ██████  ██ ██      ██ ███████    ██    ██   ██  ██████  ██   ██    ██
- *
+/* ██████╗ ██╗███╗   ███╗███████╗████████╗██╗  ██╗ ██████╗ ██╗  ██╗██╗   ██╗
+ * ██╔══██╗██║████╗ ████║██╔════╝╚══██╔══╝██║  ██║██╔═══██╗╚██╗██╔╝╚██╗ ██╔╝
+ * ██║  ██║██║██╔████╔██║█████╗     ██║   ███████║██║   ██║ ╚███╔╝  ╚████╔╝
+ * ██║  ██║██║██║╚██╔╝██║██╔══╝     ██║   ██╔══██║██║   ██║ ██╔██╗   ╚██╔╝
+ * ██████╔╝██║██║ ╚═╝ ██║███████╗   ██║   ██║  ██║╚██████╔╝██╔╝ ██╗   ██║
+ * ╚═════╝ ╚═╝╚═╝     ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝
  * Copyright (C) 2024 Dimethoxy Audio (https://dimethoxy.com)
  *
- * This file is part of the Dimethoxy Library, a collection of essential
- * classes used across various Dimethoxy projects.
- * These files are primarily designed for internal use within our repositories.
+ * Part of the Dimethoxy Library, primarily intended for Dimethoxy plugins.
+ * External use is permitted but not recommended.
+ * No support or compatibility guarantees are provided.
  *
  * License:
  * This code is licensed under the GPLv3 license. You are permitted to use and
@@ -26,17 +25,23 @@
  * Lunix-420 (Primary Author)
  */
 //==============================================================================
+
 #pragma once
+
 //==============================================================================
+
 #include "utility/Scaleable.h"
 #include "utility/Settings.h"
 #include <JuceHeader.h>
+#include <melatonin_blur/melatonin_blur.h>
+
 //==============================================================================
+
 namespace dmt {
 namespace gui {
 namespace widget {
-//==============================================================================
 
+//==============================================================================
 /**
  * @brief Component for rendering drop shadows on arbitrary paths.
  *
@@ -101,12 +106,24 @@ public:
     if (!visibility)
       return;
 
+    refreshCachedImageIfNeeded();
+
     if (!needsRepaint) {
-      _g.drawImageAt(image, 0, 0);
+      _g.drawImage(image,
+                   0.0f,
+                   0.0f,
+                   static_cast<float>(getWidth()),
+                   static_cast<float>(getHeight()),
+                   0,
+                   0,
+                   image.getWidth(),
+                   image.getHeight());
       return;
     }
 
     juce::Graphics imageGraphics(image);
+    imageGraphics.addTransform(juce::AffineTransform::scale(scale, scale));
+    imageGraphics.fillAll(juce::Colours::transparentBlack);
     imageGraphics.setColour(*colour); // dereference pointer
 
     if (inner)
@@ -115,7 +132,15 @@ public:
       drawOuterForPath(imageGraphics, path);
 
     needsRepaint = false;
-    _g.drawImageAt(image, 0, 0);
+    _g.drawImage(image,
+                 0.0f,
+                 0.0f,
+                 static_cast<float>(getWidth()),
+                 static_cast<float>(getHeight()),
+                 0,
+                 0,
+                 image.getWidth(),
+                 image.getHeight());
   }
 
   //==============================================================================
@@ -130,10 +155,7 @@ public:
   inline void resized() override
   {
     TRACER("Shadow::resized");
-    if (getWidth() == 0 || getHeight() == 0)
-      return;
-    image = Image(PixelFormat::ARGB, getWidth(), getHeight(), true);
-    needsRepaint = true;
+    refreshCachedImageIfNeeded(true);
   }
 
   //==============================================================================
@@ -207,15 +229,8 @@ protected:
   inline void drawInnerForPath(juce::Graphics& _g, juce::Path _target)
   {
     TRACER("Shadow::drawInnerForPath");
-    juce::Graphics::ScopedSaveState saveState(_g);
-    juce::Path shadowPath(_target);
-    shadowPath.addRectangle(_target.getBounds().expanded(10 * scale));
-    shadowPath.setUsingNonZeroWinding(false);
-    _g.reduceClipRegion(_target);
-    juce::DropShadow ds(*colour,
-                        static_cast<int>(radius * size * scale),
-                        offset * scale); // dereference pointer
-    ds.drawForPath(_g, shadowPath);
+    updateShadowParameters();
+    innerShadowRenderer.render(_g, _target);
   }
 
   //==============================================================================
@@ -234,16 +249,58 @@ protected:
     TRACER("Shadow::drawOuterForPath");
     juce::Graphics::ScopedSaveState saveState(_g);
     juce::Path shadowPath(_target);
-    shadowPath.addRectangle(_target.getBounds().expanded(10 * scale));
+    shadowPath.addRectangle(_target.getBounds().expanded(10.0f));
     shadowPath.setUsingNonZeroWinding(false);
     _g.reduceClipRegion(shadowPath);
-    juce::DropShadow ds(*colour,
-                        static_cast<int>(radius * size * scale),
-                        offset * scale); // dereference pointer
-    ds.drawForPath(_g, _target);
+    updateShadowParameters();
+    outerShadowRenderer.render(_g, _target);
   }
 
 private:
+  inline void updateShadowParameters()
+  {
+    // Rendering uses a graphics transform for HiDPI, so keep shadow parameters
+    // in logical units to avoid applying scale twice.
+    const auto scaledRadius = static_cast<double>(radius * size);
+    const auto scaledOffset = juce::Point<float>(static_cast<float>(offset.x),
+                                                 static_cast<float>(offset.y));
+
+    if (inner) {
+      innerShadowRenderer.setColor(*colour)
+        .setRadius(scaledRadius)
+        .setOffset(scaledOffset);
+      return;
+    }
+
+    outerShadowRenderer.setColor(*colour)
+      .setRadius(scaledRadius)
+      .setOffset(scaledOffset);
+  }
+
+  inline void refreshCachedImageIfNeeded(bool forceRepaint = false)
+  {
+    if (getWidth() == 0 || getHeight() == 0)
+      return;
+
+    const auto currentScale = static_cast<float>(scale);
+    const auto scaledWidth =
+      juce::jmax(1, juce::roundToInt(getWidth() * currentScale));
+    const auto scaledHeight =
+      juce::jmax(1, juce::roundToInt(getHeight() * currentScale));
+
+    const auto scaleChanged =
+      !juce::approximatelyEqual(lastRenderedScale, currentScale);
+    const auto imageSizeChanged =
+      image.getWidth() != scaledWidth || image.getHeight() != scaledHeight;
+
+    if (!forceRepaint && !scaleChanged && !imageSizeChanged)
+      return;
+
+    image = Image(PixelFormat::ARGB, scaledWidth, scaledHeight, true);
+    lastRenderedScale = currentScale;
+    needsRepaint = true;
+  }
+
   //==============================================================================
   // Members initialized in the initializer list
   const bool& visibility;
@@ -256,6 +313,10 @@ private:
   juce::Point<int> offset = { 0, 0 };
   juce::Path path;
   bool needsRepaint = true;
+  float lastRenderedScale = 0.0f;
+
+  melatonin::DropShadow outerShadowRenderer;
+  melatonin::InnerShadow innerShadowRenderer;
 
   Image image = Image(PixelFormat::ARGB, 1, 1, true);
 

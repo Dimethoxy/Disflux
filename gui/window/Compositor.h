@@ -1,16 +1,15 @@
 //==============================================================================
-/*
- * ██████  ██ ███    ███ ███████ ████████ ██   ██  ██████  ██   ██ ██    ██
- * ██   ██ ██ ████  ████ ██         ██    ██   ██ ██    ██  ██ ██   ██  ██
- * ██   ██ ██ ██ ████ ██ █████      ██    ██   ██ ██    ██   ███     ████
- * ██   ██ ██ ██  ██  ██ ██         ██    ██ ██    ██   ██ ██     ██
- * ██████  ██ ██      ██ ███████    ██    ██   ██  ██████  ██   ██    ██
- *
+/* ██████╗ ██╗███╗   ███╗███████╗████████╗██╗  ██╗ ██████╗ ██╗  ██╗██╗   ██╗
+ * ██╔══██╗██║████╗ ████║██╔════╝╚══██╔══╝██║  ██║██╔═══██╗╚██╗██╔╝╚██╗ ██╔╝
+ * ██║  ██║██║██╔████╔██║█████╗     ██║   ███████║██║   ██║ ╚███╔╝  ╚████╔╝
+ * ██║  ██║██║██║╚██╔╝██║██╔══╝     ██║   ██╔══██║██║   ██║ ██╔██╗   ╚██╔╝
+ * ██████╔╝██║██║ ╚═╝ ██║███████╗   ██║   ██║  ██║╚██████╔╝██╔╝ ██╗   ██║
+ * ╚═════╝ ╚═╝╚═╝     ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝
  * Copyright (C) 2024 Dimethoxy Audio (https://dimethoxy.com)
  *
- * This file is part of the Dimethoxy Library, a collection of essential
- * classes used across various Dimethoxy projects.
- * These files are primarily designed for internal use within our repositories.
+ * Part of the Dimethoxy Library, primarily intended for Dimethoxy plugins.
+ * External use is permitted but not recommended.
+ * No support or compatibility guarantees are provided.
  *
  * License:
  * This code is licensed under the GPLv3 license. You are permitted to use and
@@ -179,6 +178,7 @@ public:
   void resized() noexcept override
   {
     TRACER("Compositor::resized");
+    propagateSizeFactor();
     const auto bounds = getLocalBounds();
 
     // Alerts
@@ -194,13 +194,13 @@ public:
     tooltip.setAlwaysOnTop(true);
 
     // Main layout
+    const auto padding = rawPadding * size * 0.5f;
     if (header.isVisible()) {
       const auto headerHeight = rawHeaderHeight * size;
       const auto headerBounds = juce::Rectangle(bounds).removeFromTop(
         static_cast<int>(headerHeight * 2.0f));
       header.setBounds(headerBounds);
 
-      const auto padding = rawPadding * size;
       const auto contentHeight =
         bounds.getHeight() - headerHeight - 2 * padding;
       const auto contentBounds =
@@ -209,12 +209,13 @@ public:
       mainLayout.setBounds(contentBounds);
       settingsPanel.setBounds(contentBounds);
 
-      borderButton.setVisible(
-        false); // Hide the BorderButton when the header is visible
+      // Hide the BorderButton when header visible
+      borderButton.setVisible(false);
     } else {
-      // If the header is hidden, the main layout takes the full bounds
-      mainLayout.setBounds(bounds);
-      settingsPanel.setBounds(bounds);
+      // If the header is hidden, keep the same margin around the layout
+      const auto padded = bounds.reduced(padding);
+      mainLayout.setBounds(padded);
+      settingsPanel.setBounds(padded);
 
       // Show the BorderButton at the top with half the height of the header
       const auto borderButtonHeight = rawBorderButtonHeight * size;
@@ -408,6 +409,8 @@ public:
     TRACER("Compositor::resetSettingsCallback");
     properties.resetToFallback();
 
+    propagateSizeFactor();
+
     // Gotta call this first to recalculate the global size
     const auto& parent = getParentComponent();
     if (parent != nullptr) {
@@ -462,6 +465,7 @@ public:
   void valueEditorListenerCallback() override
   {
     TRACER("Compositor::valueEditorListenerCallback");
+    propagateSizeFactor();
     resizedRecursively(this);
   }
 
@@ -566,12 +570,26 @@ public:
    * components that implement the IScaleable interface receive the updated
    * size factor.
    *
+   * @param force If true, propagation runs even when the size factor itself
+   *              did not change. This is required for dynamically added
+   *              scaleable children.
+   *
    * @note This is typically triggered by the Compositor in response to
    *       hierarchy changes or user scaling actions.
    */
-  void propagateSizeFactor() noexcept
+  void propagateSizeFactor(const bool force = false) noexcept
   {
     TRACER("Compositor::propagateSizeFactor");
+    if (isPropagatingSizeFactor)
+      return;
+
+    if (!force &&
+        juce::approximatelyEqual(lastPropagatedSizeFactor, sizeFactor))
+      return;
+
+    const juce::ScopedValueSetter<bool> isPropagatingGuard(
+      isPropagatingSizeFactor, true);
+    lastPropagatedSizeFactor = sizeFactor;
     setSizeFactorRecursively(this);
   }
 
@@ -656,6 +674,7 @@ protected:
   {
     if (!c)
       return;
+    c->removeComponentListener(this);
     c->addComponentListener(this);
     for (auto* child : c->getChildren())
       if (auto* cc = dynamic_cast<juce::Component*>(child))
@@ -737,8 +756,11 @@ protected:
    */
   void componentChildrenChanged(juce::Component& component) override
   {
+    if (isPropagatingSizeFactor)
+      return;
+
     addListenerToChildren(&component);
-    propagateSizeFactor();
+    propagateSizeFactor(true);
   }
 
 private:
@@ -759,6 +781,8 @@ private:
   int baseHeight = 0;
   int baseWidth = 0;
   const float& sizeFactor;
+  float lastPropagatedSizeFactor = std::numeric_limits<float>::quiet_NaN();
+  bool isPropagatingSizeFactor = false;
 
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Compositor)

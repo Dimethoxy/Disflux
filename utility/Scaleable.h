@@ -1,16 +1,15 @@
 //==============================================================================
-/*
- * ██████  ██ ███    ███ ███████ ████████ ██   ██  ██████  ██   ██ ██    ██
- * ██   ██ ██ ████  ████ ██         ██    ██   ██ ██    ██  ██ ██   ██  ██
- * ██   ██ ██ ██ ████ ██ █████      ██    ██   ██ ██    ██   ███     ████
- * ██   ██ ██ ██  ██  ██ ██         ██    ██   ██ ██    ██  ██ ██     ██
- * ██████  ██ ██      ██ ███████    ██    ██   ██  ██████  ██   ██    ██
- *
+/* ██████╗ ██╗███╗   ███╗███████╗████████╗██╗  ██╗ ██████╗ ██╗  ██╗██╗   ██╗
+ * ██╔══██╗██║████╗ ████║██╔════╝╚══██╔══╝██║  ██║██╔═══██╗╚██╗██╔╝╚██╗ ██╔╝
+ * ██║  ██║██║██╔████╔██║█████╗     ██║   ███████║██║   ██║ ╚███╔╝  ╚████╔╝
+ * ██║  ██║██║██║╚██╔╝██║██╔══╝     ██║   ██╔══██║██║   ██║ ██╔██╗   ╚██╔╝
+ * ██████╔╝██║██║ ╚═╝ ██║███████╗   ██║   ██║  ██║╚██████╔╝██╔╝ ██╗   ██║
+ * ╚═════╝ ╚═╝╚═╝     ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝
  * Copyright (C) 2024 Dimethoxy Audio (https://dimethoxy.com)
  *
- * This file is part of the Dimethoxy Library, a collection of essential
- * classes used across various Dimethoxy projects.
- * These files are primarily designed for internal use within our repositories.
+ * Part of the Dimethoxy Library, primarily intended for Dimethoxy plugins.
+ * External use is permitted but not recommended.
+ * No support or compatibility guarantees are provided.
  *
  * License:
  * This code is licensed under the GPLv3 license. You are permitted to use and
@@ -109,6 +108,78 @@ class Scaleable : public IScaleable
   friend class gui::window::Compositor;
 
 public:
+  class LiveScale
+  {
+  public:
+    explicit LiveScale(const Scaleable& ownerIn) noexcept
+      : owner(ownerIn)
+    {
+    }
+
+    [[nodiscard]] operator float() const noexcept
+    {
+      return owner.getScaleFactor();
+    }
+
+    // Allow implicit conversion for JUCE geometry types
+    friend juce::Point<int> operator*(juce::Point<int> point,
+                                      const LiveScale& scale) noexcept
+    {
+      return point * static_cast<float>(scale);
+    }
+
+    friend juce::Point<float> operator*(juce::Point<float> point,
+                                        const LiveScale& scale) noexcept
+    {
+      return point * static_cast<float>(scale);
+    }
+
+    friend juce::Point<double> operator*(juce::Point<double> point,
+                                         const LiveScale& scale) noexcept
+    {
+      return point * static_cast<double>(static_cast<float>(scale));
+    }
+
+    friend juce::Point<int> operator*(const LiveScale& scale,
+                                      juce::Point<int> point) noexcept
+    {
+      return point * static_cast<float>(scale);
+    }
+
+    friend juce::Point<float> operator*(const LiveScale& scale,
+                                        juce::Point<float> point) noexcept
+    {
+      return point * static_cast<float>(scale);
+    }
+
+    friend juce::Point<double> operator*(const LiveScale& scale,
+                                         juce::Point<double> point) noexcept
+    {
+      return point * static_cast<double>(static_cast<float>(scale));
+    }
+
+    friend juce::Rectangle<int> operator/(juce::Rectangle<int> rectangle,
+                                          const LiveScale& scale) noexcept
+    {
+      return rectangle / static_cast<float>(scale);
+    }
+
+    friend juce::Rectangle<float> operator/(juce::Rectangle<float> rectangle,
+                                            const LiveScale& scale) noexcept
+    {
+      return rectangle / static_cast<float>(scale);
+    }
+
+    friend juce::Rectangle<double> operator/(juce::Rectangle<double> rectangle,
+                                             const LiveScale& scale) noexcept
+    {
+      return rectangle / static_cast<double>(static_cast<float>(scale));
+    }
+
+  private:
+    const Scaleable& owner;
+  };
+
   //============================================================================
   /**
    * @brief Reference to the current scaling factor for this component.
@@ -122,7 +193,7 @@ public:
    *
    * This is automatically calculated based on the OS and display.
    */
-  const float scale;
+  const LiveScale scale;
 
   //============================================================================
   /**
@@ -131,8 +202,34 @@ public:
    * Initializes the scaling references.
    */
   Scaleable()
-    : scale(getScaleFactor())
+    : scale(*this)
   {
+  }
+
+  //============================================================================
+  /**
+   * @brief Get the current desktop scale factor for this component.
+   *
+   * This resolves the scale from the actual component hierarchy instead of
+   * caching the primary display's scale at construction time.
+   */
+  [[nodiscard]] float getScaleFactor() const noexcept
+  {
+    // TODO: Component Scale factor is fucked, for now we just use the main
+    // display's scale factor using the fallback
+    /*
+    const auto* component = static_cast<const juce::Component*>(getSelf());
+
+    if (component != nullptr) {
+      const auto componentScale =
+        juce::Component::getApproximateScaleFactorForComponent(component);
+
+      if (std::isfinite(componentScale) && componentScale > 0.0f)
+        return componentScale;
+    }
+    */
+
+    return getFallbackScaleFactor();
   }
 
 private:
@@ -144,11 +241,20 @@ private:
 
   //============================================================================
   /**
-   * @brief Get the platform DPI scaling factor.
-   *
-   * On macOS, multiplies by 2.0 for Retina displays.
+   * @brief Helper to get the derived class pointer (CRTP).
    */
-  const float getScaleFactor() noexcept
+  inline const Derived* getSelf() const noexcept
+  {
+    return static_cast<const Derived*>(this);
+  }
+
+  //============================================================================
+  /**
+   * @brief Get a fallback platform DPI scaling factor.
+   *
+   * Used when the component is not yet attached to a hierarchy.
+   */
+  static float getFallbackScaleFactor() noexcept
   {
     // Find the main display
     auto* mainDisplay =
@@ -160,8 +266,12 @@ private:
     }
 
     // Get the scale factor from the main display
-    float tempScale = static_cast<float>(mainDisplay->scale);
-    return tempScale;
+    const auto fallbackScale = static_cast<float>(mainDisplay->scale);
+
+    if (std::isfinite(fallbackScale) && fallbackScale > 0.0f)
+      return fallbackScale;
+
+    return 1.0f;
   }
 
   /**
@@ -172,7 +282,7 @@ private:
    */
   void setSizeFactor(const float& newSize) noexcept override
   {
-    if (&newSize != &internalSize) {
+    if (!juce::approximatelyEqual(newSize, internalSize)) {
       internalSize = newSize;
     }
   }

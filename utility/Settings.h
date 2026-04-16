@@ -1,16 +1,15 @@
 //==============================================================================
-/*
- * ██████  ██ ███    ███ ███████ ████████ ██   ██  ██████  ██   ██ ██    ██
- * ██   ██ ██ ████  ████ ██         ██    ██   ██ ██    ██  ██ ██   ██  ██
- * ██   ██ ██ ██ ████ ██ █████      ██    ███████ ██    ██   ███     ████
- * ██   ██ ██ ██  ██  ██ ██         ██    ██   ██ ██    ██  ██ ██     ██
- * ██████  ██ ██      ██ ███████    ██    ██   ██  ██████  ██   ██    ██
- *
+/* ██████╗ ██╗███╗   ███╗███████╗████████╗██╗  ██╗ ██████╗ ██╗  ██╗██╗   ██╗
+ * ██╔══██╗██║████╗ ████║██╔════╝╚══██╔══╝██║  ██║██╔═══██╗╚██╗██╔╝╚██╗ ██╔╝
+ * ██║  ██║██║██╔████╔██║█████╗     ██║   ███████║██║   ██║ ╚███╔╝  ╚████╔╝
+ * ██║  ██║██║██║╚██╔╝██║██╔══╝     ██║   ██╔══██║██║   ██║ ██╔██╗   ╚██╔╝
+ * ██████╔╝██║██║ ╚═╝ ██║███████╗   ██║   ██║  ██║╚██████╔╝██╔╝ ██╗   ██║
+ * ╚═════╝ ╚═╝╚═╝     ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝
  * Copyright (C) 2024 Dimethoxy Audio (https://dimethoxy.com)
  *
- * This file is part of the Dimethoxy Library, a collection of essential
- * classes used across various Dimethoxy projects.
- * These files are primarily designed for internal use within our repositories.
+ * Part of the Dimethoxy Library, primarily intended for Dimethoxy plugins.
+ * External use is permitted but not recommended.
+ * No support or compatibility guarantees are provided.
  *
  * License:
  * This code is licensed under the GPLv3 license. You are permitted to use and
@@ -114,6 +113,7 @@ public:
   static inline dmt::configuration::Container container;
 
   //==============================================================================
+
   static inline auto appName = juce::String(""); // TODO: Remove this
 
   //==============================================================================
@@ -127,7 +127,7 @@ public:
   static inline auto& displayUpdateNotifications =
     container.add<bool>("General.DisplayUpdateNotifications", true);
   static inline auto& themeVersion =
-    container.add<int>("General.ThemeVersion", 1);
+    container.add<int>("General.ThemeVersion", 2);
 
 private:
   //==============================================================================
@@ -172,7 +172,7 @@ public:
   struct Window
   {
     //==============================================================================
-    static inline auto& margin = container.add<float>("Window.Margin", 5.0f);
+    static inline auto& margin = container.add<float>("Window.Margin", 10.0f);
     static inline auto& backgroundColour =
       container.add<Colour>("Window.BackgroundColour", Colours::background);
   };
@@ -208,13 +208,19 @@ public:
     static inline auto& height = container.add<int>("Header.Height", 50);
     static inline auto& borderButtonBackgroundColour =
       container.add<Colour>("Header.BorderButtonBackgroundColour",
-                            Colours::primary);
+                            Colours::success);
+    static inline auto& borderButtonBorderColour =
+      container.add<Colour>("Header.BorderButtonBorderColour",
+                            Colours::success.darker(0.5f));
     static inline auto& borderButtonFontColour =
-      container.add<Colour>("Header.BorderButtonFontColour", Colours::shadow);
+      container.add<Colour>("Header.BorderButtonFontColour",
+                            Colours::background);
     static inline auto& borderButtonFontSize =
-      container.add<float>("Header.BorderButtonFontSize", 22.0f);
+      container.add<float>("Header.BorderButtonFontSize", 20.0f);
     static inline auto& borderButtonHeight =
       container.add<int>("Header.BorderButtonHeight", 25);
+    static inline auto& borderButtonBorderThickness =
+      container.add<float>("Header.BorderButtonBorderThickness", 3.0f);
   };
 
   //==============================================================================

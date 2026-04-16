@@ -1,16 +1,15 @@
 //==============================================================================
-/*
- * ██████  ██ ███    ███ ███████ ████████ ██   ██  ██████  ██   ██ ██    ██
- * ██   ██ ██ ████  ████ ██         ██    ██   ██ ██    ██  ██ ██   ██  ██
- * ██   ██ ██ ██ ████ ██ █████      ██    ██    ███████ ██    ██   ███     ████
- * ██   ██ ██ ██  ██  ██ ██         ██    ██   ██ ██    ██  ██ ██     ██
- * ██████  ██ ██      ██ ███████    ██    ██   ██  ██████  ██   ██    ██
- *
+/* ██████╗ ██╗███╗   ███╗███████╗████████╗██╗  ██╗ ██████╗ ██╗  ██╗██╗   ██╗
+ * ██╔══██╗██║████╗ ████║██╔════╝╚══██╔══╝██║  ██║██╔═══██╗╚██╗██╔╝╚██╗ ██╔╝
+ * ██║  ██║██║██╔████╔██║█████╗     ██║   ███████║██║   ██║ ╚███╔╝  ╚████╔╝
+ * ██║  ██║██║██║╚██╔╝██║██╔══╝     ██║   ██╔══██║██║   ██║ ██╔██╗   ╚██╔╝
+ * ██████╔╝██║██║ ╚═╝ ██║███████╗   ██║   ██║  ██║╚██████╔╝██╔╝ ██╗   ██║
+ * ╚═════╝ ╚═╝╚═╝     ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝
  * Copyright (C) 2024 Dimethoxy Audio (https://dimethoxy.com)
  *
- * This file is part of the Dimethoxy Library, a collection of essential
- * classes used across various Dimethoxy projects.
- * These files are primarily designed for internal use within our repositories.
+ * Part of the Dimethoxy Library, primarily intended for Dimethoxy plugins.
+ * External use is permitted but not recommended.
+ * No support or compatibility guarantees are provided.
  *
  * License:
  * This code is licensed under the GPLv3 license. You are permitted to use and
@@ -68,7 +67,10 @@ class BorderButton
   const Colour& backgroundColour =
     Settings::Header::borderButtonBackgroundColour;
   const Colour& fontColour = Settings::Header::borderButtonFontColour;
+  const Colour& borderColour = Settings::Header::borderButtonBorderColour;
   const float& rawFontSize = Settings::Header::borderButtonFontSize;
+  const float& borderButtonBorderThickness =
+    Settings::Header::borderButtonBorderThickness;
 
   // Constants for opacity and raw fade speed
   static constexpr float MAX_OPACITY = 1.0f;    // Fully visible
@@ -224,22 +226,26 @@ protected:
     }
 
     // HiDPI support: render cached image at higher resolution
-    const int hiResWidth = static_cast<int>(width * scale);
-    const int hiResHeight = static_cast<int>(height * scale);
+    const int hiResWidth = juce::jmax(1, juce::roundToInt(width * scale));
+    const int hiResHeight = juce::jmax(1, juce::roundToInt(height * scale));
 
     cachedImage = Image(juce::Image::ARGB, hiResWidth, hiResHeight, true);
     Graphics g(cachedImage);
 
     g.addTransform(juce::AffineTransform::scale(scale, scale));
-    g.fillAll(juce::Colours::transparentBlack);
     g.fillAll(backgroundColour);
 
+    // Draw border at the bottom
+    const int borderThickness = int(borderButtonBorderThickness * size);
+    g.setColour(borderColour);
+    g.fillRect(getBounds().removeFromBottom(borderThickness));
+
     const auto fontSize = static_cast<int>(rawFontSize * size);
-    const auto font = fonts.medium.withHeight(fontSize);
+    const auto font = fonts.bold.withHeight(fontSize);
 
     g.setFont(font);
     g.setColour(fontColour);
-    g.drawText("Click to Show Header",
+    g.drawText(String("Click to Show Header"),
                juce::Rectangle<int>(0, 0, width, height),
                juce::Justification::centred);
   }
