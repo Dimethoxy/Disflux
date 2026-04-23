@@ -125,9 +125,11 @@ public:
   static inline auto& debugGrid =
     container.add<bool>("General.ShowDebugGrid", false);
   static inline auto& displayUpdateNotifications =
-    container.add<bool>("General.DisplayUpdateNotifications", true);
+    container.add<bool>("General.DisplayUpdateNotifications", false);
   static inline auto& themeVersion =
     container.add<int>("General.ThemeVersion", 2);
+  static inline auto& disableHardwareAcceleration =
+    container.add<bool>("General.DisableHardwareAcceleration", false);
 
 private:
   //==============================================================================
