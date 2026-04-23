@@ -427,9 +427,9 @@ public:
     static inline auto& fontColour =
       container.add<Colour>("Button.FontColour", Colours::font);
     static inline auto& hoverColour =
-      container.add<Colour>("Button.HoverColour", Colours::primary);
+      container.add<Colour>("Button.HoverColour", Colours::font);
     static inline auto& clickColour =
-      container.add<Colour>("Button.ClickColour", Colours::font);
+      container.add<Colour>("Button.ClickColour", Colours::primary);
     static inline auto& outerShadowRadius =
       container.add<float>("Button.OuterShadowRadius", 5.0f);
     static inline auto& innerShadowRadius =
