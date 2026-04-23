@@ -73,6 +73,39 @@ namespace dmt {
 
 //==============================================================================
 /**
+ * @brief Detects if the application is running under Wine on Windows.
+ *
+ * @details
+ * Wine is a compatibility layer that allows Windows applications to run on
+ * Linux and other Unix-like systems. This function detects its presence by
+ * looking for the wine_get_version export in ntdll.dll.
+ *
+ * @return true if running under Wine, false otherwise (or on non-Windows)
+ */
+inline bool
+isRunningUnderWine()
+{
+#if OS_IS_WINDOWS
+  auto hntdll = GetModuleHandleA("ntdll.dll");
+  if (!hntdll)
+    return false;
+
+  auto pwine_get_version = GetProcAddress(hntdll, "wine_get_version");
+  bool isWine = (pwine_get_version != nullptr);
+
+  if (isWine) {
+    DBG(
+      "[Settings] Wine detected - disabling hardware acceleration by default");
+  }
+
+  return isWine;
+#else
+  return false;
+#endif
+}
+
+//==============================================================================
+/**
  * @brief Centralized static settings and theme configuration for Dimethoxy UI.
  *
  * @details
@@ -129,7 +162,8 @@ public:
   static inline auto& themeVersion =
     container.add<int>("General.ThemeVersion", 2);
   static inline auto& disableHardwareAcceleration =
-    container.add<bool>("General.DisableHardwareAcceleration", false);
+    container.add<bool>("General.DisableHardwareAcceleration",
+                        isRunningUnderWine()); // Disable by default under Wine
 
 private:
   //==============================================================================
