@@ -1,5 +1,11 @@
 #pragma once
 
+//==============================================================================
+// Preprocessor flags for renderer control
+#define DMT_SUPPRESS_GL_DEBUG_MESSAGES 1
+
+//==============================================================================
+
 #include "app/AbstractPluginProcessor.h"
 #include "gui/window/Compositor.h"
 #include <JuceHeader.h>
@@ -40,48 +46,51 @@ public:
     // Now that layout is fully configured, attach the compositor
     addAndMakeVisible(compositor);
 
+    // Determine if hardware acceleration should be used
+    bool shouldUseHardwareAccel = !dmt::Settings::disableHardwareAcceleration;
+    DBG("[AbstractPluginEditor] Hardware acceleration: "
+        << (shouldUseHardwareAccel ? "ENABLED" : "DISABLED"));
+
     if (OS_IS_WINDOWS) {
-      setResizable(false, true);
+      // Windows: D2D (Direct2D) is hardware accelerated by default.
+      // To disable it, we need to wait for the peer to be created and then
+      // call setCurrentRenderingEngine(0) for software rendering.
+#if OS_IS_WINDOWS
+      if (!shouldUseHardwareAccel) {
+        DBG("[AbstractPluginEditor] Windows: Using software renderer (Direct2D "
+            "disabled)");
+        awaitingPeerForDirect2D = true;
+      } else {
+        DBG("[AbstractPluginEditor] Windows: Using Direct2D renderer");
+      }
+#endif
     }
 
     if (OS_IS_DARWIN) {
+      // macOS: Use OpenGL for hardware acceleration if enabled
+      if (shouldUseHardwareAccel) {
+        DBG("[AbstractPluginEditor] macOS: Using OpenGL renderer");
+        openGLContext.setComponentPaintingEnabled(true);
+        openGLContext.setContinuousRepainting(false);
+        openGLContext.attachTo(*getTopLevelComponent());
+        setupOpenGLContext();
+      } else {
+        DBG("[AbstractPluginEditor] macOS: Using default renderer (software)");
+      }
       setResizable(false, true);
     }
 
     if (OS_IS_LINUX) {
-      openGLContext.setComponentPaintingEnabled(true);
-      openGLContext.setContinuousRepainting(false);
-      openGLContext.attachTo(*getTopLevelComponent());
-      std::thread([this]() {
-        for (int i = 0; i < 200; ++i) {
-          if (openGLContext.isAttached() &&
-              openGLContext.getRawContext() != nullptr)
-            break;
-          std::this_thread::sleep_for(std::chrono::milliseconds(25));
-        }
-
-        if (!openGLContext.isAttached() ||
-            openGLContext.getRawContext() == nullptr)
-          return;
-
-        openGLContext.executeOnGLThread(
-          [](juce::OpenGLContext&) {
-            if (juce::gl::glDebugMessageControl) {
-              juce::gl::glDebugMessageControl(
-                juce::gl::GL_DEBUG_SOURCE_API,
-                juce::gl::GL_DEBUG_TYPE_OTHER,
-                juce::gl::GL_DEBUG_SEVERITY_NOTIFICATION,
-                0,
-                nullptr,
-                juce::gl::GL_FALSE);
-            }
-
-            if (juce::gl::glDebugMessageCallback)
-              juce::gl::glDebugMessageCallback(juceFilteredGLDebugCallback,
-                                               nullptr);
-          },
-          true);
-      }).detach();
+      // Linux: Use OpenGL for hardware acceleration if enabled
+      if (shouldUseHardwareAccel) {
+        DBG("[AbstractPluginEditor] Linux: Using OpenGL renderer");
+        openGLContext.setComponentPaintingEnabled(true);
+        openGLContext.setContinuousRepainting(false);
+        openGLContext.attachTo(*getTopLevelComponent());
+        setupOpenGLContext();
+      } else {
+        DBG("[AbstractPluginEditor] Linux: Using default renderer (software)");
+      }
     }
 
     setConstraints(baseWidth, baseHeight + headerHeight);
@@ -148,6 +157,24 @@ public:
   }
 
   //==============================================================================
+  // Handle peer creation for Windows Direct2D setup
+
+  void parentHierarchyChanged() override
+  {
+#if OS_IS_WINDOWS
+    // Try to disable Direct2D when peer is created
+    if (awaitingPeerForDirect2D) {
+      if (auto peer = getPeer()) {
+        DBG("[AbstractPluginEditor] Windows peer created - switching to "
+            "software renderer");
+        peer->setCurrentRenderingEngine(0); // 0 = software, 1 = Direct2D
+        awaitingPeerForDirect2D = false;
+      }
+    }
+#endif
+  }
+
+  //==============================================================================
   // JUCE overrides
 
   void setConstraints(int width, int height)
@@ -183,7 +210,7 @@ public:
   {
     stopTimer();
     attachCompositorAfterResize();
-    repaint(); // TODO: Redundanr call, maybe remove this?
+    repaint(); // TODO: Redundant call, maybe remove this?
   }
 
   // Detach compositor to improve resize performance
@@ -247,6 +274,49 @@ public:
   }
 
   //==============================================================================
+  // OpenGL initialization
+
+  void setupOpenGLContext()
+  {
+    std::thread([this]() {
+      for (int i = 0; i < 200; ++i) {
+        if (openGLContext.isAttached() &&
+            openGLContext.getRawContext() != nullptr)
+          break;
+        std::this_thread::sleep_for(std::chrono::milliseconds(25));
+      }
+
+      if (!openGLContext.isAttached() ||
+          openGLContext.getRawContext() == nullptr)
+        return;
+
+      openGLContext.executeOnGLThread(
+        [](juce::OpenGLContext&) {
+#if DMT_SUPPRESS_GL_DEBUG_MESSAGES
+          DBG("[AbstractPluginEditor] GL debug message suppression: ENABLED");
+          // Suppress low-priority GL debug messages
+          if (juce::gl::glDebugMessageControl) {
+            juce::gl::glDebugMessageControl(
+              juce::gl::GL_DEBUG_SOURCE_API,
+              juce::gl::GL_DEBUG_TYPE_OTHER,
+              juce::gl::GL_DEBUG_SEVERITY_NOTIFICATION,
+              0,
+              nullptr,
+              juce::gl::GL_FALSE);
+          }
+#else
+          DBG("[AbstractPluginEditor] GL debug message suppression: DISABLED");
+#endif
+          // Set up callback for GL debug messages
+          if (juce::gl::glDebugMessageCallback)
+            juce::gl::glDebugMessageCallback(juceFilteredGLDebugCallback,
+                                             nullptr);
+        },
+        true);
+    }).detach();
+  }
+
+  //==============================================================================
   // OpenGL debug overwrite
 
   static void KHRONOS_APIENTRY
@@ -290,6 +360,10 @@ protected:
 
   Image image;
   bool isResizing = false;
+
+#if OS_IS_WINDOWS
+  bool awaitingPeerForDirect2D = false;
+#endif
 
   dmt::gui::window::Layout mainLayout;
   dmt::gui::window::Compositor compositor;
