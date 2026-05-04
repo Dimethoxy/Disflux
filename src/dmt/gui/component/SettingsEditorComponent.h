@@ -130,7 +130,7 @@ public:
   void onCategorySelectedCallback(TreeAdapter::Category& category)
   {
     TRACER("SettingsEditor::onCategorySelectedCallback");
-    std::cout << "Selected category: " << category.name << std::endl;
+
     valueEditorList.setCategory(category);
     valueEditorList.setOptimalSize(editorViewport.getWidth());
   }
