@@ -2,7 +2,7 @@
 
 //==============================================================================
 // Preprocessor flags for renderer control
-#define DMT_SUPPRESS_GL_DEBUG_MESSAGES 1
+#define DMT_SUPPRESS_GL_DEBUG_MESSAGES 0
 
 //==============================================================================
 
@@ -57,11 +57,10 @@ public:
       // call setCurrentRenderingEngine(0) for software rendering.
 #if OS_IS_WINDOWS
       if (!shouldUseHardwareAccel) {
-        DBG("[AbstractPluginEditor] Windows: Using software renderer (Direct2D "
-            "disabled)");
+        DBG("[AbstractPluginEditor] Using Windows Direct2D renderer");
         awaitingPeerForDirect2D = true;
       } else {
-        DBG("[AbstractPluginEditor] Windows: Using Direct2D renderer");
+        DBG("[AbstractPluginEditor] Using Windows software renderer");
       }
 #endif
     }
@@ -69,13 +68,13 @@ public:
     if (OS_IS_DARWIN) {
       // macOS: Use OpenGL for hardware acceleration if enabled
       if (shouldUseHardwareAccel) {
-        DBG("[AbstractPluginEditor] macOS: Using OpenGL renderer");
+        DBG("[AbstractPluginEditor] Using macOS OpenGL renderer");
         openGLContext.setComponentPaintingEnabled(true);
         openGLContext.setContinuousRepainting(false);
         openGLContext.attachTo(*getTopLevelComponent());
         setupOpenGLContext();
       } else {
-        DBG("[AbstractPluginEditor] macOS: Using default renderer (software)");
+        DBG("[AbstractPluginEditor] Using macOS software renderer");
       }
       setResizable(false, true);
     }
@@ -83,13 +82,13 @@ public:
     if (OS_IS_LINUX) {
       // Linux: Use OpenGL for hardware acceleration if enabled
       if (shouldUseHardwareAccel) {
-        DBG("[AbstractPluginEditor] Linux: Using OpenGL renderer");
+        DBG("[AbstractPluginEditor] Using Linux OpenGL renderer");
         openGLContext.setComponentPaintingEnabled(true);
         openGLContext.setContinuousRepainting(false);
         openGLContext.attachTo(*getTopLevelComponent());
         setupOpenGLContext();
       } else {
-        DBG("[AbstractPluginEditor] Linux: Using default renderer (software)");
+        DBG("[AbstractPluginEditor] Using Linux software renderer");
       }
     }
 
@@ -161,12 +160,11 @@ public:
 
   void parentHierarchyChanged() override
   {
+    DBG("[AbstractPluginEditor] parentHierarchyChanged called");
 #if OS_IS_WINDOWS
     // Try to disable Direct2D when peer is created
     if (awaitingPeerForDirect2D) {
       if (auto peer = getPeer()) {
-        DBG("[AbstractPluginEditor] Windows peer created - switching to "
-            "software renderer");
         peer->setCurrentRenderingEngine(0); // 0 = software, 1 = Direct2D
         awaitingPeerForDirect2D = false;
       }
