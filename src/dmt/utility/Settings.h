@@ -39,21 +39,21 @@
 
 // OS constexprs set by CMake preprocessor definitions
 #if defined(CMAKE_OS_IS_WINDOWS) && CMAKE_OS_IS_WINDOWS
-static constexpr bool OS_IS_WINDOWS = true;
+#define OS_IS_WINDOWS 1
 #else
-static constexpr bool OS_IS_WINDOWS = false;
+#define OS_IS_WINDOWS 0
 #endif
 
 #if defined(CMAKE_OS_IS_DARWIN) && CMAKE_OS_IS_DARWIN
-static constexpr bool OS_IS_DARWIN = true;
+#define OS_IS_DARWIN 1
 #else
-static constexpr bool OS_IS_DARWIN = false;
+#define OS_IS_DARWIN 0
 #endif
 
 #if defined(CMAKE_OS_IS_LINUX) && CMAKE_OS_IS_LINUX
-static constexpr bool OS_IS_LINUX = true;
+#define OS_IS_LINUX 1
 #else
-static constexpr bool OS_IS_LINUX = false;
+#define OS_IS_LINUX 0
 #endif
 
 static_assert(
@@ -70,39 +70,6 @@ static constexpr bool DMT_DISABLE_UPDATE_NOTIFICATION = false;
 //==============================================================================
 
 namespace dmt {
-
-//==============================================================================
-/**
- * @brief Detects if the application is running under Wine on Windows.
- *
- * @details
- * Wine is a compatibility layer that allows Windows applications to run on
- * Linux and other Unix-like systems. This function detects its presence by
- * looking for the wine_get_version export in ntdll.dll.
- *
- * @return true if running under Wine, false otherwise (or on non-Windows)
- */
-inline bool
-isRunningUnderWine()
-{
-#if OS_IS_WINDOWS
-  auto hntdll = GetModuleHandleA("ntdll.dll");
-  if (!hntdll)
-    return false;
-
-  auto pwine_get_version = GetProcAddress(hntdll, "wine_get_version");
-  bool isWine = (pwine_get_version != nullptr);
-
-  if (isWine) {
-    DBG(
-      "[Settings] Wine detected - disabling hardware acceleration by default");
-  }
-
-  return isWine;
-#else
-  return false;
-#endif
-}
 
 //==============================================================================
 /**
@@ -161,9 +128,13 @@ public:
     container.add<bool>("General.DisplayUpdateNotifications", false);
   static inline auto& themeVersion =
     container.add<int>("General.ThemeVersion", 2);
-  static inline auto& disableHardwareAcceleration =
-    container.add<bool>("General.DisableHardwareAcceleration",
-                        isRunningUnderWine()); // Disable by default under Wine
+#if OS_IS_LINUX
+  static inline auto& useOpenGL =
+    container.add<bool>("General.UseOpenGL", true);
+#elif OS_IS_DARWIN
+  static inline auto& useOpenGL =
+    container.add<bool>("General.UseOpenGL", false);
+#endif
 
 private:
   //==============================================================================
@@ -509,9 +480,9 @@ public:
     static inline auto& innerShadowColour =
       container.add<Colour>("Panel.InnerShadowColour", Colours::shadow);
     static inline auto& outerShadowRadius =
-      container.add<float>("Panel.OuterShadowRadius", 10.0f);
+      container.add<float>("Panel.OuterShadowRadius", 5.0f);
     static inline auto& innerShadowRadius =
-      container.add<float>("Panel.InnerShadowRadius", 10.0f);
+      container.add<float>("Panel.InnerShadowRadius", 5.0f);
     static inline auto& fontColor =
       container.add<Colour>("Panel.FontColor", Colours::font);
     static inline auto& fontSize =
