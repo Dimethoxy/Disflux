@@ -215,21 +215,50 @@ public:
    */
   [[nodiscard]] float getScaleFactor() const noexcept
   {
-    // TODO: Component Scale factor is fucked, for now we just use the main
-    // display's scale factor using the fallback
-    /*
-    const auto* component = static_cast<const juce::Component*>(getSelf());
 
-    if (component != nullptr) {
-      const auto componentScale =
-        juce::Component::getApproximateScaleFactorForComponent(component);
+    const auto* comp = static_cast<const juce::Component*>(getSelf());
 
-      if (std::isfinite(componentScale) && componentScale > 0.0f)
-        return componentScale;
+    // Try to get the scale factor from the host peer
+    if (comp != nullptr) {
+      if (auto* peer = comp->getPeer())
+        return peer->getPlatformScaleFactor();
     }
-    */
 
+    // Fallback to desktop scale factor
     return getFallbackScaleFactor();
+  }
+
+  //============================================================================
+  /**
+   * @brief Get a fallback platform DPI scaling factor.
+   *
+   * Used when the component is not yet attached to a hierarchy.
+   */
+  static float getFallbackScaleFactor(
+    const juce::Component* comp = nullptr) noexcept
+  {
+    auto& displays = juce::Desktop::getInstance().getDisplays();
+
+    // 1. Try to resolve display from component position (BEST fallback)
+    if (comp != nullptr) {
+      const auto screenPos = comp->getScreenPosition();
+
+      if (auto* d = displays.getDisplayForPoint(screenPos)) {
+        const auto s = static_cast<float>(d->scale);
+        if (std::isfinite(s) && s > 0.0f)
+          return s;
+      }
+    }
+
+    // 2. Fallback to primary display (ok, but not always correct in DAWs)
+    if (auto* primary = displays.getPrimaryDisplay()) {
+      const auto s = static_cast<float>(primary->scale);
+      if (std::isfinite(s) && s > 0.0f)
+        return s;
+    }
+
+    // 3. Absolute safety fallback (if everything else fails)
+    return 1.0f;
   }
 
 private:
@@ -246,32 +275,6 @@ private:
   inline const Derived* getSelf() const noexcept
   {
     return static_cast<const Derived*>(this);
-  }
-
-  //============================================================================
-  /**
-   * @brief Get a fallback platform DPI scaling factor.
-   *
-   * Used when the component is not yet attached to a hierarchy.
-   */
-  static float getFallbackScaleFactor() noexcept
-  {
-    // Find the main display
-    auto* mainDisplay =
-      juce::Desktop::getInstance().getDisplays().getPrimaryDisplay();
-
-    if (mainDisplay == nullptr) {
-      jassertfalse; // Could not find main display
-      return 1.0f;
-    }
-
-    // Get the scale factor from the main display
-    const auto fallbackScale = static_cast<float>(mainDisplay->scale);
-
-    if (std::isfinite(fallbackScale) && fallbackScale > 0.0f)
-      return fallbackScale;
-
-    return 1.0f;
   }
 
   /**
