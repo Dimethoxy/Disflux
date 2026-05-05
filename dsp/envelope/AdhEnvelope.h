@@ -50,16 +50,18 @@ class AhdEnvelope
 public:
   struct Parameters
   {
+    bool enabled = true;
     float attack = 0.015f;
     float hold = 0.08f;
     float decay = 0.5f;
-
-    float attackSkew = 0;
-    float decaySkew = 10;
+    float attackBend = 0;
+    float decayBend = 0;
+    float depth = 1.0f;
   };
 
   enum class State
   {
+    Disabled,
     Attack,
     Hold,
     Decay,
@@ -67,6 +69,20 @@ public:
   };
 
   constexpr AhdEnvelope() noexcept = default;
+
+  inline void setParameters(const juce::AudioProcessorValueTreeState& apvts,
+                            juce::String prefix) noexcept
+  {
+    juce::String base = prefix + "Env";
+    params.enabled =
+      apvts.getRawParameterValue(base + "Enabled")->load() > 0.5f;
+    params.attack = apvts.getRawParameterValue(base + "Attack")->load();
+    params.hold = apvts.getRawParameterValue(base + "Hold")->load();
+    params.decay = apvts.getRawParameterValue(base + "Decay")->load();
+    params.attackBend = apvts.getRawParameterValue(base + "AttackBend")->load();
+    params.decayBend = apvts.getRawParameterValue(base + "DecayBend")->load();
+    params.depth = apvts.getRawParameterValue(base + "Depth")->load();
+  }
 
   /**
    * @brief Set the envelope parameters.
@@ -76,6 +92,13 @@ public:
   {
     params = _newParams;
   }
+
+  /**
+   * @brief Get the Parameters object
+   *
+   * @return The current Parameters object
+   */
+  inline Parameters getParameters() const noexcept { return params; }
 
   /**
    * @brief Set the sample rate.
@@ -97,11 +120,13 @@ public:
    */
   [[nodiscard]] inline State getState() const noexcept
   {
-    if (sampleIndex < getHoldStart()) [[likely]]
+    if (!params.enabled)
+      return State::Disabled;
+    if (sampleIndex < getHoldStart())
       return State::Attack;
-    if (sampleIndex < getDecayStart()) [[likely]]
+    if (sampleIndex < getDecayStart())
       return State::Hold;
-    if (sampleIndex < getDecayEnd()) [[likely]]
+    if (sampleIndex < getDecayEnd())
       return State::Decay;
     return State::Idle;
   }
@@ -130,11 +155,13 @@ private:
     constexpr float zero = 0.0f;
 
     switch (_state) {
+      case State::Disabled:
+        return 0.0f;
       case State::Attack: {
         const float normalizedPosition =
           static_cast<float>(sampleIndex) / sampleRate;
-        const float skew = getSkew(State::Attack);
-        return std::pow(normalizedPosition / params.attack, skew);
+        const float phaseProgress = normalizedPosition / params.attack;
+        return applyAtanBend(phaseProgress, params.attackBend);
       }
       case State::Hold:
         return one;
@@ -142,8 +169,8 @@ private:
         const float decayStart = static_cast<float>(getDecayStart());
         const float normalizedPosition =
           (static_cast<float>(sampleIndex) - decayStart) / sampleRate;
-        const float skew = getSkew(State::Decay);
-        return one - std::pow(normalizedPosition / params.decay, skew);
+        const float phaseProgress = normalizedPosition / params.decay;
+        return one - applyAtanBend(phaseProgress, params.decayBend);
       }
       default:
         return zero;
@@ -151,20 +178,29 @@ private:
   }
 
   /**
-   * @brief Get the skew value for the given state.
-   * @param _state The current state of the envelope.
-   * @return The skew value.
+   * @brief Apply atan-based bend to normalized phase in range [0, 1].
    */
-  [[nodiscard]] inline float getSkew(const State _state) const noexcept
+  [[nodiscard]] static inline float applyAtanBend(float normalizedPhase,
+                                                  float bend) noexcept
   {
-    switch (_state) {
-      case State::Attack:
-        return dmt::math::linearToExponent(params.attackSkew);
-      case State::Decay:
-        return dmt::math::linearToExponent(-params.decaySkew);
-      default:
-        return 1.0f;
-    }
+    using juce::jlimit;
+    using std::atan, std::pow, std::abs;
+
+    // We make the bend curve more exponential to make it feel linear
+    const float k = pow(0.5f * abs(bend), 2.0f);
+    const float x = jlimit(0.0f, 1.0f, normalizedPhase);
+    const float normalizer = atan(k);
+
+    // No bend
+    if (k <= 0.01f) [[unlikely]]
+      return x;
+
+    // Positive bend
+    if (bend > 0.0f)
+      return atan(k * x) / normalizer;
+
+    // Negative bend
+    return 1.0f - (atan(k * (1.0f - x)) / normalizer);
   }
 
   /**

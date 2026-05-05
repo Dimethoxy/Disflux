@@ -70,10 +70,10 @@ public:
                   Unit::Type::Milliseconds,
                   LinearSliderType::Positive,
                   LinearSliderOrientation::Vertical)
-    , skewSlider(apvts,
-                 juce::String("Skew"),
-                 juce::String("osc1GainEnvSkew"),
-                 Unit::Type::EnvelopeSkew,
+    , bendSlider(apvts,
+                 juce::String("Bend"),
+                 juce::String("osc1GainEnvBend"),
+                 Unit::Type::EnvelopeBend,
                  LinearSliderType::Positive,
                  LinearSliderOrientation::Vertical)
   {
@@ -82,7 +82,7 @@ public:
     addAndMakeVisible(attackSlider);
     addAndMakeVisible(holdSlider);
     addAndMakeVisible(decaySlider);
-    addAndMakeVisible(skewSlider);
+    addAndMakeVisible(bendSlider);
   }
 
   void extendResize() noexcept override
@@ -96,7 +96,7 @@ public:
     const int attackCol = 7;
     const int holdCol = 11;
     const int decayCol = 15;
-    const int skewCol = 19;
+    const int bendCol = 19;
 
     const auto attackSliderPrimaryPoint =
       this->getGridPoint(bounds, attackCol, primaryRow);
@@ -119,19 +119,19 @@ public:
     decaySlider.setBoundsByPoints(decaySliderPrimaryPoint,
                                   decaySliderSecondaryPoint);
 
-    const auto skewSliderPrimaryPoint =
-      this->getGridPoint(bounds, skewCol, primaryRow);
-    const auto skewSliderSecondaryPoint =
-      this->getGridPoint(bounds, skewCol, secundaryRow);
-    skewSlider.setBoundsByPoints(skewSliderPrimaryPoint,
-                                 skewSliderSecondaryPoint);
+    const auto bendSliderPrimaryPoint =
+      this->getGridPoint(bounds, bendCol, primaryRow);
+    const auto bendSliderSecondaryPoint =
+      this->getGridPoint(bounds, bendCol, secundaryRow);
+    bendSlider.setBoundsByPoints(bendSliderPrimaryPoint,
+                                 bendSliderSecondaryPoint);
   }
 
 private:
   LinearSliderComponent attackSlider;
   LinearSliderComponent holdSlider;
   LinearSliderComponent decaySlider;
-  LinearSliderComponent skewSlider;
+  LinearSliderComponent bendSlider;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AnalogGainPanel)
 };

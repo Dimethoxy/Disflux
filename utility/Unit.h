@@ -83,7 +83,7 @@ struct alignas(8) Unit
     Bitdepth,
     VoiceDensity,
     VoiceDistribution,
-    EnvelopeSkew,
+    EnvelopeBend,
     Milliseconds,
     OscilloscopeZoom,
     OscilloscopeThickness,
@@ -167,6 +167,9 @@ struct alignas(8) Unit
       case Type::DisfluxMix:
         return String(static_cast<int>(static_cast<float>(_value * 100.0f))) +
                String("%");
+        break;
+      case Type::EnvelopeBend:
+        return String(_value, 1) + String("x");
         break;
 
         // Heretik
