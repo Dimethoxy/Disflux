@@ -216,13 +216,13 @@ public:
   [[nodiscard]] float getScaleFactor() const noexcept
   {
 
-    const auto* comp = static_cast<const juce::Component*>(getSelf());
+    const auto* component = static_cast<const juce::Component*>(getSelf());
     auto& displays = juce::Desktop::getInstance().getDisplays();
 
     // 1. Try to get the scale factor from the host peer
     float hostScale = -1.0f;
-    if (comp != nullptr) {
-      if (auto* peer = comp->getPeer())
+    if (component != nullptr) {
+      if (auto* peer = component->getPeer())
         hostScale = peer->getPlatformScaleFactor();
     }
 
@@ -235,15 +235,15 @@ public:
 
     // 3. Try to resolve display from component position
     float displayScale = -1.0f;
-    if (comp != nullptr) {
-      const auto screenPos = comp->getScreenPosition();
+    if (component != nullptr) {
+      const auto screenPos = component->getScreenPosition();
 
       if (auto* d = displays.getDisplayForPoint(screenPos)) {
         displayScale = static_cast<float>(d->scale);
       }
     }
 
-    // 4. Fallback to primary display (ok, but not always correct in DAWs)
+    // 4. Fallback to primary display
     float primaryScale = -1.0f;
     if (auto* primary = displays.getPrimaryDisplay()) {
       primaryScale = static_cast<float>(primary->scale);
