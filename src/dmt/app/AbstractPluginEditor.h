@@ -48,7 +48,7 @@ public:
 
 #if OS_IS_DARWIN || OS_IS_LINUX
     // Determine if hardware acceleration should be used
-    bool shouldUseOpenGL = !dmt::Settings::useOpenGL;
+    bool shouldUseOpenGL = dmt::Settings::useOpenGL;
     DBG("[AbstractPluginEditor] OpenGL renderer: "
         << (shouldUseOpenGL ? "ENABLED" : "DISABLED"));
 
