@@ -29,9 +29,9 @@
 
 //==============================================================================
 
-#include "./AnalogOscillator.h"
-#include "./AnalogWaveform.h"
+#include "./DigitalOscillator.h"
+#include "./DigitalWaveform.h"
+#include "./NeutrinoSynthVoice.h"
 #include "./SynthSound.h"
-#include "./SynthVoice.h"
 
 //==============================================================================

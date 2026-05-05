@@ -1,17 +1,20 @@
 #pragma once
 //==============================================================================
+#include "AhdEnvelopeParameters.h"
+#include "DigitalOscillatorParameters.h"
 #include <JuceHeader.h>
 //==============================================================================
 namespace dmt {
 namespace model {
 //==============================================================================
 static inline juce::AudioProcessorParameterGroup
-neutrinoParameterGroup(juce::String parentUid, int versionHint)
+neutrinoParameterGroup(juce::String parentUid, [[maybe_unused]] int versionHint)
 {
   using ParameterInt = juce::AudioParameterInt;
   using ParameterFloat = juce::AudioParameterFloat;
-  // using ParameterChoice = juce::AudioParameterChoice;
+  using ParameterChoice = juce::AudioParameterChoice;
   using NormalisableRange = juce::NormalisableRange<float>;
+  using ParameterGroup = juce::AudioProcessorParameterGroup;
 
   juce::String uid = parentUid + "Neutrino";
 
@@ -20,14 +23,16 @@ neutrinoParameterGroup(juce::String parentUid, int versionHint)
     "Neutrino", // group name
     "|",        // separator
 
-    // Symmetry
-    std::make_unique<ParameterFloat>(uid + "Symmetry",
-                                     "Symmetry",
-                                     NormalisableRange(-1.f, // rangeStart
-                                                       1.f,  // rangeEnd
-                                                       .01f, // intervalValue
-                                                       1.f), // skewFactor
-                                     .0f));
+    // Oscillators
+    std::make_unique<ParameterGroup>(digitalOscillatorParameterGroup(uid)),
+
+    // Envelopes
+    std::make_unique<ParameterGroup>(envelopeParameterGroup(
+      uid, "Gain", { 0.0f, 0.055f, 0.350f, 0.0f, 0.0f, 0.0f })),
+    std::make_unique<ParameterGroup>(envelopeParameterGroup(
+      uid, "Pitch1", { 0.0f, 0.0f, 0.185f, 0.033f, 0.0f, 0.0f })),
+    std::make_unique<ParameterGroup>(envelopeParameterGroup(
+      uid, "Pitch2", { 0.0f, 0.0f, 0.02f, 0.033f, 0.0f, 0.0f })));
 }
 } // namespace model
 } // namespace dmt

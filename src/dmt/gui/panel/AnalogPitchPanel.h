@@ -56,30 +56,30 @@ public:
                    Unit::Type::Milliseconds,
                    LinearSliderType::Positive,
                    LinearSliderOrientation::Vertical)
-    , decaySlider(apvts,
-                  juce::String("Decay"),
-                  juce::String("osc1PitchEnvDecay"),
-                  Unit::Type::Milliseconds,
-                  LinearSliderType::Positive,
-                  LinearSliderOrientation::Vertical)
-    , skewSlider(apvts,
-                 juce::String("Skew"),
-                 juce::String("osc1PitchEnvSkew"),
-                 Unit::Type::EnvelopeSkew,
-                 LinearSliderType::Positive,
-                 LinearSliderOrientation::Vertical)
     , depthSlider(apvts,
                   juce::String("Depth"),
                   juce::String("osc1PitchEnvDepth"),
                   Unit::Type::Frequency,
                   LinearSliderType::Positive,
                   LinearSliderOrientation::Vertical)
+    , decaySlider(apvts,
+                  juce::String("Decay"),
+                  juce::String("osc1PitchEnvDecay"),
+                  Unit::Type::Milliseconds,
+                  LinearSliderType::Positive,
+                  LinearSliderOrientation::Vertical)
+    , bendSlider(apvts,
+                 juce::String("Bend"),
+                 juce::String("osc1PitchEnvBend"),
+                 Unit::Type::EnvelopeBend,
+                 LinearSliderType::Positive,
+                 LinearSliderOrientation::Vertical)
   {
     setLayout({ 25, 32 });
     addAndMakeVisible(attackSlider);
     addAndMakeVisible(depthSlider);
     addAndMakeVisible(decaySlider);
-    addAndMakeVisible(skewSlider);
+    addAndMakeVisible(bendSlider);
   }
 
   void extendResize() noexcept override
@@ -91,7 +91,7 @@ public:
 
     const int attackCol = 7;
     const int decayCol = 11;
-    const int skewCol = 15;
+    const int bendCol = 15;
     const int depthCol = 19;
 
     const auto attackSliderPrimaryPoint =
@@ -108,12 +108,12 @@ public:
     decaySlider.setBoundsByPoints(decaySliderPrimaryPoint,
                                   decaySliderSecondaryPoint);
 
-    const auto skewSliderPrimaryPoint =
-      this->getGridPoint(bounds, skewCol, primaryRow);
-    const auto skewSliderSecondaryPoint =
-      this->getGridPoint(bounds, skewCol, secundaryRow);
-    skewSlider.setBoundsByPoints(skewSliderPrimaryPoint,
-                                 skewSliderSecondaryPoint);
+    const auto bendSliderPrimaryPoint =
+      this->getGridPoint(bounds, bendCol, primaryRow);
+    const auto bendSliderSecondaryPoint =
+      this->getGridPoint(bounds, bendCol, secundaryRow);
+    bendSlider.setBoundsByPoints(bendSliderPrimaryPoint,
+                                 bendSliderSecondaryPoint);
 
     const auto depthSliderPrimaryPoint =
       this->getGridPoint(bounds, depthCol, primaryRow);
@@ -127,7 +127,7 @@ private:
   LinearSliderComponent attackSlider;
   LinearSliderComponent depthSlider;
   LinearSliderComponent decaySlider;
-  LinearSliderComponent skewSlider;
+  LinearSliderComponent bendSlider;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AnalogPitchPanel)
 };
 //==============================================================================

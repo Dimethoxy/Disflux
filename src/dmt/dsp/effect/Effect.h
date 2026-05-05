@@ -33,5 +33,6 @@
 #include "./Distortion.h"
 #include "./HeretikProcessor.h"
 #include "./LowpassProcessor.h"
+#include "./NeutrinoProcessor.h"
 
 //==============================================================================
