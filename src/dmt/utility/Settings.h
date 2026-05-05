@@ -480,9 +480,9 @@ public:
     static inline auto& innerShadowColour =
       container.add<Colour>("Panel.InnerShadowColour", Colours::shadow);
     static inline auto& outerShadowRadius =
-      container.add<float>("Panel.OuterShadowRadius", 10.0f);
+      container.add<float>("Panel.OuterShadowRadius", 5.0f);
     static inline auto& innerShadowRadius =
-      container.add<float>("Panel.InnerShadowRadius", 10.0f);
+      container.add<float>("Panel.InnerShadowRadius", 5.0f);
     static inline auto& fontColor =
       container.add<Colour>("Panel.FontColor", Colours::font);
     static inline auto& fontSize =
