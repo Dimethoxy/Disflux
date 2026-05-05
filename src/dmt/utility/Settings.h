@@ -746,7 +746,7 @@ public:
 
   //==============================================================================
   /**
-   * @brief Audio settings forwards declaretion.
+   * @brief Audio settings forwards declaration.
    *
    * @details
    * This struct is used to forward declare the audio settings. We do this so
