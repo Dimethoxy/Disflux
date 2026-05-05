@@ -217,47 +217,52 @@ public:
   {
 
     const auto* comp = static_cast<const juce::Component*>(getSelf());
-
-    // Try to get the scale factor from the host peer
-    if (comp != nullptr) {
-      if (auto* peer = comp->getPeer())
-        return peer->getPlatformScaleFactor();
-    }
-
-    // Fallback to desktop scale factor
-    return getFallbackScaleFactor();
-  }
-
-  //============================================================================
-  /**
-   * @brief Get a fallback platform DPI scaling factor.
-   *
-   * Used when the component is not yet attached to a hierarchy.
-   */
-  static float getFallbackScaleFactor(
-    const juce::Component* comp = nullptr) noexcept
-  {
     auto& displays = juce::Desktop::getInstance().getDisplays();
 
-    // 1. Try to resolve display from component position (BEST fallback)
+    // 1. Try to get the scale factor from the host peer
+    float hostScale = -1.0f;
+    if (comp != nullptr) {
+      if (auto* peer = comp->getPeer())
+        hostScale = peer->getPlatformScaleFactor();
+    }
+
+    // 2. Try to get the scale factor from the component itself
+    float componentScale = -1.0f;
+    if (component != nullptr) {
+      componentScale =
+        juce::Component::getApproximateScaleFactorForComponent(component);
+    }
+
+    // 3. Try to resolve display from component position
+    float displayScale = -1.0f;
     if (comp != nullptr) {
       const auto screenPos = comp->getScreenPosition();
 
       if (auto* d = displays.getDisplayForPoint(screenPos)) {
-        const auto s = static_cast<float>(d->scale);
-        if (std::isfinite(s) && s > 0.0f)
-          return s;
+        displayScale = static_cast<float>(d->scale);
       }
     }
 
-    // 2. Fallback to primary display (ok, but not always correct in DAWs)
+    // 4. Fallback to primary display (ok, but not always correct in DAWs)
+    float primaryScale = -1.0f;
     if (auto* primary = displays.getPrimaryDisplay()) {
-      const auto s = static_cast<float>(primary->scale);
-      if (std::isfinite(s) && s > 0.0f)
-        return s;
+      primaryScale = static_cast<float>(primary->scale);
     }
 
-    // 3. Absolute safety fallback (if everything else fails)
+    // Heuristic: if any any is greater 1 we most likely wanna use it
+    if (hostScale > 1.0f)
+      return hostScale;
+
+    if (componentScale > 1.0f)
+      return componentScale;
+
+    if (displayScale > 1.0f)
+      return displayScale;
+
+    if (primaryScale > 1.0f)
+      return primaryScale;
+
+    // If none is greater than 1, just return 1 (no scaling)
     return 1.0f;
   }
 
