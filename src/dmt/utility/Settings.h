@@ -523,9 +523,11 @@ public:
     static inline auto& selectedLabelBackgroundColour =
       container.add<Colour>("SettingsEditor.SelectedLabelBackgroundColour",
                             Colours::primary);
-    static inline auto& seperatorColour =
-      container.add<Colour>("SettingsEditor.SeperatorColour",
+    static inline auto& separatorColour =
+      container.add<Colour>("SettingsEditor.SeparatorColour",
                             Colours::solidDark);
+    [[deprecated("Use separatorColour instead")]] static inline auto&
+      seperatorColour = separatorColour;
     static inline auto& scrollBarColour =
       container.add<Colour>("SettingsEditor.ScrollBarColour", Colours::font);
     static inline auto& scrollBarBackgroundColour =
