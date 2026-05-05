@@ -39,21 +39,21 @@
 
 // OS constexprs set by CMake preprocessor definitions
 #if defined(CMAKE_OS_IS_WINDOWS) && CMAKE_OS_IS_WINDOWS
-static constexpr bool OS_IS_WINDOWS = true;
+#define OS_IS_WINDOWS 1
 #else
-static constexpr bool OS_IS_WINDOWS = false;
+#define OS_IS_WINDOWS 0
 #endif
 
 #if defined(CMAKE_OS_IS_DARWIN) && CMAKE_OS_IS_DARWIN
-static constexpr bool OS_IS_DARWIN = true;
+#define OS_IS_DARWIN 1
 #else
-static constexpr bool OS_IS_DARWIN = false;
+#define OS_IS_DARWIN 0
 #endif
 
 #if defined(CMAKE_OS_IS_LINUX) && CMAKE_OS_IS_LINUX
-static constexpr bool OS_IS_LINUX = true;
+#define OS_IS_LINUX 1
 #else
-static constexpr bool OS_IS_LINUX = false;
+#define OS_IS_LINUX 0
 #endif
 
 static_assert(
@@ -125,9 +125,16 @@ public:
   static inline auto& debugGrid =
     container.add<bool>("General.ShowDebugGrid", false);
   static inline auto& displayUpdateNotifications =
-    container.add<bool>("General.DisplayUpdateNotifications", true);
+    container.add<bool>("General.DisplayUpdateNotifications", false);
   static inline auto& themeVersion =
     container.add<int>("General.ThemeVersion", 2);
+#if OS_IS_LINUX
+  static inline auto& useOpenGL =
+    container.add<bool>("General.UseOpenGL", true);
+#elif OS_IS_DARWIN
+  static inline auto& useOpenGL =
+    container.add<bool>("General.UseOpenGL", false);
+#endif
 
 private:
   //==============================================================================
@@ -427,9 +434,9 @@ public:
     static inline auto& fontColour =
       container.add<Colour>("Button.FontColour", Colours::font);
     static inline auto& hoverColour =
-      container.add<Colour>("Button.HoverColour", Colours::primary);
+      container.add<Colour>("Button.HoverColour", Colours::font);
     static inline auto& clickColour =
-      container.add<Colour>("Button.ClickColour", Colours::font);
+      container.add<Colour>("Button.ClickColour", Colours::primary);
     static inline auto& outerShadowRadius =
       container.add<float>("Button.OuterShadowRadius", 5.0f);
     static inline auto& innerShadowRadius =
@@ -473,9 +480,9 @@ public:
     static inline auto& innerShadowColour =
       container.add<Colour>("Panel.InnerShadowColour", Colours::shadow);
     static inline auto& outerShadowRadius =
-      container.add<float>("Panel.OuterShadowRadius", 10.0f);
+      container.add<float>("Panel.OuterShadowRadius", 5.0f);
     static inline auto& innerShadowRadius =
-      container.add<float>("Panel.InnerShadowRadius", 10.0f);
+      container.add<float>("Panel.InnerShadowRadius", 5.0f);
     static inline auto& fontColor =
       container.add<Colour>("Panel.FontColor", Colours::font);
     static inline auto& fontSize =
