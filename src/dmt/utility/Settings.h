@@ -15,7 +15,7 @@
  * This code is licensed under the GPLv3 license. You are permitted to use and
  * modify this code under the terms of this license.
  * You must adhere GPLv3 license for any project using this code or parts of it.
- * Your are not allowed to use this code in any closed-source project.
+ * You are not allowed to use this code in any closed-source project.
  *
  * Description:
  * Centralized settings and theme configuration for Dimethoxy UI components.
