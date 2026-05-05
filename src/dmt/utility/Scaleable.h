@@ -250,7 +250,7 @@ public:
     }
 
     // Very hacky heuristic to determine the most likely correct scale factor
-    using juce::approximatelyEqual();
+    using juce::approximatelyEqual;
 
     if (!approximatelyEqual(hostScale, 1.0f) && hostScale > 0.0f)
       return hostScale;
