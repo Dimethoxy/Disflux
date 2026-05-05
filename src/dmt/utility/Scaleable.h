@@ -249,17 +249,19 @@ public:
       primaryScale = static_cast<float>(primary->scale);
     }
 
-    // Heuristic: if any any is greater 1 we most likely wanna use it
-    if (hostScale > 1.0f)
+    // Very hacky heuristic to determine the most likely correct scale factor
+    using juce::approximatelyEqual();
+
+    if (!approximatelyEqual(hostScale, 1.0f) && hostScale > 0.0f)
       return hostScale;
 
-    if (componentScale > 1.0f)
+    if (!approximatelyEqual(componentScale, 1.0f) && componentScale > 0.0f)
       return componentScale;
 
-    if (displayScale > 1.0f)
+    if (!approximatelyEqual(displayScale, 1.0f) && displayScale > 0.0f)
       return displayScale;
 
-    if (primaryScale > 1.0f)
+    if (!approximatelyEqual(primaryScale, 1.0f) && primaryScale > 0.0f)
       return primaryScale;
 
     // If none is greater than 1, just return 1 (no scaling)
