@@ -46,28 +46,15 @@ public:
     // Now that layout is fully configured, attach the compositor
     addAndMakeVisible(compositor);
 
+#if OS_IS_DARWIN || OS_IS_LINUX
     // Determine if hardware acceleration should be used
-    bool shouldUseHardwareAccel = !dmt::Settings::disableHardwareAcceleration;
-    DBG("[AbstractPluginEditor] Hardware acceleration: "
-        << (shouldUseHardwareAccel ? "ENABLED" : "DISABLED"));
-
-    if (OS_IS_WINDOWS) {
-      // Windows: D2D (Direct2D) is hardware accelerated by default.
-      // To disable it, we need to wait for the peer to be created and then
-      // call setCurrentRenderingEngine(0) for software rendering.
-#if OS_IS_WINDOWS
-      if (!shouldUseHardwareAccel) {
-        DBG("[AbstractPluginEditor] Using Windows Direct2D renderer");
-        awaitingPeerForDirect2D = true;
-      } else {
-        DBG("[AbstractPluginEditor] Using Windows software renderer");
-      }
-#endif
-    }
+    bool shouldUseOpenGL = !dmt::Settings::useOpenGL;
+    DBG("[AbstractPluginEditor] OpenGL renderer: "
+        << (shouldUseOpenGL ? "ENABLED" : "DISABLED"));
 
     if (OS_IS_DARWIN) {
       // macOS: Use OpenGL for hardware acceleration if enabled
-      if (shouldUseHardwareAccel) {
+      if (shouldUseOpenGL) {
         DBG("[AbstractPluginEditor] Using macOS OpenGL renderer");
         openGLContext.setComponentPaintingEnabled(true);
         openGLContext.setContinuousRepainting(false);
@@ -81,7 +68,7 @@ public:
 
     if (OS_IS_LINUX) {
       // Linux: Use OpenGL for hardware acceleration if enabled
-      if (shouldUseHardwareAccel) {
+      if (shouldUseOpenGL) {
         DBG("[AbstractPluginEditor] Using Linux OpenGL renderer");
         openGLContext.setComponentPaintingEnabled(true);
         openGLContext.setContinuousRepainting(false);
@@ -91,6 +78,8 @@ public:
         DBG("[AbstractPluginEditor] Using Linux software renderer");
       }
     }
+
+#endif
 
     setConstraints(baseWidth, baseHeight + headerHeight);
     setResizable(false, true);
@@ -158,19 +147,7 @@ public:
   //==============================================================================
   // Handle peer creation for Windows Direct2D setup
 
-  void parentHierarchyChanged() override
-  {
-    DBG("[AbstractPluginEditor] parentHierarchyChanged called");
-#if OS_IS_WINDOWS
-    // Try to disable Direct2D when peer is created
-    if (awaitingPeerForDirect2D) {
-      if (auto peer = getPeer()) {
-        peer->setCurrentRenderingEngine(0); // 0 = software, 1 = Direct2D
-        awaitingPeerForDirect2D = false;
-      }
-    }
-#endif
-  }
+  void parentHierarchyChanged() override {}
 
   //==============================================================================
   // JUCE overrides
@@ -358,10 +335,6 @@ protected:
 
   Image image;
   bool isResizing = false;
-
-#if OS_IS_WINDOWS
-  bool awaitingPeerForDirect2D = false;
-#endif
 
   dmt::gui::window::Layout mainLayout;
   dmt::gui::window::Compositor compositor;
