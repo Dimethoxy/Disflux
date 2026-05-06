@@ -101,6 +101,18 @@ public:
       setHeight(dmt::Settings::Oscilloscope::defaultGain);
     }
   }
+
+  ~OscilloscopeDisplay() override
+  {
+    // Remove parameter listeners
+    if (!useDefaultSettings) {
+      // Assuming you have access to the AudioProcessorValueTreeState instance
+      // here, you would remove the listeners. This is just a placeholder.
+      _apvts.removeParameterListener("OscilloscopeZoom", this);
+      _apvts.removeParameterListener("OscilloscopeThickness", this);
+      _apvts.removeParameterListener("OscilloscopeGain", this);
+    }
+  }
   //==============================================================================
   void extendResized(
     const juce::Rectangle<int>& _displayBounds) noexcept override

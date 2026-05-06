@@ -47,7 +47,7 @@
       "name": "Launch FL Studio (Windows)",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "C:\\Program Files\\Image-Line\\FL Studio 2024\\FL64.exe",
+      "program": "C:\\Program Files\\Image-Line\\FL Studio 2025\\FL64.exe",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
