@@ -52,7 +52,8 @@
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
       "environment": [],
-      "console": "internalConsole"
+      "console": "internalConsole",
+      "symbolSearchPath": "C:\\Program Files\\Common Files\\VST3\\Dimethoxy\\Disflux"
     },
     {
       "name": "Launch Bitwig Studio (Linux)",
