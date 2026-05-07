@@ -161,7 +161,7 @@ public:
    */
   inline void setRawSamplesPerPixel(float _newRawSamplesPerPixel) noexcept
   {
-    rawSamplesPerPixel = _newRawSamplesPerPixel;
+    rawSamplesPerPixel.store(_newRawSamplesPerPixel, std::memory_order_relaxed);
   }
 
   //==============================================================================
@@ -175,7 +175,7 @@ public:
    */
   inline void setAmplitude(float _newAmplitude) noexcept
   {
-    amplitude = _newAmplitude;
+    amplitude.store(_newAmplitude, std::memory_order_relaxed);
   }
 
   //==============================================================================
@@ -189,7 +189,7 @@ public:
    */
   inline void setThickness(float _newThickness) noexcept
   {
-    thickness = _newThickness;
+    thickness.store(_newThickness, std::memory_order_relaxed);
   }
 
   //==============================================================================
@@ -294,7 +294,8 @@ protected:
     }
 
     const int halfHeight = height / 2;
-    float samplesPerPixel = rawSamplesPerPixel * size;
+    const float samplesPerPixel =
+      rawSamplesPerPixel.load(std::memory_order_relaxed) * size;
 
     if (samplesPerPixel <= 0.0f) {
       return;
@@ -348,8 +349,8 @@ protected:
       static_cast<float>(width - pixelToDraw) + subPixelOffset,
       1.0f / samplesPerPixel,
       halfHeight,
-      amplitude,
-      thickness,
+      amplitude.load(std::memory_order_relaxed),
+      thickness.load(std::memory_order_relaxed),
       size
     };
     subPixelOffset = totalShift - static_cast<float>(pixelToDraw);
@@ -381,9 +382,9 @@ private:
 
   std::shared_ptr<Renderer> renderer;
   float subPixelOffset = 0.0f;
-  float rawSamplesPerPixel = 10.0f;
-  float amplitude = 1.0f;
-  float thickness = 3.0f;
+  std::atomic<float> rawSamplesPerPixel{ 10.0f };
+  std::atomic<float> amplitude{ 1.0f };
+  std::atomic<float> thickness{ 3.0f };
   const float& size;
 
   //==============================================================================
