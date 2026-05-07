@@ -173,10 +173,10 @@ public:
                         rightScopeBounds.getHeight());
 
     // Draw oscilloscope images
-    g.drawImageAt(leftOscilloscope.getImage(),
+    g.drawImageAt(leftOscilloscope.getFrontImage(),
                   leftOscilloscope.getBounds().getX(),
                   leftOscilloscope.getBounds().getY());
-    g.drawImageAt(rightOscilloscope.getImage(),
+    g.drawImageAt(rightOscilloscope.getFrontImage(),
                   rightOscilloscope.getBounds().getX(),
                   rightOscilloscope.getBounds().getY());
   }

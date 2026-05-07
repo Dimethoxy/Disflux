@@ -51,14 +51,14 @@ namespace widget {
  * buffers, optimized for real-time use in GUI applications. It leverages a
  * background thread to render the waveform into a JUCE image, which can be
  * efficiently displayed in the GUI. The design ensures thread safety and
- * minimal locking overhead, using a read-write lock for image access.
+ * minimal overhead using lock-free double buffering for image access.
  *
  * The oscilloscope is intended to be used with a lock-free ring buffer for
  * audio data, and supports customization of amplitude, thickness, and
  * samples-per-pixel for flexible display scaling.
  *
  * The rendering thread is started upon construction and stopped on destruction.
- * The image is updated periodically, and can be retrieved via getImage().
+ * The image is updated periodically, and can be retrieved via getFrontImage().
  */
 template<typename SampleType>
 class alignas(64) Oscilloscope : public juce::Thread
@@ -108,17 +108,18 @@ public:
 
   //==============================================================================
   /**
-   * @brief Retrieves a copy of the current oscilloscope image.
+   * @brief Retrieves the current front image for GUI rendering.
    *
-   * @return A copy of the rendered JUCE image.
+   * @return A reference to the front buffer image.
    *
    * @details
-   * The returned image is thread-safe and can be used in the GUI.
+   * The render thread only writes to the back buffer, so the front image is
+   * safe for concurrent GUI reads.
    */
-  [[nodiscard]] inline juce::Image getImage() const
+  [[nodiscard]] inline const juce::Image& getFrontImage() const noexcept
   {
     const int frontIndex = frontBufferIndex.load(std::memory_order_acquire);
-    return images[static_cast<size_t>(frontIndex)].createCopy();
+    return images[static_cast<size_t>(frontIndex)];
   }
 
   //==============================================================================
@@ -199,9 +200,9 @@ public:
    * @param _newRenderer A unique pointer to the new renderer implementation.
    *
    * @details
-   * Swaps the current rendering strategy under the write lock to ensure
-   * thread safety with the rendering thread. The previous renderer is
-   * destroyed when the new one is set.
+   * Swaps the current rendering strategy atomically to avoid contention with
+   * the rendering thread. The previous renderer is destroyed when the new one
+   * is set.
    */
   inline void setRenderer(std::unique_ptr<Renderer> _newRenderer)
   {
@@ -219,7 +220,7 @@ protected:
    *
    * @details
    * Periodically updates the oscilloscope image by rendering the latest audio
-   * samples. Uses a write lock to ensure exclusive access to the image.
+   * samples. Uses a back buffer to avoid GUI contention.
    * The wait interval is set high to minimize CPU usage; rendering is not
    * continuous but event-driven.
    */
@@ -324,8 +325,6 @@ protected:
     const int currentFront = frontBufferIndex.load(std::memory_order_acquire);
     const int backIndex = currentFront == 0 ? 1 : 0;
     auto& backImage = images[static_cast<size_t>(backIndex)];
-
-    backImage = images[static_cast<size_t>(currentFront)].createCopy();
 
     // Image move
     const int destX = 0 - pixelToDraw;
