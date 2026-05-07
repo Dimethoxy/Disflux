@@ -58,6 +58,12 @@ class Properties
 public:
   //============================================================================
   /**
+   * @brief Construct a new Properties object
+   */
+  Properties() = default;
+
+  //============================================================================
+  /**
    * @brief Initialize the properties with options and settings.
    */
   void initialize(SettingsOverrides _overwrites = {},
