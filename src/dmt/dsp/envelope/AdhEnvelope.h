@@ -68,7 +68,7 @@ public:
     Idle
   };
 
-  constexpr AhdEnvelope() noexcept = default;
+  AhdEnvelope() noexcept = default;
 
   inline void setParameters(const juce::AudioProcessorValueTreeState& apvts,
                             juce::String prefix) noexcept
