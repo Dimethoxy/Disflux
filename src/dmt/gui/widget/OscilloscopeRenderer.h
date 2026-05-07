@@ -106,6 +106,11 @@ public:
     /** Global size scaling factor. */
     float sizeFactor;
   };
+  //============================================================================
+  /**
+   * @brief Default constructor for OscilloscopeRenderer.
+   */
+  OscilloscopeRenderer() = default;
 
   //============================================================================
   /**

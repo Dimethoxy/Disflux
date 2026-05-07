@@ -69,6 +69,10 @@ class MinMaxRenderer : public OscilloscopeRenderer<SampleType>
 {
   //============================================================================
 public:
+  MinMaxRenderer() = default;
+
+  //============================================================================
+public:
   using RingBuffer = typename OscilloscopeRenderer<SampleType>::RingBuffer;
   using RenderContext =
     typename OscilloscopeRenderer<SampleType>::RenderContext;
