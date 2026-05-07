@@ -122,6 +122,9 @@ target_link_libraries(${PROJECT_NAME}
         juce::juce_recommended_warning_flags
 )
 
+    # Apply opt-in sanitizers and debug-symbol settings for crash diagnostics.
+    dmt_target_enable_sanitizers(${PROJECT_NAME})
+
 # Conditionally link curl only on Linux
 if(UNIX AND NOT APPLE)
     target_link_libraries(${PROJECT_NAME}

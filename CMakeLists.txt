@@ -10,6 +10,9 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS TRUE) 
 set(EXT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
 
+# Sanitizer helpers are opt-in through presets (DMT_ENABLE_ASAN / DMT_ENABLE_UBSAN)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/Sanitizers.cmake)
+
 # Set macOS deployment target for older macOS compatibility
 include(cmake/get_cpm.cmake)
 

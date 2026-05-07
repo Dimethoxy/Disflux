@@ -71,6 +71,94 @@
       }
     },
     {
+      "name": "Windows ASan",
+      "hidden": false,
+      "description": "Debug + AddressSanitizer (MSVC cl)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/windows-asan",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_C_COMPILER": "cl",
+        "CMAKE_CXX_COMPILER": "cl",
+        "DMT_ENABLE_ASAN": "ON"
+      },
+      "environment": {
+        "CC": "cl",
+        "CXX": "cl"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "Windows RelWithDebInfo ASan",
+      "hidden": false,
+      "description": "RelWithDebInfo + AddressSanitizer (MSVC cl)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/windows-relwithdebinfo-asan",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_C_COMPILER": "cl",
+        "CMAKE_CXX_COMPILER": "cl",
+        "DMT_ENABLE_ASAN": "ON"
+      },
+      "environment": {
+        "CC": "cl",
+        "CXX": "cl"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "Windows Clang ASan",
+      "hidden": false,
+      "description": "Debug + AddressSanitizer (clang-cl, if installed)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/windows-clang-asan",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_C_COMPILER": "clang-cl",
+        "CMAKE_CXX_COMPILER": "clang-cl",
+        "DMT_ENABLE_ASAN": "ON"
+      },
+      "environment": {
+        "CC": "clang-cl",
+        "CXX": "clang-cl"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "Windows Clang UBSan",
+      "hidden": false,
+      "description": "Debug + UndefinedBehaviorSanitizer (clang-cl, if installed)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/windows-clang-ubsan",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_C_COMPILER": "clang-cl",
+        "CMAKE_CXX_COMPILER": "clang-cl",
+        "DMT_ENABLE_UBSAN": "ON"
+      },
+      "environment": {
+        "CC": "clang-cl",
+        "CXX": "clang-cl"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
       "name": "Mac Debug",
       "hidden": false,
       "description": "Debug configuration for macOS",
