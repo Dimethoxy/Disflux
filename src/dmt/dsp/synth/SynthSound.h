@@ -45,6 +45,8 @@ namespace synth {
 class SynthSound : public juce::SynthesiserSound
 {
 public:
+  SynthSound() = default;
+
   //==============================================================================
   bool appliesToNote [[nodiscard]] (int) noexcept override { return true; }
   bool appliesToChannel [[nodiscard]] (int) noexcept override { return true; }

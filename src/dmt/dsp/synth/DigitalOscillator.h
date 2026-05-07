@@ -104,6 +104,10 @@ public:
 
   //==============================================================================
   // Oscillator
+
+  //============================================================================
+  DigitalOscillator() = default;
+
 public:
   inline void setParameters(const juce::AudioProcessorValueTreeState& apvts,
                             String prefix)
