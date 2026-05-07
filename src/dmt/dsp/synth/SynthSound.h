@@ -48,6 +48,8 @@ public:
   //==============================================================================
   bool appliesToNote [[nodiscard]] (int) noexcept override { return true; }
   bool appliesToChannel [[nodiscard]] (int) noexcept override { return true; }
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SynthSound)
 };
 
 //==============================================================================

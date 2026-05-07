@@ -160,6 +160,8 @@ private:
   std::array<float, 2> feedbackBuffer;
   Filter leftFilter;
   Filter rightFilter;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeretikProcessor)
 };
 
 //==============================================================================

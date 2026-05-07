@@ -146,5 +146,7 @@ private:
     jassertfalse; // Could not find the editor in the hierarchy
     return nullptr;
   }
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HostContextMenu)
 };
 } // namespace dmt

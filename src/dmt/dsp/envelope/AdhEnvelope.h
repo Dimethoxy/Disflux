@@ -235,6 +235,8 @@ private:
   float sampleRate = -1.0f;
   Parameters params;
   size_t sampleIndex = 0;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AhdEnvelope)
 };
 
 //==============================================================================

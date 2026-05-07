@@ -184,6 +184,8 @@ protected:
 
   /** Current X position with sub-pixel precision for visual continuity. */
   float currentX = 0.0f;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OscilloscopeRenderer)
 };
 
 } // namespace widget

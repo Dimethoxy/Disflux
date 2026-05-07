@@ -138,6 +138,8 @@ protected:
   Label infoLabel;
   Unit::Type unitType;
   Fonts fonts;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AbstractSliderComponent)
 };
 
 } // namespace component

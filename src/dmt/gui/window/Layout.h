@@ -134,6 +134,8 @@ protected:
   PanelSpanList panelSpans;
   GridSeparatorLayout columnSeparators;
   GridSeparatorLayout rowSeparators;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Layout)
 };
 
 } // namespace window

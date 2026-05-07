@@ -97,6 +97,8 @@ private:
   juce::Synthesiser synth;
   juce::AudioProcessorValueTreeState& apvts;
   float sampleRate = -1.0f;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NeutrinoProcessor)
 };
 
 //==============================================================================
