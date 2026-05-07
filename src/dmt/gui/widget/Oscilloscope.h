@@ -326,6 +326,8 @@ protected:
     const int backIndex = currentFront == 0 ? 1 : 0;
     auto& backImage = images[static_cast<size_t>(backIndex)];
 
+    backImage = images[static_cast<size_t>(currentFront)].createCopy();
+
     // Image move
     const int destX = 0 - pixelToDraw;
     backImage.moveImageSection(destX,      // destX
