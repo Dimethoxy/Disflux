@@ -329,18 +329,18 @@ protected:
     backImage = images[static_cast<size_t>(currentFront)].createCopy();
 
     // Image move
-    const int destX = 0 - pixelToDraw;
-    backImage.moveImageSection(destX,      // destX
-                               0,          // destY
-                               0,          // srcX
-                               0,          // srcY
-                               width + 10, // width
-                               height);    // height
+    // const int destX = 0 - pixelToDraw;
+    // backImage.moveImageSection(destX,      // destX
+    //                            0,          // destY
+    //                            0,          // srcX
+    //                            0,          // srcY
+    //                            width + 10, // width
+    //                            height);    // height
 
     // Clear the new part of the image
-    juce::Rectangle<int> clearRect(
-      width - pixelToDraw + 10, 0, pixelToDraw, height);
-    backImage.clear(clearRect, juce::Colours::transparentBlack);
+    // juce::Rectangle<int> clearRect(
+    //   width - pixelToDraw + 10, 0, pixelToDraw, height);
+    // backImage.clear(clearRect, juce::Colours::transparentBlack);
 
     // Delegate drawing to the active renderer
     juce::Graphics imageGraphics(backImage);
