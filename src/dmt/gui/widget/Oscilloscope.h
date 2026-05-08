@@ -30,6 +30,7 @@
 
 //==============================================================================
 
+#include "gui/widget/OscilloscopeConfig.h"
 #include "gui/widget/MinMaxRenderer.h"
 #include "gui/widget/PathStrokeRenderer.h"
 #include <JuceHeader.h>
@@ -91,10 +92,12 @@ public:
     : Thread(String("Oscilloscope" + juce::String(_channel)))
     , ringBuffer(_ringBuffer)
     , channel(_channel)
-    , size(_sizeFactor)
     , renderer(std::make_shared<MinMaxRenderer<SampleType>>())
+    , size(_sizeFactor)
   {
+#if DMT_OSC_ENABLE_THREAD
     startThread();
+#endif
   }
 
   //==============================================================================
@@ -104,7 +107,12 @@ public:
    * @details
    * Ensures the rendering thread is stopped gracefully before destruction.
    */
-  inline ~Oscilloscope() noexcept override { stopThread(1000); }
+  inline ~Oscilloscope() noexcept override
+  {
+#if DMT_OSC_ENABLE_THREAD
+    stopThread(1000);
+#endif
+  }
 
   //==============================================================================
   /**
@@ -206,10 +214,8 @@ public:
    */
   inline void setRenderer(std::unique_ptr<Renderer> _newRenderer)
   {
-    std::atomic_store_explicit(
-      &renderer,
-      std::shared_ptr<Renderer>(std::move(_newRenderer)),
-      std::memory_order_release);
+    renderer.store(std::shared_ptr<Renderer>(std::move(_newRenderer)),
+                   std::memory_order_release);
   }
 
   //==============================================================================
@@ -226,6 +232,7 @@ protected:
    */
   inline void run() override
   {
+#if DMT_OSC_ENABLE_THREAD
     while (!threadShouldExit()) {
       wait(10000);
 
@@ -236,6 +243,7 @@ protected:
 
       render();
     }
+#endif
   }
 
   //==============================================================================
@@ -287,7 +295,9 @@ protected:
   inline void render()
   {
     TRACER("Oscilloscope::render");
+#if DMT_OSC_ENABLE_BUFFER_SYNC
     const juce::SpinLock::ScopedLockType lock(ringBuffer.getLock());
+#endif
 
     const int width = renderWidth.load(std::memory_order_relaxed);
     const int height = renderHeight.load(std::memory_order_relaxed);
@@ -318,9 +328,11 @@ protected:
     const float totalShift = exactPixelsToDraw + subPixelOffset;
     const int pixelToDraw = static_cast<int>(totalShift);
 
+#if DMT_OSC_ENABLE_IMAGE_SCROLL
     if (pixelToDraw <= 0) {
       return;
     }
+#endif
 
     ringBuffer.incrementReadPosition(channel, samplesToDraw);
 
@@ -328,6 +340,7 @@ protected:
     const int backIndex = currentFront == 0 ? 1 : 0;
     auto& backImage = images[static_cast<size_t>(backIndex)];
 
+#if DMT_OSC_ENABLE_IMAGE_SCROLL
     backImage = images[static_cast<size_t>(currentFront)].createCopy();
 
     // Image move
@@ -343,25 +356,37 @@ protected:
     juce::Rectangle<int> clearRect(
       width - pixelToDraw + 10, 0, pixelToDraw, height);
     backImage.clear(clearRect, juce::Colours::transparentBlack);
+#else
+    backImage = Image(PixelFormat::ARGB, width + 10, height, true);
+#endif
 
     // Delegate drawing to the active renderer
     juce::Graphics imageGraphics(backImage);
+#if DMT_OSC_ENABLE_IMAGE_SCROLL
+    const float drawStartX = static_cast<float>(width - pixelToDraw) + subPixelOffset;
+#else
+    const float drawStartX = 0.0f;
+#endif
+    const float xScale = 1.0f / samplesPerPixel;
     const typename Renderer::RenderContext context{
       firstSamplesToDraw,
       samplesToDraw,
-      static_cast<float>(width - pixelToDraw) + subPixelOffset,
-      1.0f / samplesPerPixel,
+      drawStartX,
+      xScale,
       halfHeight,
       amplitude.load(std::memory_order_relaxed),
       thickness.load(std::memory_order_relaxed),
       size
     };
+#if DMT_OSC_ENABLE_IMAGE_SCROLL
     subPixelOffset = totalShift - static_cast<float>(pixelToDraw);
+#endif
 
-    if (auto currentRenderer =
-          std::atomic_load_explicit(&renderer, std::memory_order_acquire)) {
+#if DMT_OSC_ENABLE_RENDERER_DRAW
+    if (auto currentRenderer = renderer.load(std::memory_order_acquire)) {
       currentRenderer->draw(imageGraphics, ringBuffer, channel, context);
     }
+#endif
 
     frontBufferIndex.store(backIndex, std::memory_order_release);
   }
@@ -383,7 +408,7 @@ private:
   std::atomic<int> renderHeight{ 1 };
   std::atomic<bool> resizePending{ true };
 
-  std::shared_ptr<Renderer> renderer;
+  std::atomic<std::shared_ptr<Renderer>> renderer;
   float subPixelOffset = 0.0f;
   std::atomic<float> rawSamplesPerPixel{ 10.0f };
   std::atomic<float> amplitude{ 1.0f };

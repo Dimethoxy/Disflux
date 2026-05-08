@@ -31,6 +31,7 @@
 
 //==============================================================================
 
+#include "gui/widget/OscilloscopeConfig.h"
 #include "dsp/data/FifoAudioBuffer.h"
 #include "dsp/data/RingAudioBuffer.h"
 #include "gui/display/AbstractDisplay.h"
@@ -91,6 +92,7 @@ public:
     , rightOscilloscope(ringBuffer, 1, size)
     , useDefaultSettings(_useDefaultSettings)
   {
+#if DMT_OSC_ENABLE_PARAMETER_FEED
     if (!useDefaultSettings) {
       apvts.addParameterListener("OscilloscopeZoom", this);
       apvts.addParameterListener("OscilloscopeThickness", this);
@@ -101,11 +103,18 @@ public:
       setThickness(dmt::Settings::Oscilloscope::defaultThickness);
       setHeight(dmt::Settings::Oscilloscope::defaultGain);
     }
+#else
+    juce::ignoreUnused(useDefaultSettings);
+    setZoom(dmt::Settings::Oscilloscope::defaultZoom);
+    setThickness(dmt::Settings::Oscilloscope::defaultThickness);
+    setHeight(dmt::Settings::Oscilloscope::defaultGain);
+#endif
   }
 
   ~OscilloscopeDisplay() override
   {
     // Remove parameter listeners
+#if DMT_OSC_ENABLE_PARAMETER_FEED
     if (!useDefaultSettings) {
       // Assuming you have access to the AudioProcessorValueTreeState instance
       // here, you would remove the listeners. This is just a placeholder.
@@ -113,6 +122,7 @@ public:
       apvts.removeParameterListener("OscilloscopeThickness", this);
       apvts.removeParameterListener("OscilloscopeGain", this);
     }
+#endif
 
     // Stop the repaint timer
     stopRepaintTimer();
@@ -195,7 +205,7 @@ protected:
     const int numLines = getWidth() / (getHeight() / 4.0f);
     const float lineSpacing = scopeWidth / numLines;
 
-    for (size_t i = 1; i < numLines; ++i) {
+    for (int i = 1; i < numLines; ++i) {
       const float x = scopeX + lineSpacing * i;
       g.drawLine(juce::Line<float>(x, scopeY, x, scopeY + scopeHeight),
                  2.0f * size);
@@ -214,7 +224,7 @@ protected:
     float brightnessValues[7] = { 0.15f, 0.05f, 0.05f, 0.05f,
                                   0.05f, 0.05f, 0.15f };
 
-    for (size_t i = 0; i < 7; ++i) {
+    for (int i = 0; i < 7; ++i) {
       const float y = scopeY + (scopeHeight / 6) * i;
       g.setColour(backgroundColour.brighter(brightnessValues[i]));
       g.drawLine(juce::Line<float>(scopeX, y, scopeX + scopeWidth, y),
@@ -225,11 +235,15 @@ protected:
   void prepareNextFrame() noexcept override
   {
     TRACER("OscilloscopeDisplay::prepareNextFrame");
+#if DMT_OSC_ENABLE_BUFFER_SYNC
     const juce::SpinLock::ScopedLockType lock(ringBuffer.getLock());
+#endif
     ringBuffer.write(fifoBuffer);
     ringBuffer.equalizeReadPositions();
+#if DMT_OSC_ENABLE_THREAD
     leftOscilloscope.notify();
     rightOscilloscope.notify();
+#endif
   }
   //==============================================================================
   void setZoom(float _zoom) noexcept
@@ -261,6 +275,7 @@ protected:
   //==============================================================================
   virtual void parameterChanged(const String& _parameterID, float _newValue)
   {
+#if DMT_OSC_ENABLE_PARAMETER_FEED
     if (_parameterID == "OscilloscopeZoom") {
       setZoom(_newValue);
     }
@@ -270,6 +285,9 @@ protected:
     if (_parameterID == "OscilloscopeGain") {
       setHeight(_newValue);
     }
+#else
+    juce::ignoreUnused(_parameterID, _newValue);
+#endif
   }
   //==============================================================================
 private:
