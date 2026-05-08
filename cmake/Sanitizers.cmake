@@ -7,8 +7,9 @@ option(DMT_ENABLE_ASAN "Enable AddressSanitizer for all targets" OFF)
 option(DMT_ENABLE_UBSAN "Enable UndefinedBehaviorSanitizer for all targets" OFF)
 
 # Apply sanitizer flags globally when enabled to ensure consistency across all compilation units
+# Windows MSVC only - no sanitizers on Mac or Linux
 if(DMT_ENABLE_ASAN OR DMT_ENABLE_UBSAN)
-    if(MSVC AND NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    if(MSVC)
         if(DMT_ENABLE_UBSAN)
             message(WARNING "DMT_ENABLE_UBSAN is not supported with MSVC cl; ignoring UBSan")
         endif()
@@ -24,28 +25,7 @@ if(DMT_ENABLE_ASAN OR DMT_ENABLE_UBSAN)
         add_compile_options(/Zi /Oy-)
         add_link_options(/DEBUG)
     else()
-        # Clang/GCC style sanitizers (including clang-cl frontend).
-        set(enabled_sanitizers "")
-        if(DMT_ENABLE_ASAN)
-            list(APPEND enabled_sanitizers address)
-        endif()
-        if(DMT_ENABLE_UBSAN)
-            list(APPEND enabled_sanitizers undefined)
-        endif()
-
-        if(enabled_sanitizers)
-            string(JOIN "," sanitizer_arg ${enabled_sanitizers})
-            add_compile_options(-fsanitize=${sanitizer_arg} -fno-omit-frame-pointer)
-            add_link_options(-fsanitize=${sanitizer_arg})
-        endif()
-
-        if(WIN32)
-            # Keep PDB/debugger quality high on Windows clang/clang-cl presets.
-            add_compile_options(/Zi /Oy-)
-            add_link_options(/DEBUG /INCREMENTAL:NO)
-        else()
-            add_compile_options(-g)
-        endif()
+        message(WARNING "Sanitizers are only supported on Windows with MSVC; ignoring DMT_ENABLE_ASAN and DMT_ENABLE_UBSAN")
     endif()
 endif()
 
