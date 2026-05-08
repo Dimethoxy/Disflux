@@ -32,11 +32,11 @@
 //==============================================================================
 
 #ifndef DMT_OSC_ENABLE_THREAD
-#define DMT_OSC_ENABLE_THREAD 0
+#define DMT_OSC_ENABLE_THREAD 1
 #endif
 
 #ifndef DMT_OSC_ENABLE_BUFFER_SYNC
-#define DMT_OSC_ENABLE_BUFFER_SYNC 1
+#define DMT_OSC_ENABLE_BUFFER_SYNC 0
 #endif
 
 #ifndef DMT_OSC_ENABLE_IMAGE_SCROLL

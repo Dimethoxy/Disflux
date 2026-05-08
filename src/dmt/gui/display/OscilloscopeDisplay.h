@@ -31,11 +31,11 @@
 
 //==============================================================================
 
-#include "gui/widget/OscilloscopeConfig.h"
 #include "dsp/data/FifoAudioBuffer.h"
 #include "dsp/data/RingAudioBuffer.h"
 #include "gui/display/AbstractDisplay.h"
 #include "gui/widget/Oscilloscope.h"
+#include "gui/widget/OscilloscopeConfig.h"
 #include "gui/widget/Shadow.h"
 #include "utility/RepaintTimer.h"
 #include "utility/Settings.h"

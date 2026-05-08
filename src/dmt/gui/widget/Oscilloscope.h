@@ -30,8 +30,8 @@
 
 //==============================================================================
 
-#include "gui/widget/OscilloscopeConfig.h"
 #include "gui/widget/MinMaxRenderer.h"
+#include "gui/widget/OscilloscopeConfig.h"
 #include "gui/widget/PathStrokeRenderer.h"
 #include <JuceHeader.h>
 
@@ -363,7 +363,8 @@ protected:
     // Delegate drawing to the active renderer
     juce::Graphics imageGraphics(backImage);
 #if DMT_OSC_ENABLE_IMAGE_SCROLL
-    const float drawStartX = static_cast<float>(width - pixelToDraw) + subPixelOffset;
+    const float drawStartX =
+      static_cast<float>(width - pixelToDraw) + subPixelOffset;
 #else
     const float drawStartX = 0.0f;
 #endif
