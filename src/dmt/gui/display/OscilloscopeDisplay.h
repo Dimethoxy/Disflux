@@ -113,6 +113,9 @@ public:
       apvts.removeParameterListener("OscilloscopeThickness", this);
       apvts.removeParameterListener("OscilloscopeGain", this);
     }
+
+    // Stop the repaint timer
+    stopRepaintTimer();
   }
   //==============================================================================
   void extendResized(

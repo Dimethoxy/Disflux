@@ -176,6 +176,12 @@ public:
 
   //==============================================================================
   /**
+   * @brief Destructor for `Alerts`.
+   */
+  inline ~Alerts() { stopRepaintTimer(); }
+
+  //==============================================================================
+  /**
    * @brief Pushes a new alert to the overlay.
    *
    * @param _title The alert title.

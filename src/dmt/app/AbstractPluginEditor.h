@@ -94,7 +94,16 @@ public:
     });
   }
 
-  ~AbstractPluginEditor() override = default;
+  ~AbstractPluginEditor()
+  {
+    // Ensure OpenGL context is detached before destruction
+    if (openGLContext.isAttached()) {
+      openGLContext.detach();
+    }
+
+    // Stop the debounce timer if it's running
+    stopTimer();
+  }
 
   //==============================================================================
   // JUCE overrides

@@ -106,6 +106,11 @@ public:
     addAndMakeVisible(innerShadow);
   }
 
+  //============================================================================
+  /** @brief Destructor for `AbstractDisplay`.
+   */
+  inline ~AbstractDisplay() { stopRepaintTimer(); }
+
   //==============================================================================
   /**
    * @brief Paints the component, including background, border, and display

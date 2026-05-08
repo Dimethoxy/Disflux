@@ -159,7 +159,14 @@ public:
 
   //============================================================================
   /** @brief Destructor for `Compositor`. */
-  ~Compositor() noexcept override { removeListenerRecursively(this); }
+  ~Compositor()
+  {
+    // Stop listening for hierarchy changes
+    removeListenerRecursively(this);
+
+    // Stop timer if it's running
+    stopTimer();
+  }
 
   //============================================================================
   /** @brief Paints the component. */

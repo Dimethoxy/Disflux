@@ -85,7 +85,7 @@ protected:
    * Ensures that the timer is stopped and resources are released. No
    * side-effects beyond JUCE Timer cleanup.
    */
-  inline ~RepaintTimer() noexcept override = default;
+  inline ~RepaintTimer() { stopRepaintTimer(); }
 
   //============================================================================
   /**
