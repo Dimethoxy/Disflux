@@ -62,7 +62,7 @@ jobs:
         id: cache-ipp
         uses: actions/cache@v4
         with:
-          key: ipp-v6
+          key: ipp-2026-0-0-193
           path: C:\Program Files (x86)\Intel
 
       - name: Install IPP (Windows)
@@ -76,7 +76,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: C:\Program Files (x86)\Intel
-          key: ipp-v6
+          key: ipp-2026-0-0-193
 
       - name: Select CMake Preset
         run: |
