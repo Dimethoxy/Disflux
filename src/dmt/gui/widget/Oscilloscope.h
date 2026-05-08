@@ -287,6 +287,8 @@ protected:
   inline void render()
   {
     TRACER("Oscilloscope::render");
+    const juce::SpinLock::ScopedLockType lock(ringBuffer.getLock());
+
     const int width = renderWidth.load(std::memory_order_relaxed);
     const int height = renderHeight.load(std::memory_order_relaxed);
 

@@ -225,6 +225,7 @@ protected:
   void prepareNextFrame() noexcept override
   {
     TRACER("OscilloscopeDisplay::prepareNextFrame");
+    const juce::SpinLock::ScopedLockType lock(ringBuffer.getLock());
     ringBuffer.write(fifoBuffer);
     ringBuffer.equalizeReadPositions();
     leftOscilloscope.notify();

@@ -66,8 +66,8 @@ public:
   constexpr RingAudioBuffer(const int _numChannelsToAllocate,
                             const int _numSamplesToAllocate) noexcept
     : RingBufferInterface(ringBuffer, writePosition, readPositions)
-    , writePosition(0)
     , ringBuffer(_numChannelsToAllocate, _numSamplesToAllocate)
+    , writePosition(0)
     , readPositions(static_cast<size_t>(_numChannelsToAllocate), 0)
   {
   }
@@ -257,6 +257,10 @@ public:
    */
   forcedinline AudioBuffer& getBuffer() noexcept { return ringBuffer; }
 
+  //============================================================================
+  /** @brief Returns the lock guarding ring buffer access. */
+  forcedinline juce::SpinLock& getLock() noexcept { return bufferLock; }
+
 protected:
   //============================================================================
   /**
@@ -300,6 +304,7 @@ private:
   AudioBuffer ringBuffer;
   int writePosition;
   std::vector<int> readPositions;
+  juce::SpinLock bufferLock;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RingAudioBuffer)
 };
