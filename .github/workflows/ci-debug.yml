@@ -95,6 +95,18 @@ jobs:
                 artifacts/
         shell: bash
 
+      - name: Package Debug Symbols (Windows)
+        run: |
+          mkdir -p artifacts/debug-symbols
+          find ${{env.BUILD_ARTIFACTS_DIR}} -name "*.pdb" -type f | while read pdb; do
+            cp "$pdb" artifacts/debug-symbols/
+          done
+          if [ -f artifacts/debug-symbols/*.pdb ]; then
+            cd artifacts
+            zip -r ${{env.BUNDLE_NAME}}-windows-debug-symbols.zip debug-symbols/
+          fi
+        shell: bash
+
       - name: Create Installer
         run: |
           # Create the packaging directory
@@ -152,6 +164,37 @@ jobs:
                 artifacts/
           cp -r ${{env.BUILD_ARTIFACTS_DIR}}/AU/${{env.PROJECT_NAME}}.component \
                 artifacts/
+        shell: bash
+
+      - name: Package Debug Symbols (macOS)
+        run: |
+          mkdir -p artifacts/debug-symbols
+
+          # Extract dSYM from binaries if they exist
+          VST3_BIN="${{env.BUILD_ARTIFACTS_DIR}}/VST3/${{env.PROJECT_NAME}}.vst3/Contents/MacOS/${{env.PROJECT_NAME}}"
+          CLAP_BIN="${{env.BUILD_ARTIFACTS_DIR}}/CLAP/${{env.PROJECT_NAME}}.clap/Contents/MacOS/${{env.PROJECT_NAME}}"
+          AU_BIN="${{env.BUILD_ARTIFACTS_DIR}}/AU/${{env.PROJECT_NAME}}.component/Contents/MacOS/${{env.PROJECT_NAME}}"
+
+          for binary in "$VST3_BIN" "$CLAP_BIN" "$AU_BIN"; do
+            if [ -f "$binary" ]; then
+              # Copy the dSYM if it exists
+              dSYM_PATH="${binary}.dSYM"
+              if [ -d "$dSYM_PATH" ]; then
+                cp -r "$dSYM_PATH" artifacts/debug-symbols/
+              fi
+            fi
+          done
+
+          # Also check the build directory for dSYM files
+          find build -name "*.dSYM" -type d 2>/dev/null | while read dsym; do
+            cp -r "$dsym" artifacts/debug-symbols/
+          done
+
+          # Create debug symbols archive if any symbols were found
+          if [ -n "$(ls artifacts/debug-symbols/ 2>/dev/null)" ]; then
+            cd artifacts
+            zip -r ${{env.BUNDLE_NAME}}-macos-debug-symbols.zip debug-symbols/
+          fi
         shell: bash
 
       - name: Import Certificates
@@ -310,6 +353,29 @@ jobs:
                 artifacts/
           cp -r ${{env.BUILD_ARTIFACTS_DIR}}/LV2/${{env.PROJECT_NAME}}.lv2 \
                 artifacts/
+        shell: bash
+
+      - name: Extract Debug Symbols (Linux)
+        run: |
+          mkdir -p artifacts/debug-symbols
+
+          # Extract debug symbols from binaries using objcopy
+          find ${{env.BUILD_ARTIFACTS_DIR}} -type f -name "${{env.PROJECT_NAME}}" -o -name "*.so" 2>/dev/null | while read binary; do
+            if file "$binary" | grep -q ELF; then
+              # Get the basename for the debug file
+              basename=$(basename "$binary")
+              debug_file="artifacts/debug-symbols/${basename}.debug"
+              objcopy --only-keep-debug "$binary" "$debug_file" 2>/dev/null || true
+              # Strip the binary
+              objcopy --strip-debug "$binary" 2>/dev/null || true
+            fi
+          done
+
+          # Create debug symbols archive if any symbols were found
+          if [ -n "$(ls artifacts/debug-symbols/ 2>/dev/null)" ]; then
+            cd artifacts
+            zip -r ${{env.LINUX_PACKAGE%.*}}-symbols.zip debug-symbols/
+          fi
         shell: bash
 
       - name: Package Linux Artifacts
