@@ -144,6 +144,19 @@ public:
 
   //==============================================================================
   /**
+   * @brief Destructor for `AbstractPanel`.
+   */
+  ~AbstractPanel() override
+  {
+    TRACER("AbstractPanel::~AbstractPanel");
+
+    // Remove listeners
+    nextButton.removeListener(this);
+    prevButton.removeListener(this);
+  }
+
+  //==============================================================================
+  /**
    * @brief Paints the panel, including background, border, and debug overlays.
    *
    * @param _g The graphics context.

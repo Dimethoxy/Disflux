@@ -64,6 +64,8 @@ public:
       valueTreeState.state.getPropertyAsValue(folderNameProperty, nullptr));
   }
 
+  ~FolderManager() override { valueTreeState.state.removeListener(this); }
+
 private:
   //==============================================================================
   juce::AudioProcessorValueTreeState& valueTreeState;

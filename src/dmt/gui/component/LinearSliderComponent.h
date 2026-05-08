@@ -124,6 +124,17 @@ public:
   }
 
   /**
+   * @brief
+   *
+   */
+  ~LinearSliderComponent()
+  {
+    TRACER("LinearSliderComponent::~LinearSliderComponent");
+    // Remove slider listener
+    slider.removeListener(this);
+  }
+
+  /**
    * @brief Lays out the child components.
    *
    * @details
