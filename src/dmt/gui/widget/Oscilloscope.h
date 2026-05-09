@@ -400,8 +400,8 @@ private:
   // Other members
   juce::Rectangle<int> bounds = juce::Rectangle<int>(0, 0, 1, 1);
   std::array<Image, 2> images = {
-    Image(PixelFormat::ARGB, 1, 1, true, juce::SoftwareImageType()),
-    Image(PixelFormat::ARGB, 1, 1, true, juce::SoftwareImageType())
+    Image(PixelFormat::ARGB, 1, 1, true, juce::OpenGLImageType()),
+    Image(PixelFormat::ARGB, 1, 1, true, juce::OpenGLImageType())
   };
   Image renderImage = Image(PixelFormat::ARGB, 1, 1, true);
   std::atomic<int> frontBufferIndex{ 0 };
