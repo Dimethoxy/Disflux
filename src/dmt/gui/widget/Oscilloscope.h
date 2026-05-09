@@ -287,78 +287,82 @@ protected:
   inline void render()
   {
     TRACER("Oscilloscope::render");
+
     const int width = renderWidth.load(std::memory_order_relaxed);
     const int height = renderHeight.load(std::memory_order_relaxed);
 
-    if (width <= 0 || height <= 0) {
+    if (width <= 0 || height <= 0)
       return;
-    }
 
     const int halfHeight = height / 2;
+
     const float samplesPerPixel =
       rawSamplesPerPixel.load(std::memory_order_relaxed) * size;
 
-    if (samplesPerPixel <= 0.0f) {
+    if (samplesPerPixel <= 0.0f)
       return;
-    }
 
     const int bufferSize = ringBuffer.getNumSamples();
     const int readPosition = ringBuffer.getReadPosition(channel);
     const int samplesToRead = bufferSize - readPosition;
 
     const int maxSamplesToDraw =
-      static_cast<int>(std::floor(samplesPerPixel * static_cast<float>(width)));
+      (int)std::floor(samplesPerPixel * (float)width);
+
     const int samplesToDraw = jmin(samplesToRead, maxSamplesToDraw);
     const int firstSamplesToDraw = readPosition;
 
-    const float exactPixelsToDraw =
-      static_cast<float>(samplesToDraw) / samplesPerPixel;
-    const float totalShift = exactPixelsToDraw + subPixelOffset;
-    const int pixelToDraw = static_cast<int>(totalShift);
+    const float exactPixelsToDraw = (float)samplesToDraw / samplesPerPixel;
 
-    if (pixelToDraw <= 0) {
+    const float totalShift = exactPixelsToDraw + subPixelOffset;
+    const int pixelToDraw = (int)totalShift;
+
+    if (pixelToDraw <= 0)
       return;
-    }
 
     ringBuffer.incrementReadPosition(channel, samplesToDraw);
 
     const int currentFront = frontBufferIndex.load(std::memory_order_acquire);
     const int backIndex = currentFront == 0 ? 1 : 0;
-    auto& backImage = images[static_cast<size_t>(backIndex)];
 
-    backImage = images[static_cast<size_t>(currentFront)].createCopy();
+    auto& backImage = images[(size_t)backIndex];
 
-    // Image move
-    // const int destX = 0 - pixelToDraw;
-    // backImage.moveImageSection(destX,      // destX
-    //                            0,          // destY
-    //                            0,          // srcX
-    //                            0,          // srcY
-    //                            width + 10, // width
-    //                            height);    // height
+    backImage = images[(size_t)currentFront].createCopy();
 
-    // Clear the new part of the image
-    juce::Rectangle<int> clearRect(
-      width - pixelToDraw + 10, 0, pixelToDraw, height);
-    backImage.clear(clearRect, juce::Colours::transparentBlack);
+    // Left scrolling 2.0: Hopefully without crashing host DAWs
+    const int shift = jmin(pixelToDraw, width);
+    if (shift > 0) {
+      // Move content LEFT safely inside bounds
+      backImage.moveImageSection(0,
+                                 0, // destX, destY
+                                 shift,
+                                 0, // sourceX, sourceY
+                                 width - shift,
+                                 height);
 
-    // Delegate drawing to the active renderer
-    juce::Graphics imageGraphics(backImage);
+      backImage.clear(juce::Rectangle<int>(width - shift, 0, shift, height),
+                      juce::Colours::transparentBlack);
+    }
+
+    // Render new audio data
+    juce::Graphics g(backImage);
+
     const typename Renderer::RenderContext context{
       firstSamplesToDraw,
       samplesToDraw,
-      static_cast<float>(width - pixelToDraw) + subPixelOffset,
+      (float)(width - shift) + subPixelOffset,
       1.0f / samplesPerPixel,
       halfHeight,
       amplitude.load(std::memory_order_relaxed),
       thickness.load(std::memory_order_relaxed),
       size
     };
-    subPixelOffset = totalShift - static_cast<float>(pixelToDraw);
+
+    subPixelOffset = totalShift - (float)pixelToDraw;
 
     if (auto currentRenderer =
           std::atomic_load_explicit(&renderer, std::memory_order_acquire)) {
-      currentRenderer->draw(imageGraphics, ringBuffer, channel, context);
+      currentRenderer->draw(g, ringBuffer, channel, context);
     }
 
     frontBufferIndex.store(backIndex, std::memory_order_release);
