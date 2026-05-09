@@ -329,16 +329,15 @@ protected:
 
     backImage = images[(size_t)currentFront].createCopy();
 
-    // Left scrolling 2.0: Hopefully without crashing host DAWs
+    // Left scrolling 2.0: Thread-safe pixel copy to avoid Direct2D races on
+    // Windows
     const int shift = jmin(pixelToDraw, width);
     if (shift > 0) {
-      // Move content LEFT safely inside bounds
-      // backImage.moveImageSection(0,
-      //                            0, // destX, destY
-      //                            shift,
-      //                            0, // sourceX, sourceY
-      //                            width - shift,
-      //                            height);
+      // Use BitmapData for guaranteed thread-safe, platform-agnostic pixel
+      // operations. On Windows with Direct2D images, BitmapData access forces
+      // software conversion, which is safe from worker threads. On macOS/Linux,
+      // it accesses native format directly.
+      scrollImageSectionLeft(backImage, shift, width, height);
 
       backImage.clear(juce::Rectangle<int>(width - shift, 0, shift, height),
                       juce::Colours::transparentBlack);
@@ -370,6 +369,55 @@ protected:
 
   //==============================================================================
 private:
+  //==============================================================================
+  /**
+   * @brief Thread-safe pixel scroll operation for worker threads.
+   *
+   * @details
+   * Manually copies pixels left by shiftAmount using BitmapData,
+   * avoiding Direct2D's moveImageSection() which is not thread-safe
+   * when called from worker threads on Windows.
+   *
+   * On Direct2D-backed images, accessing BitmapData forces a software
+   * conversion, making this operation safe from any thread.
+   * On software images, this is just a fast memcpy.
+   */
+  static void scrollImageSectionLeft(Image& image,
+                                     int shiftAmount,
+                                     int width,
+                                     int height) noexcept
+  {
+    if (shiftAmount <= 0 || width <= 0 || height <= 0)
+      return;
+
+    const int srcX = shiftAmount;
+    const int copyWidth = width - shiftAmount;
+
+    try {
+      // Read-only access from source region
+      const Image::BitmapData srcData(
+        image, srcX, 0, copyWidth, height, Image::BitmapData::readOnly);
+      // Write access to destination region
+      const Image::BitmapData dstData(
+        image, 0, 0, copyWidth, height, Image::BitmapData::readWrite);
+
+      // Verify format consistency
+      if (srcData.pixelFormat != dstData.pixelFormat ||
+          srcData.pixelStride != dstData.pixelStride)
+        return;
+
+      // Copy each scanline
+      const size_t lineSize = (size_t)dstData.pixelStride * (size_t)copyWidth;
+      for (int y = 0; y < height; ++y) {
+        std::memcpy(
+          dstData.getLinePointer(y), srcData.getLinePointer(y), lineSize);
+      }
+    } catch (const std::exception&) {
+      // BitmapData access failed; gracefully skip scroll
+      // (better than crashing from Direct2D race)
+        }
+  }
+
   //==============================================================================
   // Members initialized in the initializer list
   RingBuffer& ringBuffer;
