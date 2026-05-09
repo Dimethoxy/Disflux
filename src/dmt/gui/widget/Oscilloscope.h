@@ -257,9 +257,16 @@ protected:
       return;
     }
 
+#if OS_IS_WINDOWS
     for (auto& image : images) {
-      image = Image(PixelFormat::ARGB, _width + 10, _height, true);
+      image = Image(
+        PixelFormat::ARGB, _width + 10, _height, true, juce::OpenGLImageType());
     }
+#else
+    for (auto& image : images) {
+      image = Image(PixelFormat::ARGB, _width, _height, true);
+    }
+#endif
 
     frontBufferIndex.store(0, std::memory_order_release);
     subPixelOffset = 0.0f;
