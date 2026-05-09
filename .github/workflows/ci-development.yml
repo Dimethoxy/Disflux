@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: Export Variables
         run: |
-          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release" >> $GITHUB_ENV
+          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Debug" >> $GITHUB_ENV
           echo "WINDOWS-PACKAGE=${{env.BUNDLE_NAME}}-windows.exe" >> $GITHUB_ENV
 
       - name: Checkout Code
@@ -117,7 +117,7 @@ jobs:
     steps:
       - name: Export Variables
         run: |
-          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release" >> $GITHUB_ENV
+          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Debug" >> $GITHUB_ENV
           echo "MAC_PACKAGE=${{env.BUNDLE_NAME}}-macos.pkg" >> $GITHUB_ENV
 
       - name: Checkout Code
@@ -132,11 +132,11 @@ jobs:
 
       - name: Select CMake Preset
         run: |
-          cmake --preset "Mac Release" \
+          cmake --preset "Mac Debug" \
             -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
 
       - name: Build
-        run: cmake --build build --config "Release"
+        run: cmake --build build --config "Debug"
 
       - name: Copy Build Artifacts
         run: |
@@ -254,7 +254,7 @@ jobs:
     steps:
       - name: Export Variables
         run: |
-          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release" >> $GITHUB_ENV
+          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Debug" >> $GITHUB_ENV
           echo "UBUNTU_PACKAGE=${{env.BUNDLE_NAME}}-linux-ubuntu.deb" >> $GITHUB_ENV
           echo "LINUX_PACKAGE=${{env.BUNDLE_NAME}}-linux-vanilla.zip" >> $GITHUB_ENV
 
@@ -291,10 +291,10 @@ jobs:
 
       - name: Select CMake Preset
         run: |
-          cmake --preset "Linux Release"
+          cmake --preset "Linux Debug"
 
       - name: Build
-        run: cmake --build build --config "Release"
+        run: cmake --build build --config "Debug"
 
       - name: Copy Artifacts
         run: |
