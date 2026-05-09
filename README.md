@@ -1,5 +1,15 @@
 # Disflux
 
+![Windows](https://img.shields.io/badge/Windows-supported-0078d6.svg?style=flat-square&logo=windows)
+![macOS](https://img.shields.io/badge/macOS-supported-000000.svg?style=flat-square&logo=apple)
+![Ubuntu](https://img.shields.io/badge/Ubuntu-supported-e95420.svg?style=flat-square&logo=ubuntu)
+![Arch Linux](https://img.shields.io/badge/Arch%20Linux-supported-1793d1.svg?style=flat-square&logo=arch-linux)
+
+![VST3](https://img.shields.io/badge/VST3-supported-8a2be2.svg?style=flat-square)
+![AU](https://img.shields.io/badge/AU-supported-ff9500.svg?style=flat-square)
+![LV2](https://img.shields.io/badge/LV2-supported-2ecc71.svg?style=flat-square)
+![CLAP](https://img.shields.io/badge/CLAP-supported-00bcd4.svg?style=flat-square)
+
 Disflux is a wild audio effect plugin that takes your transients and smears them through time, adding serious punch and weight. If you're creating Hard Techno or Rawstyle and need your kicks to hit like a freaking train, Disflux is your new best friend. We're talking aggressive, distorted, gated kicks that smack like no tomorrow.
 
 Using a chain of all-pass filters, Disflux spreads those high-energy transients through time, giving you that laser-like effect. Think of it as a cross between a short reverb and a falling sine wave. It injects depth and impact into your punch. Outside of kicks, it’s also perfect for crafting experimental soundscapes and other weird, next-level audio magic.
