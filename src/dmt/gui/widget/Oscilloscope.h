@@ -329,16 +329,16 @@ protected:
 
     backImage = images[(size_t)currentFront].createCopy();
 
-    // Left scrolling 2.0: Thread-safe pixel copy to avoid Direct2D races on
-    // Windows
+    // Left scrolling
     const int shift = jmin(pixelToDraw, width);
     if (shift > 0) {
-      // Use BitmapData for guaranteed thread-safe, platform-agnostic pixel
-      // operations. On Windows with Direct2D images, BitmapData access forces
-      // software conversion, which is safe from worker threads. On macOS/Linux,
-      // it accesses native format directly.
+#if OS_IS_WINDOWS
+      // JUCE's moveImageSection() will crash under Direct2D so we use our own
       scrollImageSectionLeft(backImage, shift, width, height);
-
+#else
+      // On other platforms, we can use the built-in method
+      backImage.moveImageSection(0, 0, shift, 0, width - shift, height);
+#endif
       backImage.clear(juce::Rectangle<int>(width - shift, 0, shift, height),
                       juce::Colours::transparentBlack);
     }
@@ -371,16 +371,13 @@ protected:
 private:
   //==============================================================================
   /**
-   * @brief Thread-safe pixel scroll operation for worker threads.
+   * @brief Non-crashing image scroll for Direct2D-backed images on Windows.
    *
    * @details
-   * Manually copies pixels left by shiftAmount using BitmapData,
-   * avoiding Direct2D's moveImageSection() which is not thread-safe
-   * when called from worker threads on Windows.
-   *
-   * On Direct2D-backed images, accessing BitmapData forces a software
-   * conversion, making this operation safe from any thread.
-   * On software images, this is just a fast memcpy.
+   * Because Windows is a piece of shit and JUCE's moveImageSection() will crash
+   * under Direct2D, we implement our own version that runs on the CPU.
+   * This way, we still get the fast Direct2D drawing without crashing the host
+   * DAWs on Windows. This solution is absolute garbage, but it is what it is.
    */
   static void scrollImageSectionLeft(Image& image,
                                      int shiftAmount,
@@ -413,9 +410,11 @@ private:
           dstData.getLinePointer(y), srcData.getLinePointer(y), lineSize);
       }
     } catch (const std::exception&) {
-      // BitmapData access failed; gracefully skip scroll
-      // (better than crashing from Direct2D race)
-        }
+      // In case of any exceptions (e.g., out-of-bounds), we simply skip the
+      // scroll to avoid crashing. The next render will correct any visual
+      // artifacts.
+      jassertfalse; // This should never happen, but we catch it just in case.
+    }
   }
 
   //==============================================================================
