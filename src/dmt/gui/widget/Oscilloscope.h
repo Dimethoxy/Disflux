@@ -338,9 +338,9 @@ protected:
     //                            height);    // height
 
     // Clear the new part of the image
-    // juce::Rectangle<int> clearRect(
-    //   width - pixelToDraw + 10, 0, pixelToDraw, height);
-    // backImage.clear(clearRect, juce::Colours::transparentBlack);
+    juce::Rectangle<int> clearRect(
+      width - pixelToDraw + 10, 0, pixelToDraw, height);
+    backImage.clear(clearRect, juce::Colours::transparentBlack);
 
     // Delegate drawing to the active renderer
     juce::Graphics imageGraphics(backImage);
