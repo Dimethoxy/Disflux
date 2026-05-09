@@ -258,8 +258,14 @@ protected:
     }
 
     for (auto& image : images) {
-      image = Image(PixelFormat::ARGB, _width + 10, _height, true);
+      image = Image(PixelFormat::ARGB,
+                    _width + 10,
+                    _height,
+                    true,
+                    juce::SoftwareImageType());
     }
+
+    renderImage = Image(PixelFormat::ARGB, _width + 10, _height, true);
 
     frontBufferIndex.store(0, std::memory_order_release);
     subPixelOffset = 0.0f;
@@ -326,26 +332,36 @@ protected:
     const int backIndex = currentFront == 0 ? 1 : 0;
 
     auto& backImage = images[(size_t)backIndex];
+    const auto& frontImage = images[(size_t)currentFront];
 
-    backImage = images[(size_t)currentFront].createCopy();
+    backImage = frontImage.createCopy();
 
     // Left scrolling 2.0: Hopefully without crashing host DAWs
     const int shift = jmin(pixelToDraw, width);
     if (shift > 0) {
       // Move content LEFT safely inside bounds
-      // backImage.moveImageSection(0,
-      //                            0, // destX, destY
-      //                            shift,
-      //                            0, // sourceX, sourceY
-      //                            width - shift,
-      //                            height);
+      backImage.moveImageSection(0,
+                                 0, // destX, destY
+                                 shift,
+                                 0, // sourceX, sourceY
+                                 width - shift,
+                                 height);
 
       backImage.clear(juce::Rectangle<int>(width - shift, 0, shift, height),
                       juce::Colours::transparentBlack);
     }
 
+    if (renderImage.getWidth() != backImage.getWidth() ||
+        renderImage.getHeight() != backImage.getHeight()) {
+      renderImage = Image(
+        PixelFormat::ARGB, backImage.getWidth(), backImage.getHeight(), true);
+    } else {
+      renderImage.clear(renderImage.getBounds(),
+                        juce::Colours::transparentBlack);
+    }
+
     // Render new audio data
-    juce::Graphics g(backImage);
+    juce::Graphics renderGraphics(renderImage);
 
     const typename Renderer::RenderContext context{
       firstSamplesToDraw,
@@ -362,7 +378,12 @@ protected:
 
     if (auto currentRenderer =
           std::atomic_load_explicit(&renderer, std::memory_order_acquire)) {
-      currentRenderer->draw(g, ringBuffer, channel, context);
+      currentRenderer->draw(renderGraphics, ringBuffer, channel, context);
+    }
+
+    {
+      juce::Graphics backGraphics(backImage);
+      backGraphics.drawImageAt(renderImage, 0, 0);
     }
 
     frontBufferIndex.store(backIndex, std::memory_order_release);
@@ -378,8 +399,11 @@ private:
   //==============================================================================
   // Other members
   juce::Rectangle<int> bounds = juce::Rectangle<int>(0, 0, 1, 1);
-  std::array<Image, 2> images = { Image(PixelFormat::ARGB, 1, 1, true),
-                                  Image(PixelFormat::ARGB, 1, 1, true) };
+  std::array<Image, 2> images = {
+    Image(PixelFormat::ARGB, 1, 1, true, juce::SoftwareImageType()),
+    Image(PixelFormat::ARGB, 1, 1, true, juce::SoftwareImageType())
+  };
+  Image renderImage = Image(PixelFormat::ARGB, 1, 1, true);
   std::atomic<int> frontBufferIndex{ 0 };
   std::atomic<int> renderWidth{ 1 };
   std::atomic<int> renderHeight{ 1 };
