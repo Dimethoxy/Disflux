@@ -4,6 +4,7 @@
 ![macOS](https://img.shields.io/badge/macOS-supported-000000.svg?style=flat-square&logo=apple)
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-supported-e95420.svg?style=flat-square&logo=ubuntu)
 ![Arch Linux](https://img.shields.io/badge/Arch%20Linux-supported-1793d1.svg?style=flat-square&logo=arch-linux)
+
 ![VST3](https://img.shields.io/badge/VST3-supported-8a2be2.svg?style=flat-square)
 ![AU](https://img.shields.io/badge/AU-supported-ff9500.svg?style=flat-square)
 ![LV2](https://img.shields.io/badge/LV2-supported-2ecc71.svg?style=flat-square)
