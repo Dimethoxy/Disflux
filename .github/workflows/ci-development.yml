@@ -3,6 +3,13 @@ on:
   push:
     branches:
       - development
+    paths:
+      - src
+      - pkg
+      - externals
+      - CMakeLists.txt
+      - CMakePresets.json
+      - VERSION.md
   workflow_dispatch:
 defaults:
   run:

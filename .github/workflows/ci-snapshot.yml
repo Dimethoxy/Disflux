@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - main
+    paths:
+      - src
+      - pkg
+      - externals
+      - CMakeLists.txt
+      - CMakePresets.json
+      - VERSION.md
 defaults:
   run:
     shell: bash
