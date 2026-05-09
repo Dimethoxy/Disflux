@@ -340,8 +340,8 @@ protected:
                                  width - shift,
                                  height);
 
-      backImage.clear(juce::Rectangle<int>(width - shift, 0, shift, height),
-                      juce::Colours::transparentBlack);
+      // backImage.clear(juce::Rectangle<int>(width - shift, 0, shift, height),
+      //                 juce::Colours::transparentBlack);
     }
 
     // Render new audio data
