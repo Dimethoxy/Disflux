@@ -1,9 +1,8 @@
-name: Build Snapshot
+name: Build Development
 on:
-  workflow_dispatch:
   push:
     branches:
-      - main
+      - development
 defaults:
   run:
     shell: bash
@@ -32,7 +31,7 @@ jobs:
       - name: Export Variables
         run: |
           echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release" >> $GITHUB_ENV
-          echo "WINDOWS-PACKAGE=${{env.BUNDLE_NAME}}-snapshot-windows.exe" >> $GITHUB_ENV
+          echo "WINDOWS-PACKAGE=${{env.BUNDLE_NAME}}-windows.exe" >> $GITHUB_ENV
 
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -74,16 +73,18 @@ jobs:
 
       - name: Select CMake Preset
         run: |
-          cmake --preset "Windows Release"
+          cmake --preset "Windows Debug"
 
       - name: Build
-        run: cmake --build build --config "Release"
+        run: cmake --build build --config "Debug"
 
       - name: Copy Build Artifacts
         run: |
           mkdir -p artifacts
+          ls -la ${{env.BUILD_ARTIFACTS_DIR}}/VST3
           cp -r ${{env.BUILD_ARTIFACTS_DIR}}/VST3/${{env.PROJECT_NAME}}.vst3 \
                 artifacts/
+          ls -la ${{env.BUILD_ARTIFACTS_DIR}}/CLAP
           cp -r ${{env.BUILD_ARTIFACTS_DIR}}/CLAP/${{env.PROJECT_NAME}}.clap \
                 artifacts/
         shell: bash
@@ -116,7 +117,7 @@ jobs:
       - name: Export Variables
         run: |
           echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release" >> $GITHUB_ENV
-          echo "MAC_PACKAGE=${{env.BUNDLE_NAME}}-snapshot-macos.pkg" >> $GITHUB_ENV
+          echo "MAC_PACKAGE=${{env.BUNDLE_NAME}}-macos.pkg" >> $GITHUB_ENV
 
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -184,7 +185,7 @@ jobs:
           VST3_PATH="artifacts/${{env.PROJECT_NAME}}.vst3"
           CLAP_PATH="artifacts/${{env.PROJECT_NAME}}.clap"
           AU_PATH="artifacts/${{env.PROJECT_NAME}}.component"
-          PACKAGE_NAME="${{env.PROJECT_NAME}}-snapshot-macos.pkg"
+          PACKAGE_NAME="${{env.PROJECT_NAME}}-macos.pkg"
 
           # Create the packaging directory
           mkdir -p packaging
@@ -253,8 +254,8 @@ jobs:
       - name: Export Variables
         run: |
           echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release" >> $GITHUB_ENV
-          echo "UBUNTU_PACKAGE=${{env.BUNDLE_NAME}}-snapshot-linux-ubuntu.deb" >> $GITHUB_ENV
-          echo "LINUX_PACKAGE=${{env.BUNDLE_NAME}}-snapshot-linux-vanilla.zip" >> $GITHUB_ENV
+          echo "UBUNTU_PACKAGE=${{env.BUNDLE_NAME}}-linux-ubuntu.deb" >> $GITHUB_ENV
+          echo "LINUX_PACKAGE=${{env.BUNDLE_NAME}}-linux-vanilla.zip" >> $GITHUB_ENV
 
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -308,7 +309,7 @@ jobs:
       - name: Package Linux Artifacts
         run: |
           # Set variables
-          UBUNTU_PACKAGE_DIR="${{env.BUNDLE_NAME}}-snapshot-linux-ubuntu"
+          UBUNTU_PACKAGE_DIR="${{env.BUNDLE_NAME}}-linux-ubuntu"
           UBUNTU_CONTROL_FILE="pkg/ubuntu/control"
           VST3_INSTALL_DIR="/usr/lib/vst3/${{env.PROJECT_NAME}}"
           CLAP_INSTALL_DIR="/usr/lib/clap/${{env.PROJECT_NAME}}"
@@ -339,7 +340,7 @@ jobs:
                 $UBUNTU_PACKAGE_DIR/$LV2_INSTALL_DIR/
 
           # Set PACKAGE_NAME for envsubst
-           export PACKAGE_NAME=${{env.BUNDLE_NAME}}-snapshot
+          export PACKAGE_NAME=${{env.BUNDLE_NAME}}
           export PACKAGE_VERSION=$VERSION
 
           # Replace PACKAGE_NAME in control file and copy to Debian package directory
@@ -357,112 +358,3 @@ jobs:
         with:
           name: artifacts-ubuntu
           path: artifacts
-
-  #=========================================================================================
-  # Arch Linux Build
-  #=========================================================================================
-  build-archlinux:
-    runs-on: ubuntu-latest
-    container:
-      image: archlinux:latest
-    steps:
-      - name: Export Variables
-        run: |
-          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release" >> $GITHUB_ENV
-          echo "PACKAGE_NAME=${{env.BUNDLE_NAME}}-snapshot-linux-arch.pkg.tar.zst" >> $GITHUB_ENV
-
-      - name: Install Base Packages
-        run: |
-          pacman -Sy --noconfirm base-devel git
-
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Read Version
-        run: |
-          echo "VERSION=$(tr -d '[:space:]' < VERSION.md)" >> $GITHUB_ENV
-
-      - name: Create user for build process
-        run: |
-          useradd -m dimethoxy
-          sudo su - dimethoxy
-
-      - name: Set permissions for the build directory
-        run: |
-          sudo chown -R dimethoxy:dimethoxy /__w/${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}/pkg/arch/git
-          sudo chmod -R u+rw /__w/${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}/pkg/arch/git
-
-      - name: Disable sudo password prompt
-        run: |
-          echo 'dimethoxy ALL=(ALL) NOPASSWD: ALL' | sudo tee -a /etc/sudoers
-
-      - name: Build Package
-        run: |
-          sudo -u dimethoxy bash -c 'cd pkg/arch/git && makepkg -s --noconfirm'
-
-      - name: Package Artifacts
-        run: |
-          # Remove the default package
-          rm pkg/arch/git/*debug*.pkg.tar.zst
-
-          # Move the package to the root directory
-          mv pkg/arch/git/*.pkg.tar.zst .
-
-          # Rename the package
-          mv *.pkg.tar.zst ${{env.PACKAGE_NAME}}
-
-          # Move the package to the artifacts directory
-          mkdir -p artifacts
-          mv ${{env.PACKAGE_NAME}} artifacts/
-        shell: bash
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: artifacts-archlinux
-          path: artifacts
-
-  #=========================================================================================
-  # Release the project
-  #=========================================================================================
-  release:
-    runs-on: ubuntu-latest
-    needs: [build-windows, build-ubuntu, build-macos, build-archlinux]
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Get Artifacts
-        uses: actions/download-artifact@v4
-
-      - name: Package Artifacts
-        run: |
-          mv artifacts-windows/*.exe .
-          mv artifacts-macos/*.pkg .
-          mv artifacts-ubuntu/*.deb .
-          mv artifacts-ubuntu/*.zip .
-          mv artifacts-archlinux/*.pkg.tar.zst .
-        shell: bash
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: "Snapshot"
-          prerelease: true
-          body: |
-            ### ⚠️ WARNING: Unstable Release ⚠️
-            This is a **unstable** snapshot intended solely for testing purposes.
-            It may contain bugs, incomplete features, or cause instability.
-            **Not recommended** for production or general use—proceed with caution.
-
-      - name: Upload Artifacts
-        run: |
-          ls -la
-          gh release upload "Snapshot" ${{env.BUNDLE_NAME}}-snapshot-windows.exe --clobber
-          gh release upload "Snapshot" ${{env.BUNDLE_NAME}}-snapshot-linux-arch.pkg.tar.zst --clobber
-          gh release upload "Snapshot" ${{env.BUNDLE_NAME}}-snapshot-linux-ubuntu.deb --clobber
-          gh release upload "Snapshot" ${{env.BUNDLE_NAME}}-snapshot-linux-vanilla.zip --clobber
-          gh release upload "Snapshot" ${{env.BUNDLE_NAME}}-snapshot-macos.pkg --clobber

@@ -1,12 +1,3 @@
-#===========================================================================================
-# This workflow will build the project for Windows, macOS, and Linux.
-# It will also build an Arch Linux and Fedora package using Docker containers.
-# The artifacts will be uploaded to the release page.
-#
-# TODO:
-# - Add a step after release to update the AUR repository
-#===========================================================================================
-
 name: Build Release
 on:
   workflow_dispatch:
@@ -80,10 +71,10 @@ jobs:
 
       - name: Select CMake Preset
         run: |
-          cmake --preset "Windows Debug"
+          cmake --preset "Windows Release"
 
       - name: Build
-        run: cmake --build build --config "Debug"
+        run: cmake --build build --config "Release"
 
       - name: Copy Build Artifacts
         run: |
