@@ -3,6 +3,13 @@ on:
   push:
     branches:
       - development
+    paths:
+      - src
+      - pkg
+      - externals
+      - CMakeLists.txt
+      - CMakePresets.json
+      - VERSION.md
   workflow_dispatch:
 defaults:
   run:
@@ -31,7 +38,7 @@ jobs:
     steps:
       - name: Export Variables
         run: |
-          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release" >> $GITHUB_ENV
+          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Debug" >> $GITHUB_ENV
           echo "WINDOWS-PACKAGE=${{env.BUNDLE_NAME}}-windows.exe" >> $GITHUB_ENV
 
       - name: Checkout Code
@@ -82,12 +89,18 @@ jobs:
       - name: Copy Build Artifacts
         run: |
           mkdir -p artifacts
+          mkdir -p artifacts/vst3 
           ls -la ${{env.BUILD_ARTIFACTS_DIR}}/VST3
           cp -r ${{env.BUILD_ARTIFACTS_DIR}}/VST3/${{env.PROJECT_NAME}}.vst3 \
-                artifacts/
+                artifacts/vst3/
+          cp -r ${{env.BUILD_ARTIFACTS_DIR}}/VST3/${{env.PROJECT_NAME}}.pdb \
+                artifacts/vst3/
+          mkdir -p artifacts/clap
           ls -la ${{env.BUILD_ARTIFACTS_DIR}}/CLAP
           cp -r ${{env.BUILD_ARTIFACTS_DIR}}/CLAP/${{env.PROJECT_NAME}}.clap \
-                artifacts/
+                artifacts/clap/
+          cp -r ${{env.BUILD_ARTIFACTS_DIR}}/CLAP/${{env.PROJECT_NAME}}.pdb \
+                artifacts/clap/
         shell: bash
 
       - name: Create Installer
@@ -117,7 +130,7 @@ jobs:
     steps:
       - name: Export Variables
         run: |
-          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release" >> $GITHUB_ENV
+          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Debug" >> $GITHUB_ENV
           echo "MAC_PACKAGE=${{env.BUNDLE_NAME}}-macos.pkg" >> $GITHUB_ENV
 
       - name: Checkout Code
@@ -132,11 +145,11 @@ jobs:
 
       - name: Select CMake Preset
         run: |
-          cmake --preset "Mac Release" \
+          cmake --preset "Mac Debug" \
             -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
 
       - name: Build
-        run: cmake --build build --config "Release"
+        run: cmake --build build --config "Debug"
 
       - name: Copy Build Artifacts
         run: |
@@ -254,7 +267,7 @@ jobs:
     steps:
       - name: Export Variables
         run: |
-          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Release" >> $GITHUB_ENV
+          echo "BUILD_ARTIFACTS_DIR=$BUILD_DIR/src/${{env.PROJECT_NAME}}Plugin_artefacts/Debug" >> $GITHUB_ENV
           echo "UBUNTU_PACKAGE=${{env.BUNDLE_NAME}}-linux-ubuntu.deb" >> $GITHUB_ENV
           echo "LINUX_PACKAGE=${{env.BUNDLE_NAME}}-linux-vanilla.zip" >> $GITHUB_ENV
 
@@ -291,10 +304,10 @@ jobs:
 
       - name: Select CMake Preset
         run: |
-          cmake --preset "Linux Release"
+          cmake --preset "Linux Debug"
 
       - name: Build
-        run: cmake --build build --config "Release"
+        run: cmake --build build --config "Debug"
 
       - name: Copy Artifacts
         run: |
