@@ -80,10 +80,10 @@ jobs:
 
       - name: Select CMake Preset
         run: |
-          cmake --preset "Windows Release"
+          cmake --preset "Windows Debug"
 
       - name: Build
-        run: cmake --build build --config "Release"
+        run: cmake --build build --config "Debug"
 
       - name: Copy Build Artifacts
         run: |
