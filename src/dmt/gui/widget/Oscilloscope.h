@@ -264,7 +264,7 @@ protected:
     }
 #else
     for (auto& image : images) {
-      image = Image(PixelFormat::ARGB, _width, _height, true);
+      image = Image(PixelFormat::ARGB, _width + 10, _height, true);
     }
 #endif
 
