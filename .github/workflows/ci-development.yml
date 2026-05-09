@@ -89,12 +89,18 @@ jobs:
       - name: Copy Build Artifacts
         run: |
           mkdir -p artifacts
+          mkdir -p artifacts/vst3 
           ls -la ${{env.BUILD_ARTIFACTS_DIR}}/VST3
           cp -r ${{env.BUILD_ARTIFACTS_DIR}}/VST3/${{env.PROJECT_NAME}}.vst3 \
-                artifacts/
+                artifacts/vst3/
+          cp -r ${{env.BUILD_ARTIFACTS_DIR}}/VST3/${{env.PROJECT_NAME}}.pdb \
+                artifacts/vst3/
+          mkdir -p artifacts/clap
           ls -la ${{env.BUILD_ARTIFACTS_DIR}}/CLAP
           cp -r ${{env.BUILD_ARTIFACTS_DIR}}/CLAP/${{env.PROJECT_NAME}}.clap \
-                artifacts/
+                artifacts/clap/
+          cp -r ${{env.BUILD_ARTIFACTS_DIR}}/CLAP/${{env.PROJECT_NAME}}.pdb \
+                artifacts/clap/
         shell: bash
 
       - name: Create Installer
