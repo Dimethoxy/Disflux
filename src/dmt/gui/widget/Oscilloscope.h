@@ -333,15 +333,15 @@ protected:
     const int shift = jmin(pixelToDraw, width);
     if (shift > 0) {
       // Move content LEFT safely inside bounds
-      backImage.moveImageSection(0,
-                                 0, // destX, destY
-                                 shift,
-                                 0, // sourceX, sourceY
-                                 width - shift,
-                                 height);
+      // backImage.moveImageSection(0,
+      //                            0, // destX, destY
+      //                            shift,
+      //                            0, // sourceX, sourceY
+      //                            width - shift,
+      //                            height);
 
-      // backImage.clear(juce::Rectangle<int>(width - shift, 0, shift, height),
-      //                 juce::Colours::transparentBlack);
+      backImage.clear(juce::Rectangle<int>(width - shift, 0, shift, height),
+                      juce::Colours::transparentBlack);
     }
 
     // Render new audio data
