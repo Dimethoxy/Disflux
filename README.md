@@ -1,11 +1,5 @@
 <div align="center">
   
-Free and open-source phase dispersion audio effect. <br>
-Great for creating heavy gated Hard Techno or Rawstyle kicks.
-
-<img src="https://raw.githubusercontent.com/Dimethoxy/Disflux/refs/heads/main/resources/preview.webp" alt="Image of the GUI" style="width: 60%;">
-
-<br/>
 
 <img src="https://img.shields.io/badge/Windows-supported-0078d6.svg?style=flat-square&logo=windows" />
 <img src="https://img.shields.io/badge/macOS-supported-000000.svg?style=flat-square&logo=apple" />
@@ -18,6 +12,17 @@ Great for creating heavy gated Hard Techno or Rawstyle kicks.
 <img src="https://img.shields.io/badge/AU-supported-ff9500.svg?style=flat-square" />
 <img src="https://img.shields.io/badge/LV2-supported-2ecc71.svg?style=flat-square" />
 <img src="https://img.shields.io/badge/CLAP-supported-00bcd4.svg?style=flat-square" />
+
+<img src="https://raw.githubusercontent.com/Dimethoxy/Disflux/refs/heads/main/resources/preview.webp" alt="Image of the GUI" style="width: 60%;">
+
+<br/>
+
+Free and open-source phase dispersion audio effect. <br>
+Great for creating heavy gated Hard Techno or Rawstyle kicks.
+
+
+<br/>
+
 
 </div>
 
