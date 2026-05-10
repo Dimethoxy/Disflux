@@ -2,7 +2,15 @@ Package: dimethoxy-${PACKAGE_NAME}
 Version: ${PACKAGE_VERSION}-1
 Architecture: amd64
 Maintainer: David Hess (Lunix) <davidhess336@gmx.de>
-Depends: curl
+Depends: libcurl4, libasound2, libx11-6, libxext6, libxinerama1, libxrandr2, libxcursor1, libfreetype6, libxcomposite1, libgl1
 Priority: optional
 Section: sound
-Description: Transient Smearing Effect for VST3, CLAP and LV2 compatible hosts
+Homepage: https://dimethoxy.com
+Vcs-Git: https://github.com/Dimethoxy/Disflux.git
+Vcs-Browser: https://github.com/Dimethoxy/Disflux
+Description: Dimethoxy Disflux - Phase dispersion audio effect
+ A free and open-source phase dispersion effect designed to add punch,
+ depth, and character to your sound.
+ Perfect for heavy gated Hard Techno and Rawstyle kicks.
+ It uses a chain of all-pass filters to manipulate phase without altering
+ tonal balance, creating movement and impact in the mix.
