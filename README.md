@@ -1,23 +1,24 @@
-# Disflux
-
-![Windows](https://img.shields.io/badge/Windows-supported-0078d6.svg?style=flat-square&logo=windows)
-![macOS](https://img.shields.io/badge/macOS-supported-000000.svg?style=flat-square&logo=apple)
-![Ubuntu](https://img.shields.io/badge/Ubuntu-supported-e95420.svg?style=flat-square&logo=ubuntu)
-![Arch Linux](https://img.shields.io/badge/Arch%20Linux-supported-1793d1.svg?style=flat-square&logo=arch-linux)
-
-![VST3](https://img.shields.io/badge/VST3-supported-8a2be2.svg?style=flat-square)
-![AU](https://img.shields.io/badge/AU-supported-ff9500.svg?style=flat-square)
-![LV2](https://img.shields.io/badge/LV2-supported-2ecc71.svg?style=flat-square)
-![CLAP](https://img.shields.io/badge/CLAP-supported-00bcd4.svg?style=flat-square)
-
-Disflux is a wild audio effect plugin that takes your transients and smears them through time, adding serious punch and weight. If you're creating Hard Techno or Rawstyle and need your kicks to hit like a freaking train, Disflux is your new best friend. We're talking aggressive, distorted, gated kicks that smack like no tomorrow.
-
-Using a chain of all-pass filters, Disflux spreads those high-energy transients through time, giving you that laser-like effect. Think of it as a cross between a short reverb and a falling sine wave. It injects depth and impact into your punch. Outside of kicks, it’s also perfect for crafting experimental soundscapes and other weird, next-level audio magic.
-
-If it feels familiar, that's no accident. Disflux is a lovingly crafted take on an iconic effect, reimagined with a modern touch. We won’t name the original for trademark reasons, but you probably know it.
-
 <div align="center">
-  <img src="https://raw.githubusercontent.com/Dimethoxy/Disflux/refs/heads/main/resources/preview.webp" alt="Image of the GUI" style="width: 60%;">
+  
+Free and open-source phase dispersion audio effect. <br>
+Great for creating heavy gated Hard Techno or Rawstyle kicks.
+
+<img src="https://raw.githubusercontent.com/Dimethoxy/Disflux/refs/heads/main/resources/preview.webp" alt="Image of the GUI" style="width: 60%;">
+
+<br/>
+
+<img src="https://img.shields.io/badge/Windows-supported-0078d6.svg?style=flat-square&logo=windows" />
+<img src="https://img.shields.io/badge/macOS-supported-000000.svg?style=flat-square&logo=apple" />
+<img src="https://img.shields.io/badge/Ubuntu-supported-e95420.svg?style=flat-square&logo=ubuntu" />
+<img src="https://img.shields.io/badge/Arch%20Linux-supported-1793d1.svg?style=flat-square&logo=arch-linux" />
+
+<br/>
+
+<img src="https://img.shields.io/badge/VST3-supported-8a2be2.svg?style=flat-square" />
+<img src="https://img.shields.io/badge/AU-supported-ff9500.svg?style=flat-square" />
+<img src="https://img.shields.io/badge/LV2-supported-2ecc71.svg?style=flat-square" />
+<img src="https://img.shields.io/badge/CLAP-supported-00bcd4.svg?style=flat-square" />
+
 </div>
 
 ## 🔥 Features
@@ -32,16 +33,6 @@ If it feels familiar, that's no accident. Disflux is a lovingly crafted take on 
 - **Multi-Format Support** – Works with VST3, CLAP, LV2, and AU formats.
 - **Regular Updates** – Continuous improvements and new features.
 - **Privacy First** – We take your privacy seriously, no tracking or data collection.
-
-## 🚧 Coming Soon
-
-Here are some of the exciting things you can expect in future updates:
-
-- **Preset Menu** – Add functionality to select and save presets.
-- **Oversampling** – Implementing oversampling to minimize aliasing and improve the quality of high-frequency content.
-- **Themes** - We already allow heavy theming, but we want to make it easier to export and share themes with the community.
-- **Mobile Support** – We are planning to release Disflux for iOS and Android in the future.
-- **Fedora Support** – We are working on a Fedora package for users who prefer this distribution.
 
 ## 💾 Downloads
 
