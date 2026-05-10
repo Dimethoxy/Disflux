@@ -10,7 +10,7 @@
 ![LV2](https://img.shields.io/badge/LV2-supported-2ecc71.svg?style=flat-square)
 ![CLAP](https://img.shields.io/badge/CLAP-supported-00bcd4.svg?style=flat-square)
 
-**Disflux** is a **free and open-source phase dispersion effect** designed to add punch, depth, and character to your sound.
+**Disflux** is a **free and open-source phase dispersion effect** designed to add insane amounts of punch, depth, and character to your sound.
 
 Perfect for creating heavy gated Hard Techno and Rawstyle kicks, it gives your punch more weight and depth in the mix. Under the hood, it uses a chain of all-pass filters to manipulate phase without altering the tonal balance, resulting in a unique sense of movement and impact.
 
