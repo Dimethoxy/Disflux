@@ -390,6 +390,17 @@ private:
     const int srcX = shiftAmount;
     const int copyWidth = width - shiftAmount;
 
+    // Sanity checks against the actual image size to avoid constructing
+    // BitmapData with zero or out-of-bounds dimensions (which can crash).
+    const int imgW = image.getWidth();
+    const int imgH = image.getHeight();
+    if (copyWidth <= 0 || srcX < 0 || srcX >= imgW || height > imgH)
+      return;
+
+    // Ensure the requested source region fits inside the image
+    if (srcX + copyWidth > imgW)
+      return;
+
     try {
       // Read-only access from source region
       const Image::BitmapData srcData(
@@ -403,17 +414,17 @@ private:
           srcData.pixelStride != dstData.pixelStride)
         return;
 
-      // Copy each scanline
+      // Copy each scanline. Use memmove to be robust against any unexpected
+      // overlapping memory layouts.
       const size_t lineSize = (size_t)dstData.pixelStride * (size_t)copyWidth;
       for (int y = 0; y < height; ++y) {
-        std::memcpy(
+        std::memmove(
           dstData.getLinePointer(y), srcData.getLinePointer(y), lineSize);
       }
     } catch (const std::exception&) {
-      // In case of any exceptions (e.g., out-of-bounds), we simply skip the
-      // scroll to avoid crashing. The next render will correct any visual
-      // artifacts.
-      jassertfalse; // This should never happen, but we catch it just in case.
+      // In case of any exceptions (e.g., out-of-bounds), skip the scroll to
+      // avoid crashing. The next render will correct any visual artifacts.
+      jassertfalse;
     }
   }
 
