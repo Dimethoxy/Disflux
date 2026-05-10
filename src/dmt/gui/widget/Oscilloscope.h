@@ -333,9 +333,22 @@ protected:
     const int shift = jmin(pixelToDraw, width);
     if (shift > 0) {
 
-      // On other platforms, we can use the built-in method
+#if !OS_IS_WINDOWS
+      // Works fine on macOS and Linux
       backImage.moveImageSection(0, 0, shift, 0, width - shift, height);
-
+#else
+      // Try to avoid crashing Windows DAWs
+      juce::Graphics g(backImage);
+      g.drawImage(backImage,
+                  0,
+                  0,
+                  width - shift,
+                  height,
+                  shift,
+                  0,
+                  width - shift,
+                  height);
+#endif
       backImage.clear(juce::Rectangle<int>(width - shift, 0, shift, height),
                       juce::Colours::transparentBlack);
     }
@@ -372,10 +385,8 @@ protected:
   //==============================================================================
   // Other members
   juce::Rectangle<int> bounds = juce::Rectangle<int>(0, 0, 1, 1);
-  std::array<Image, 2> images = {
-    Image(PixelFormat::ARGB, 1, 1, true, juce::SoftwareImageType::fast),
-    Image(PixelFormat::ARGB, 1, 1, true, juce::SoftwareImageType::fast)
-  };
+  std::array<Image, 2> images = { Image(PixelFormat::ARGB, 1, 1, true),
+                                  Image(PixelFormat::ARGB, 1, 1, true) };
   std::atomic<int> frontBufferIndex{ 0 };
   std::atomic<int> renderWidth{ 1 };
   std::atomic<int> renderHeight{ 1 };
