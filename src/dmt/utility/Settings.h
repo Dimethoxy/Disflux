@@ -125,7 +125,8 @@ public:
   static inline auto& debugGrid =
     container.add<bool>("General.ShowDebugGrid", false);
   static inline auto& displayUpdateNotifications =
-    container.add<bool>("General.DisplayUpdateNotifications", false);
+    container.add<bool>("General.DisplayUpdateNotifications",
+                        DMT_DISABLE_UPDATE_NOTIFICATION ? false : true);
   static inline auto& themeVersion =
     container.add<int>("General.ThemeVersion", 2);
 #if OS_IS_LINUX
