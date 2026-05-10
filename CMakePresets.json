@@ -49,7 +49,7 @@
       }
     },
     {
-      "name": "Windows Release With Debug Info",
+      "name": "Windows RelWithDebInfo",
       "hidden": false,
       "description": "Release configuration with debug symbols",
       "generator": "Ninja",
@@ -181,6 +181,28 @@
       }
     },
     {
+      "name": "Mac RelWithDebInfo",
+      "hidden": false,
+      "description": "Release configuration with debug symbols for macOS",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_C_COMPILER": "/usr/bin/clang",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
+        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.15"
+      },
+      "environment": {
+        "CC": "/usr/bin/clang",
+        "CXX": "/usr/bin/clang++"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
+    },
+    {
       "name": "Linux Debug",
       "hidden": false,
       "description": "Debug configuration for Linux",
@@ -210,6 +232,28 @@
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_C_COMPILER": "/usr/bin/gcc",
+        "CMAKE_CXX_COMPILER": "/usr/bin/g++"
+      },
+      "environment": {
+        "CC": "/usr/bin/gcc",
+        "CXX": "/usr/bin/g++"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
+    },
+    {
+      "name": "Linux RelWithDebInfo",
+      "hidden": false,
+      "description": "Release configuration with debug symbols for Linux",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "CMAKE_C_COMPILER": "/usr/bin/gcc",
         "CMAKE_CXX_COMPILER": "/usr/bin/g++"
