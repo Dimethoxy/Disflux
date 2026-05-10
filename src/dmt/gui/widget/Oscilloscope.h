@@ -258,7 +258,15 @@ protected:
     }
 
     for (auto& image : images) {
+#if !OS_IS_WINDOWS
       image = Image(PixelFormat::ARGB, _width + 10, _height, true);
+#else
+      image = Image(PixelFormat::ARGB,
+                    _width + 10,
+                    _height,
+                    true,
+                    juce::SoftwareImageType{});
+#endif
     }
 
     frontBufferIndex.store(0, std::memory_order_release);
@@ -332,23 +340,7 @@ protected:
     // Left scrolling
     const int shift = jmin(pixelToDraw, width);
     if (shift > 0) {
-
-#if !OS_IS_WINDOWS
-      // Works fine on macOS and Linux
       backImage.moveImageSection(0, 0, shift, 0, width - shift, height);
-#else
-      // Try to avoid crashing Windows DAWs
-      juce::Graphics g(backImage);
-      g.drawImage(backImage,
-                  0,
-                  0,
-                  width - shift,
-                  height,
-                  shift,
-                  0,
-                  width - shift,
-                  height);
-#endif
       backImage.clear(juce::Rectangle<int>(width - shift, 0, shift, height),
                       juce::Colours::transparentBlack);
     }
@@ -384,9 +376,19 @@ protected:
 
   //==============================================================================
   // Other members
+
   juce::Rectangle<int> bounds = juce::Rectangle<int>(0, 0, 1, 1);
+
+#if !OS_IS_WINDOWS
   std::array<Image, 2> images = { Image(PixelFormat::ARGB, 1, 1, true),
                                   Image(PixelFormat::ARGB, 1, 1, true) };
+#else
+  std::array<Image, 2> images = {
+    Image(PixelFormat::ARGB, 1, 1, true, juce::SoftwareImageType{}),
+    Image(PixelFormat::ARGB, 1, 1, true, juce::SoftwareImageType{})
+  };
+#endif
+
   std::atomic<int> frontBufferIndex{ 0 };
   std::atomic<int> renderWidth{ 1 };
   std::atomic<int> renderHeight{ 1 };
