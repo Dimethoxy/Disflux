@@ -57,7 +57,6 @@ jobs:
       - name: Set Up Windows
         run: |
           choco install ninja
-          choco install innosetup
 
       - name: Cache IPP (Windows)
         id: cache-ipp
