@@ -1,6 +1,7 @@
 <div align="center">
-  
 
+<h1> Disflux </h1>
+  
 <img src="https://img.shields.io/badge/Windows-supported-0078d6.svg?style=flat-square&logo=windows" />
 <img src="https://img.shields.io/badge/macOS-supported-000000.svg?style=flat-square&logo=apple" />
 <img src="https://img.shields.io/badge/Ubuntu-supported-e95420.svg?style=flat-square&logo=ubuntu" />
@@ -17,12 +18,10 @@
 
 <br/>
 
-Free and open-source phase dispersion audio effect. <br>
+Free and open-source phase dispersion audio effect. <br/>
 Great for creating heavy gated Hard Techno or Rawstyle kicks.
 
-
 <br/>
-
 
 </div>
 
