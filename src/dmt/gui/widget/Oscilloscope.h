@@ -332,13 +332,10 @@ protected:
     // Left scrolling
     const int shift = jmin(pixelToDraw, width);
     if (shift > 0) {
-#if OS_IS_WINDOWS
-      // JUCE's moveImageSection() will crash under Direct2D so we use our own
-      scrollImageSectionLeft(backImage, shift, width, height);
-#else
+
       // On other platforms, we can use the built-in method
       backImage.moveImageSection(0, 0, shift, 0, width - shift, height);
-#endif
+
       backImage.clear(juce::Rectangle<int>(width - shift, 0, shift, height),
                       juce::Colours::transparentBlack);
     }
@@ -368,67 +365,6 @@ protected:
   }
 
   //==============================================================================
-private:
-  //==============================================================================
-  /**
-   * @brief Non-crashing image scroll for Direct2D-backed images on Windows.
-   *
-   * @details
-   * Because Windows is a piece of shit and JUCE's moveImageSection() will crash
-   * under Direct2D, we implement our own version that runs on the CPU.
-   * This way, we still get the fast Direct2D drawing without crashing the host
-   * DAWs on Windows. This solution is absolute garbage, but it is what it is.
-   */
-  static void scrollImageSectionLeft(Image& image,
-                                     int shiftAmount,
-                                     int width,
-                                     int height) noexcept
-  {
-    if (shiftAmount <= 0 || width <= 0 || height <= 0)
-      return;
-
-    const int srcX = shiftAmount;
-    const int copyWidth = width - shiftAmount;
-
-    // Sanity checks against the actual image size to avoid constructing
-    // BitmapData with zero or out-of-bounds dimensions (which can crash).
-    const int imgW = image.getWidth();
-    const int imgH = image.getHeight();
-    if (copyWidth <= 0 || srcX < 0 || srcX >= imgW || height > imgH)
-      return;
-
-    // Ensure the requested source region fits inside the image
-    if (srcX + copyWidth > imgW)
-      return;
-
-    try {
-      // Read-only access from source region
-      const Image::BitmapData srcData(
-        image, srcX, 0, copyWidth, height, Image::BitmapData::readOnly);
-      // Write access to destination region
-      const Image::BitmapData dstData(
-        image, 0, 0, copyWidth, height, Image::BitmapData::readWrite);
-
-      // Verify format consistency
-      if (srcData.pixelFormat != dstData.pixelFormat ||
-          srcData.pixelStride != dstData.pixelStride)
-        return;
-
-      // Copy each scanline. Use memmove to be robust against any unexpected
-      // overlapping memory layouts.
-      const size_t lineSize = (size_t)dstData.pixelStride * (size_t)copyWidth;
-      for (int y = 0; y < height; ++y) {
-        std::memmove(
-          dstData.getLinePointer(y), srcData.getLinePointer(y), lineSize);
-      }
-    } catch (const std::exception&) {
-      // In case of any exceptions (e.g., out-of-bounds), skip the scroll to
-      // avoid crashing. The next render will correct any visual artifacts.
-      jassertfalse;
-    }
-  }
-
-  //==============================================================================
   // Members initialized in the initializer list
   RingBuffer& ringBuffer;
   const int32_t channel;
@@ -436,8 +372,10 @@ private:
   //==============================================================================
   // Other members
   juce::Rectangle<int> bounds = juce::Rectangle<int>(0, 0, 1, 1);
-  std::array<Image, 2> images = { Image(PixelFormat::ARGB, 1, 1, true),
-                                  Image(PixelFormat::ARGB, 1, 1, true) };
+  std::array<Image, 2> images = {
+    Image(PixelFormat::ARGB, 1, 1, true, juce::SoftwareImageType::fast),
+    Image(PixelFormat::ARGB, 1, 1, true, juce::SoftwareImageType::fast)
+  };
   std::atomic<int> frontBufferIndex{ 0 };
   std::atomic<int> renderWidth{ 1 };
   std::atomic<int> renderHeight{ 1 };
