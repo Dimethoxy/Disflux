@@ -1,29 +1,23 @@
+# Disflux
+
+![Windows](https://img.shields.io/badge/Windows-supported-0078d6.svg?style=flat-square&logo=windows)
+![macOS](https://img.shields.io/badge/macOS-supported-000000.svg?style=flat-square&logo=apple)
+![Ubuntu](https://img.shields.io/badge/Ubuntu-supported-e95420.svg?style=flat-square&logo=ubuntu)
+![Arch Linux](https://img.shields.io/badge/Arch%20Linux-supported-1793d1.svg?style=flat-square&logo=arch-linux)
+
+![VST3](https://img.shields.io/badge/VST3-supported-8a2be2.svg?style=flat-square)
+![AU](https://img.shields.io/badge/AU-supported-ff9500.svg?style=flat-square)
+![LV2](https://img.shields.io/badge/LV2-supported-2ecc71.svg?style=flat-square)
+![CLAP](https://img.shields.io/badge/CLAP-supported-00bcd4.svg?style=flat-square)
+
+**Disflux** is a **free and open-source phase dispersion effect** designed to add punch, depth, and character to your sound.
+
+Perfect for creating heavy gated Hard Techno and Rawstyle kicks, it gives your punch more weight and depth in the mix. Under the hood, it uses a chain of all-pass filters to manipulate phase without altering the tonal balance, resulting in a unique sense of movement and impact.
+
 <div align="center">
-
-<h1> Disflux </h1>
-  
-<img src="https://img.shields.io/badge/Windows-supported-0078d6.svg?style=flat-square&logo=windows" />
-<img src="https://img.shields.io/badge/macOS-supported-000000.svg?style=flat-square&logo=apple" />
-<img src="https://img.shields.io/badge/Ubuntu-supported-e95420.svg?style=flat-square&logo=ubuntu" />
-<img src="https://img.shields.io/badge/Arch%20Linux-supported-1793d1.svg?style=flat-square&logo=arch-linux" />
-
-<br/>
-
-<img src="https://img.shields.io/badge/VST3-supported-8a2be2.svg?style=flat-square" />
-<img src="https://img.shields.io/badge/AU-supported-ff9500.svg?style=flat-square" />
-<img src="https://img.shields.io/badge/LV2-supported-2ecc71.svg?style=flat-square" />
-<img src="https://img.shields.io/badge/CLAP-supported-00bcd4.svg?style=flat-square" />
-
-<img src="https://raw.githubusercontent.com/Dimethoxy/Disflux/refs/heads/main/resources/preview.webp" alt="Image of the GUI" style="width: 60%;">
-
-<br/>
-
-Free and open-source phase dispersion audio effect. <br/>
-Great for creating heavy gated Hard Techno or Rawstyle kicks.
-
-<br/>
-
+  <img src="https://raw.githubusercontent.com/Dimethoxy/Disflux/refs/heads/main/resources/preview.webp" alt="Image of the GUI" style="width: 60%;">
 </div>
+
 
 ## 🔥 Features
 
