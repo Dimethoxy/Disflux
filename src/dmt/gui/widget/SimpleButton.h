@@ -9,7 +9,7 @@
  *
  * Part of the Dimethoxy Library, primarily intended for Dimethoxy plugins.
  * External use is permitted but not recommended.
- * No support or compatibility guarantees are provided..
+ * No support or compatibility guarantees are provided.
  *
  * License:
  * This code is licensed under the GPLv3 license. You are permitted to use and
@@ -18,7 +18,9 @@
  * Your are not allowed to use this code in any closed-source project.
  *
  * Description:
- * Display header file.
+ * SimpleButton is more lightweight than AbstractButton, designed for use cases
+ * where shadows and background states are not needed. It still supports icons
+ * and tooltips, making it ideal for minimalist UI elements.
  *
  * Authors:
  * Lunix-420 (Primary Author)
@@ -29,8 +31,58 @@
 
 //==============================================================================
 
-#include "./AbstractDisplay.h"
-#include "./DisfluxDisplay.h"
-#include "./MultiDisplay.h"
-#include "./OscilloscopeDisplay.h"
-#include "./SettingsEditorDisplay.h"
+#include "gui/widget/Shadow.h"
+#include "utility/Icon.h"
+#include "utility/Scaleable.h"
+#include "utility/Settings.h"
+#include <JuceHeader.h>
+
+//==============================================================================
+
+namespace dmt {
+namespace gui {
+namespace widget {
+
+class SimpleButton
+  : public juce::Button
+  , public dmt::Scaleable<SimpleButton>
+{
+  using String = juce::String;
+  using Settings = dmt::Settings;
+  using Colour = juce::Colour;
+  using Image = juce::Image;
+
+  SimpleButton(String _name, String _displayString, String _tooltip = "")
+    : juce::Button(_name)
+    , tooltip(_tooltip)
+  {
+    setButtonText(_displayString);
+  }
+
+  void resized() override
+  {
+    // No custom resizing logic needed for SimpleButton
+  }
+
+  void paint(juce::Graphics& g) override
+  {
+    // just do pure red fill for now
+    g.fillAll(juce::Colours::red);
+  }
+
+  //==============================================================================
+  /**
+   * @brief Retrieves the tooltip text for the button.
+   * @return The tooltip text as a String.
+   *
+   * @details Used by JUCE's tooltip system to display contextual help.
+   */
+  [[nodiscard]] inline String getTooltip() override
+  {
+    TRACER("SimpleButton::getTooltip");
+    return tooltip;
+  }
+
+private:
+  String tooltip;
+}
