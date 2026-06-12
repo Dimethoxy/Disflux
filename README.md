@@ -54,6 +54,10 @@ If you have enjoyed using our software, please consider donating.
 
 We are dedicated to providing high-quality audio tools to the community for free, and your support helps us to continue our work. Your donation will contribute to maintaining and improving our software, as well as supporting the development of new tools and features. We greatly appreciate your support and thank you for helping us to continue our work.
 
+## ⭐ Star History
+
+[![Star History Chart](https://api.star-history.com/chart?repos=Dimethoxy/Disflux%2CDimethoxy/Plasma&type=date&legend=bottom-right)](https://www.star-history.com/?repos=Dimethoxy%2FDisflux%2CDimethoxy%2FPlasma&type=date&legend=bottom-right)
+
 ## 🛠️ Compiling
 
 If you want to compile Plasma from source yourself, follow these steps:
