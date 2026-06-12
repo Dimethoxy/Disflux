@@ -119,7 +119,9 @@ target_link_libraries(${PROJECT_NAME}
         FontBinaryData
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
-        juce::juce_recommended_warning_flags
+        # Only attach JUCE's recommended warning flags on Debug builds so
+        # Release/RelWithDebInfo output stays clean.
+        $<$<CONFIG:Debug>:juce::juce_recommended_warning_flags>
 )
 
     # Apply opt-in sanitizers and debug-symbol settings for crash diagnostics.

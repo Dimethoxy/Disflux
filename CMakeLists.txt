@@ -42,15 +42,26 @@ CPMAddPackage(
     SOURCE_DIR ${EXT_DIR}/melatonin_blur
 )
 
+# Print compiler info for debugging purposes
+message(STATUS "Compiler ID: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
+
 # Set C++ compiler flags
 if(MSVC)
-    add_compile_options(/Qspectre )#/Wall /WX)
+    add_compile_options(/Qspectre)
 else()
-    add_compile_options(-Wall -Wextra -Wpedantic)
+    # Debug warnings only
+    add_compile_options(
+        $<$<CONFIG:Debug>:-Wall>
+        $<$<CONFIG:Debug>:-Wextra>
+        $<$<CONFIG:Debug>:-Wpedantic>
+    )
 endif()
+
 
 # Silence some warnings
 add_definitions(-D_SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING)
 
 add_subdirectory(src)
+
+
 
