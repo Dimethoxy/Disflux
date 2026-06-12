@@ -228,10 +228,15 @@ protected:
    * @brief Prepares the next frame for display.
    *
    * @details
-   * Subclasses must implement this for any per-frame logic.
-   * Do not draw or perform heavy calculations here.
+   * Runs after each paint to update any state needed for the next frame.
+   * Subclasses must implement this to perform any necessary updates before the
+   * next repaint. Do not draw or perform heavy calculations here.
    */
-  virtual void prepareNextFrame() noexcept = 0;
+  virtual void prepareNextFrame() noexcept
+  {
+    // Default implementation does nothing and only exists to not force
+    // subclasses to implement it if they don't need it
+  }
 
 private:
   //==============================================================================

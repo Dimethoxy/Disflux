@@ -52,6 +52,7 @@ class SimpleButton
   using Colour = juce::Colour;
   using Image = juce::Image;
 
+public:
   SimpleButton(String _name, String _displayString, String _tooltip = "")
     : juce::Button(_name)
     , tooltip(_tooltip)
@@ -64,10 +65,32 @@ class SimpleButton
     // No custom resizing logic needed for SimpleButton
   }
 
-  void paint(juce::Graphics& g) override
+  void setActiveState(bool _isActive)
   {
-    // just do pure red fill for now
-    g.fillAll(juce::Colours::red);
+    this->isActive = _isActive;
+    repaint();
+  }
+
+  void setPassiveState()
+  {
+    this->isActive = false;
+    repaint();
+  }
+
+  void paintButton(juce::Graphics& g,
+                   bool isMouseOverButton,
+                   bool isButtonDown) override
+  {
+    if (isButtonDown) {
+      g.fillAll(juce::Colours::magenta);
+      return;
+    }
+    if (isActive) {
+      g.fillAll(juce::Colours::green);
+      return;
+    }
+
+    g.fillAll(juce::Colours::yellow);
   }
 
   //==============================================================================
@@ -85,4 +108,9 @@ class SimpleButton
 
 private:
   String tooltip;
-}
+  bool isActive = false;
+};
+
+} // namespace widget
+} // namespace gui
+} // namespace dmt

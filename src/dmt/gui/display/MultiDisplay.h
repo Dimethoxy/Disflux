@@ -2,6 +2,7 @@
 //==============================================================================
 #pragma once
 
+#include "gui/display/AbstractDisplay.h"
 #include "gui/widget/SimpleButton.h"
 #include "utility/Scaleable.h"
 #include "utility/Settings.h"
@@ -9,7 +10,7 @@
 
 namespace dmt {
 namespace gui {
-namespace widget {
+namespace display {
 
 class MultiDisplay : public dmt::gui::display::AbstractDisplay
 {
@@ -27,9 +28,10 @@ public:
     setDisplays(std::move(_displays));
   }
 
-  void resized() override
+  void extendResized(
+    const juce::Rectangle<int>& _displayBounds) noexcept override
   {
-    auto bounds = getLocalBounds();
+    auto& bounds = _displayBounds;
 
     int rawButtonSize = 30;
     int buttonSize = rawButtonSize * size;
@@ -66,7 +68,7 @@ public:
     // show the selected display
     displays[index]->setVisible(true);
 
-    // set the corresponding button to active
+    // set the corresponding button to the selected state
     buttons[index].setToggleState(true, juce::dontSendNotification);
   }
 
@@ -86,7 +88,7 @@ protected:
     fillButtonList();
   }
 
-  void fillButtonList() override
+  void fillButtonList()
   {
     // clear existing buttons
     buttons.clear();
@@ -100,12 +102,12 @@ protected:
       button.onClick = [this, i]() { setActiveDisplay(i); };
       buttons.push_back(std::move(button));
     }
+  }
 
-  private:
-    DisplayList displays;
-    SimpleButtonList buttons;
-  };
-
-} // namespace widget
+private:
+  DisplayList displays;
+  SimpleButtonList buttons;
+};
+} // namespace display
 } // namespace gui
 } // namespace dmt
