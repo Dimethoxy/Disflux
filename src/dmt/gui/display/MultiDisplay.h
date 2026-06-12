@@ -19,7 +19,8 @@ class MultiDisplay : public dmt::gui::display::AbstractDisplay
   using DisplayPtr = std::unique_ptr<Display>;
   using DisplayList = std::vector<DisplayPtr>;
   using SimpleButton = dmt::gui::widget::SimpleButton;
-  using SimpleButtonList = std::vector<SimpleButton>;
+  using SimpleButtonPtr = std::unique_ptr<SimpleButton>;
+  using SimpleButtonList = std::vector<SimpleButtonPtr>;
 
 public:
   explicit MultiDisplay(DisplayList _displays)
@@ -41,7 +42,7 @@ public:
                         .removeFromBottom(buttonSize + 2 * buttonPadding)
                         .reduced(buttonPadding);
     for (auto& button : buttons) {
-      button.setBounds(buttonArea.removeFromLeft(buttonSize));
+      button->setBounds(buttonArea.removeFromLeft(buttonSize));
     }
 
     // layout all displays to fill the max are
@@ -63,13 +64,13 @@ public:
 
     // set all buttons to active false
     for (auto& button : buttons)
-      button.setToggleState(false, juce::dontSendNotification);
+      button->setToggleState(false, juce::dontSendNotification);
 
     // show the selected display
     displays[index]->setVisible(true);
 
     // set the corresponding button to the selected state
-    buttons[index].setToggleState(true, juce::dontSendNotification);
+    buttons[index]->setToggleState(true, juce::dontSendNotification);
   }
 
 protected:
@@ -97,9 +98,9 @@ protected:
     for (size_t i = 0; i < displays.size(); ++i) {
       String buttonNumber = juce::String(i + 1);
       String buttonName = "Display" + buttonNumber + "Button";
-      auto button =
-        SimpleButton(buttonName, buttonNumber, "Switch to " + buttonName);
-      button.onClick = [this, i]() { setActiveDisplay(i); };
+      auto button = std::make_unique<SimpleButton>(
+        buttonName, buttonNumber, "Switch to " + buttonName);
+      button->onClick = [this, i]() { setActiveDisplay(i); };
       buttons.push_back(std::move(button));
     }
   }
