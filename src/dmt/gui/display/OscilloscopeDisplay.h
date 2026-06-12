@@ -52,6 +52,7 @@ class OscilloscopeDisplay
   : public dmt::gui::display::AbstractDisplay
   , public juce::AudioProcessorValueTreeState::Listener
 {
+  using String = juce::String;
   using Oscilloscope = dmt::gui::widget::Oscilloscope<SampleType>;
   using RingAudioBuffer = dmt::dsp::data::RingAudioBuffer<SampleType>;
   using FifoAudioBuffer = dmt::dsp::data::FifoAudioBuffer<SampleType>;

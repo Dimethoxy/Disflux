@@ -62,6 +62,7 @@ class AbstractDisplay
   //============================================================================
   // Aliases for convenience
   using Shadow = dmt::gui::widget::Shadow;
+  using String = juce::String;
 
   //============================================================================
   // General
@@ -96,9 +97,9 @@ public:
    * Initializes shadow components and starts the repaint timer.
    * Subclasses should implement their own layout and painting logic.
    */
-  inline explicit AbstractDisplay(
-    /*juce::AudioProcessorValueTreeState& _apvts*/) noexcept
-    : outerShadow(drawOuterShadow, outerShadowColour, outerShadowRadius, false)
+  inline explicit AbstractDisplay(juce::String _displayName = "") noexcept
+    : displayName(_displayName)
+    , outerShadow(drawOuterShadow, outerShadowColour, outerShadowRadius, false)
     , innerShadow(drawInnerShadow, innerShadowColour, innerShadowRadius, true)
   {
     this->startRepaintTimer();
@@ -260,6 +261,7 @@ private:
 
   //==============================================================================
   // Other members
+  String displayName;
   juce::Rectangle<int> innerBounds;
   juce::Rectangle<int> outerBounds;
 

@@ -12,22 +12,33 @@ namespace dmt {
 namespace gui {
 namespace display {
 
-class MultiDisplay : public dmt::gui::display::AbstractDisplay
+class MultiDisplay
+  : public dmt::gui::display::AbstractDisplay
+  , public juce::AudioProcessorValueTreeState::Listener
 {
-
+  using String = juce::String;
+  using APVTS = juce::AudioProcessorValueTreeState;
   using Display = dmt::gui::display::AbstractDisplay;
   using DisplayPtr = std::unique_ptr<Display>;
   using DisplayList = std::vector<DisplayPtr>;
   using SimpleButton = dmt::gui::widget::SimpleButton;
   using SimpleButtonPtr = std::unique_ptr<SimpleButton>;
   using SimpleButtonList = std::vector<SimpleButtonPtr>;
+  using ParameterDisplayMap = std::unordered_map<juce::String, juce::String>;
 
 public:
-  explicit MultiDisplay(DisplayList _displays)
-    : AbstractDisplay(/*_apvts*/)
+  explicit MultiDisplay(APVTS& _apvts,
+                        DisplayList _displays,
+                        ParameterDisplayMap _parameterDisplayMap = {})
+    : apvts(_apvts)
+    , AbstractDisplay()
   {
     setDisplays(std::move(_displays));
+    parameterDisplayMap = std::move(_parameterDisplayMap);
+    addParameterListeners();
   }
+
+  ~MultiDisplay() { removeParameterListeners(); }
 
   void extendResized(
     const juce::Rectangle<int>& _displayBounds) noexcept override
@@ -89,6 +100,20 @@ protected:
     fillButtonList();
   }
 
+  void addParameterListeners()
+  {
+    for (const auto& [parameterID, displayName] : parameterDisplayMap) {
+      apvts.addParameterListener(parameterID, this);
+    }
+  }
+
+  void removeParameterListeners()
+  {
+    for (const auto& [parameterID, displayName] : parameterDisplayMap) {
+      apvts.removeParameterListener(parameterID, this);
+    }
+  }
+
   void fillButtonList()
   {
     // clear existing buttons
@@ -96,7 +121,7 @@ protected:
 
     // create a button for each display
     for (size_t i = 0; i < displays.size(); ++i) {
-      String buttonNumber = juce::String(i + 1);
+      String buttonNumber = String(i + 1);
       String buttonName = "Display" + buttonNumber + "Button";
       auto button = std::make_unique<SimpleButton>(
         buttonName, buttonNumber, "Switch to " + buttonName);
@@ -106,8 +131,10 @@ protected:
   }
 
 private:
+  APVTS& apvts;
   DisplayList displays;
   SimpleButtonList buttons;
+  ParameterDisplayMap parameterDisplayMap;
 };
 } // namespace display
 } // namespace gui
