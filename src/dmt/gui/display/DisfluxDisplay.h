@@ -30,6 +30,8 @@
 //==============================================================================
 
 #include "dsp/data/FifoAudioBuffer.h"
+#include "gui/display/HelloWorldDisplay.h"
+#include "gui/display/MultiDisplay.h"
 #include "gui/display/OscilloscopeDisplay.h"
 #include <JuceHeader.h>
 
@@ -46,17 +48,25 @@ namespace display {
  * @brief Specialized display component inheriting from
  * AbstractDisplay.
  */
-class alignas(64) DisfluxDisplay
-  : public dmt::gui::display::OscilloscopeDisplay<float>
+class alignas(64) DisfluxDisplay : public dmt::gui::display::MultiDisplay
 {
+  using MultiDisplay = dmt::gui::display::MultiDisplay;
+
 public:
   using FifoAudioBuffer = dmt::dsp::data::FifoAudioBuffer<float>;
   DisfluxDisplay(FifoAudioBuffer& _fifoBuffer,
                  AudioProcessorValueTreeState& _apvts)
-    : OscilloscopeDisplay(
-        _fifoBuffer, // The data buffer
-        _apvts,      // The processers value tree state
-        true)        // This tells the display to not listen to the apvts
+    : MultiDisplay(
+        _apvts,
+        [&] {
+          std::vector<std::unique_ptr<AbstractDisplay>> displays;
+          displays.push_back(
+            std::make_unique<OscilloscopeDisplay<float>>(_fifoBuffer,
+                                                         _apvts,
+                                                         true));
+          return displays;
+        }(),
+        { { "dis1uxFrequency", "ImpulseResponsePhaseRotationDisplay" } })
   {
   }
 

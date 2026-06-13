@@ -1,6 +1,33 @@
-// src/dmt/gui/widget/SimpleButton.h
+/* ██████╗ ██╗███╗   ███╗███████╗████████╗██╗  ██╗ ██████╗ ██╗  ██╗██╗   ██╗
+ * ██╔══██╗██║████╗ ████║██╔════╝╚══██╔══╝██║  ██║██╔═══██╗╚██╗██╔╝╚██╗ ██╔╝
+ * ██║  ██║██║██╔████╔██║█████╗     ██║   ███████║██║   ██║ ╚███╔╝  ╚████╔╝
+ * ██║  ██║██║██║╚██╔╝██║██╔══╝     ██║   ██╔══██║██║   ██║ ██╔██╗   ╚██╔╝
+ * ██████╔╝██║██║ ╚═╝ ██║███████╗   ██║   ██║  ██║╚██████╔╝██╔╝ ██╗   ██║
+ * ╚═════╝ ╚═╝╚═╝     ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝
+ * Copyright (C) 2024 Dimethoxy Audio (https://dimethoxy.com)
+ *
+ * Part of the Dimethoxy Library, primarily intended for Dimethoxy plugins.
+ * External use is permitted but not recommended.
+ * No support or compatibility guarantees are provided.
+ *
+ * License:
+ * This code is licensed under the GPLv3 license. You are permitted to use and
+ * modify this code under the terms of this license.
+ * You must adhere GPLv3 license for any project using this code or parts of it.
+ * Your are not allowed to use this code in any closed-source project.
+ *
+ * Description:
+ * MultiDisplay provides a container for multiple display components with
+ * button-based switching and parameter change listening.
+ *
+ * Authors:
+ * Lunix-420 (Primary Author)
+ */
 //==============================================================================
+
 #pragma once
+
+//==============================================================================
 
 #include "gui/display/AbstractDisplay.h"
 #include "gui/widget/SimpleButton.h"
@@ -8,12 +35,21 @@
 #include "utility/Settings.h"
 #include <JuceHeader.h>
 
+//==============================================================================
+
 namespace dmt {
 namespace gui {
 namespace display {
 
+//==============================================================================
+
+/**
+ * @class MultiDisplay
+ * @brief Container for multiple display components with switching capability.
+ */
 class MultiDisplay
-  : public dmt::gui::display::AbstractDisplay
+  : public juce::Component
+  , public dmt::Scaleable<MultiDisplay>
   , public juce::AudioProcessorValueTreeState::Listener
 {
   using String = juce::String;
@@ -27,41 +63,44 @@ class MultiDisplay
   using ParameterDisplayMap = std::unordered_map<juce::String, juce::String>;
 
 public:
+  //==============================================================================
   explicit MultiDisplay(APVTS& _apvts,
                         DisplayList _displays,
                         ParameterDisplayMap _parameterDisplayMap = {})
     : apvts(_apvts)
-    , AbstractDisplay()
   {
     setDisplays(std::move(_displays));
     parameterDisplayMap = std::move(_parameterDisplayMap);
     addParameterListeners();
   }
 
+  //============================================================================
   ~MultiDisplay() { removeParameterListeners(); }
 
-  void extendResized(
-    const juce::Rectangle<int>& _displayBounds) noexcept override
+  //==============================================================================
+  void resized() noexcept override
   {
-    auto& bounds = _displayBounds;
+    auto bounds = getLocalBounds();
 
     int rawButtonSize = 30;
-    int buttonSize = rawButtonSize * size;
+    int buttonSize = rawButtonSize * scale;
     int rawButtonPadding = 5;
-    int buttonPadding = rawButtonPadding * size;
-    auto buttonArea = juce::Rectangle<int>(bounds)
-                        .removeFromBottom(buttonSize + 2 * buttonPadding)
-                        .reduced(buttonPadding);
+    int buttonPadding = rawButtonPadding * scale;
+    auto buttonArea = bounds.removeFromBottom(buttonSize + 2 * buttonPadding);
+    buttonArea = buttonArea.reduced(buttonPadding, 0);
+
     for (auto& button : buttons) {
+      addChildComponent(button.get());
       button->setBounds(buttonArea.removeFromLeft(buttonSize));
     }
 
-    // layout all displays to fill the max are
+    // layout all displays to fill the remaining area
     for (auto& display : displays) {
       display->setBounds(bounds);
     }
   }
 
+  //==============================================================================
   void setActiveDisplay(size_t index)
   {
     if (index >= displays.size()) {
@@ -85,12 +124,14 @@ public:
   }
 
 protected:
+  //==============================================================================
   void setDisplays(DisplayList _displays)
   {
     this->displays = std::move(_displays);
 
     for (auto& display : this->displays)
-      // add child but don't make visible yet, as we only want to show display 1
+      // add child but don't make visible yet, as we only want to show display
+      // 1
       addChildComponent(display.get());
 
     // make the first display visible
@@ -100,6 +141,7 @@ protected:
     fillButtonList();
   }
 
+  //==============================================================================
   void addParameterListeners()
   {
     for (const auto& [parameterID, displayName] : parameterDisplayMap) {
@@ -107,6 +149,7 @@ protected:
     }
   }
 
+  //==============================================================================
   void removeParameterListeners()
   {
     for (const auto& [parameterID, displayName] : parameterDisplayMap) {
@@ -114,6 +157,7 @@ protected:
     }
   }
 
+  //==============================================================================
   void fillButtonList()
   {
     // clear existing buttons
@@ -131,11 +175,46 @@ protected:
   }
 
 private:
+  //==============================================================================
+  // AudioProcessorValueTreeState::Listener implementation
+  void parameterChanged(const juce::String& parameterID,
+                        float newValue) override
+  {
+    auto mappingIt = parameterDisplayMap.find(parameterID);
+
+    // Validate we found something if not early exit
+    if (mappingIt == parameterDisplayMap.end()) {
+      jassertfalse; // No mapping found for this parameter ID
+      return;
+    }
+
+    const auto& displayName = mappingIt->second;
+
+    // Find the display index by name
+    for (size_t i = 0; i < displays.size(); ++i) {
+      if (displays[i]->getName() == displayName) {
+        setActiveDisplay(i);
+        return;
+      }
+    }
+
+    // If we get here, we found a mapping we couldn't resolve to a display,
+    // most likely the display is missing or there is a typo in its name or
+    // the mapping
+    jassertfalse;
+    return;
+  }
+
+  //==============================================================================
   APVTS& apvts;
   DisplayList displays;
   SimpleButtonList buttons;
   ParameterDisplayMap parameterDisplayMap;
+
+  //==============================================================================
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiDisplay)
 };
+
 } // namespace display
 } // namespace gui
 } // namespace dmt

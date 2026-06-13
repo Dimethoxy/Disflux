@@ -145,7 +145,7 @@ public:
     _g.setColour(displayForegroundColour);
     _g.drawRect(getLocalBounds().toFloat(), padding);
 
-    // We need to draw the border again because drawing it once didn't cut it
+    // We need to draw the border again because drawing it once didn't cut it¬-
     if (drawBorder) {
       _g.setColour(borderColour);
       const auto borderBounds = outerBounds.reduced(borderStrength / 2.0f);
@@ -207,7 +207,9 @@ protected:
    * Subclasses must implement this to layout their own subcomponents.
    */
   virtual void extendResized(
-    const juce::Rectangle<int>& _displayBounds) noexcept = 0;
+    const juce::Rectangle<int>& _displayBounds) noexcept
+  {
+  }
 
   //==============================================================================
   /**
@@ -220,9 +222,10 @@ protected:
    * Subclasses must implement this to draw their own content.
    * Do not call this method directly.
    */
-  virtual void paintDisplay(
-    juce::Graphics& _g,
-    const juce::Rectangle<int>& _displayBounds) noexcept = 0;
+  virtual void paintDisplay(juce::Graphics& _g,
+                            const juce::Rectangle<int>& _displayBounds) noexcept
+  {
+  }
 
   //==============================================================================
   /**
