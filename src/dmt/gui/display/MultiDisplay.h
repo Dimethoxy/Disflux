@@ -70,6 +70,7 @@ public:
     : apvts(_apvts)
   {
     setDisplays(std::move(_displays));
+    fillButtonList();
     parameterDisplayMap = std::move(_parameterDisplayMap);
     addParameterListeners();
   }
@@ -82,6 +83,11 @@ public:
   {
     auto bounds = getLocalBounds();
 
+    // layout all displays to fill the remaining area
+    // for (auto& display : displays) {
+    //   display->setBounds(bounds);
+    // }
+
     int rawButtonSize = 30;
     int buttonSize = rawButtonSize * scale;
     int rawButtonPadding = 5;
@@ -89,14 +95,10 @@ public:
     auto buttonArea = bounds.removeFromBottom(buttonSize + 2 * buttonPadding);
     buttonArea = buttonArea.reduced(buttonPadding, 0);
 
+    // layout buttons in the button area
     for (auto& button : buttons) {
-      addChildComponent(button.get());
       button->setBounds(buttonArea.removeFromLeft(buttonSize));
-    }
-
-    // layout all displays to fill the remaining area
-    for (auto& display : displays) {
-      display->setBounds(bounds);
+      button->toFront(false);
     }
   }
 
@@ -137,8 +139,6 @@ protected:
     // make the first display visible
     if (!this->displays.empty())
       this->displays[0]->setVisible(true);
-
-    fillButtonList();
   }
 
   //==============================================================================
@@ -171,6 +171,7 @@ protected:
         buttonName, buttonNumber, "Switch to " + buttonName);
       button->onClick = [this, i]() { setActiveDisplay(i); };
       buttons.push_back(std::move(button));
+      addAndMakeVisible(button.get());
     }
   }
 

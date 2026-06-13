@@ -61,6 +61,8 @@ public:
         [&] {
           std::vector<std::unique_ptr<AbstractDisplay>> displays;
           displays.push_back(
+            std::make_unique<HelloWorldDisplay>());
+          displays.push_back(
             std::make_unique<OscilloscopeDisplay<float>>(_fifoBuffer,
                                                          _apvts,
                                                          true));
