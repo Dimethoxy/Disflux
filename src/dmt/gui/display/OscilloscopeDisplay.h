@@ -35,7 +35,6 @@
 #include "dsp/data/RingAudioBuffer.h"
 #include "gui/display/AbstractDisplay.h"
 #include "gui/widget/Oscilloscope.h"
-#include "gui/widget/Shadow.h"
 #include "utility/RepaintTimer.h"
 #include "utility/Settings.h"
 #include <JuceHeader.h>
@@ -56,7 +55,6 @@ class OscilloscopeDisplay
   using Oscilloscope = dmt::gui::widget::Oscilloscope<SampleType>;
   using RingAudioBuffer = dmt::dsp::data::RingAudioBuffer<SampleType>;
   using FifoAudioBuffer = dmt::dsp::data::FifoAudioBuffer<SampleType>;
-  using Shadow = dmt::gui::widget::Shadow;
   using Colour = juce::Colour;
   using Settings = dmt::Settings;
   using DisplaySettings = dmt::Settings::Display;
@@ -64,21 +62,6 @@ class OscilloscopeDisplay
   //==============================================================================
   // General
   const Colour& backgroundColour = DisplaySettings::backgroundColour;
-
-  // Layout
-  const float& rawCornerSize = DisplaySettings::cornerSize;
-  const float& rawPadding = DisplaySettings::padding;
-  // Border
-  const bool& drawBorder = DisplaySettings::drawBorder;
-  const Colour& borderColour = DisplaySettings::borderColour;
-  const float& borderStrength = DisplaySettings::borderStrength;
-  // Shadows
-  const bool& drawOuterShadow = DisplaySettings::drawOuterShadow;
-  const bool& drawInnerShadow = DisplaySettings::drawInnerShadow;
-  const Colour& outerShadowColour = DisplaySettings::outerShadowColour;
-  const Colour& innerShadowColour = DisplaySettings::innerShadowColour;
-  const float& outerShadowRadius = DisplaySettings::outerShadowRadius;
-  const float& innerShadowRadius = DisplaySettings::innerShadowRadius;
 
 public:
   //==============================================================================
@@ -119,12 +102,12 @@ public:
     stopRepaintTimer();
   }
   //==============================================================================
-  void extendResized(
-    const juce::Rectangle<int>& _displayBounds) noexcept override
+  void resized() noexcept override
   {
+    auto displayBounds = getLocalBounds();
     auto scopeBounds =
-      _displayBounds.withHeight(_displayBounds.getHeight() * 0.92f)
-        .withCentre(_displayBounds.getCentre());
+      displayBounds.withHeight(displayBounds.getHeight() * 0.92f)
+        .withCentre(displayBounds.getCentre());
 
     auto leftScopeBounds =
       scopeBounds.removeFromTop(scopeBounds.getHeight() * 0.5f);
@@ -141,40 +124,38 @@ public:
     }
   }
   //==============================================================================
-  void paintDisplay(
-    juce::Graphics& g,
-    const juce::Rectangle<int>& /*_displayBounds*/) noexcept override
+  void paint(juce::Graphics& g) noexcept override
   {
-    TRACER("OscilloscopeDisplay::paintDisplay");
+    TRACER("OscilloscopeDisplay::paint");
 
-    const auto leftScopeBounds = leftOscilloscope.getBounds().toFloat();
-    const auto rightScopeBounds = rightOscilloscope.getBounds().toFloat();
+    const auto leftBounds = leftOscilloscope.getBounds().toFloat();
+    const auto rightBounds = rightOscilloscope.getBounds().toFloat();
 
     g.setColour(backgroundColour.brighter(0.05));
 
     // Draw vertical lines for both scopes
     drawVerticalLines(g,
-                      leftScopeBounds.getX(),
-                      leftScopeBounds.getWidth(),
-                      leftScopeBounds.getY(),
-                      leftScopeBounds.getHeight());
+                      leftBounds.getX(),
+                      leftBounds.getWidth(),
+                      leftBounds.getY(),
+                      leftBounds.getHeight());
     drawVerticalLines(g,
-                      leftScopeBounds.getX(),
-                      leftScopeBounds.getWidth(),
-                      rightScopeBounds.getY(),
-                      rightScopeBounds.getHeight());
+                      leftBounds.getX(),
+                      leftBounds.getWidth(),
+                      rightBounds.getY(),
+                      rightBounds.getHeight());
 
     // Draw horizontal lines for both scopes
     drawHorizontalLines(g,
-                        leftScopeBounds.getX(),
-                        leftScopeBounds.getWidth(),
-                        leftScopeBounds.getY(),
-                        leftScopeBounds.getHeight());
+                        leftBounds.getX(),
+                        leftBounds.getWidth(),
+                        leftBounds.getY(),
+                        leftBounds.getHeight());
     drawHorizontalLines(g,
-                        leftScopeBounds.getX(),
-                        leftScopeBounds.getWidth(),
-                        rightScopeBounds.getY(),
-                        rightScopeBounds.getHeight());
+                        leftBounds.getX(),
+                        leftBounds.getWidth(),
+                        rightBounds.getY(),
+                        rightBounds.getHeight());
 
     // Draw oscilloscope images
     g.drawImageAt(leftOscilloscope.getFrontImage(),

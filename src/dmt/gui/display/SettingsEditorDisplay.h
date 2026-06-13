@@ -63,19 +63,17 @@ public:
 
   ~SettingsEditorDisplay() override = default;
 
-  void extendResized(
-    const juce::Rectangle<int>& _displayBounds) noexcept override
+  void resized() noexcept override
   {
-    TRACER("SettingsEditorDisplay::extendResized");
+    TRACER("SettingsEditorDisplay::resized");
     const auto padding = rawPadding * size;
-    auto settingsBounds = _displayBounds.reduced(padding);
+    auto settingsBounds = getLocalBounds().reduced(static_cast<int>(padding));
     settingsEditor.setBounds(settingsBounds);
   }
 
-  void paintDisplay(juce::Graphics& /*_g*/,
-                    const juce::Rectangle<int>& /*_displayBounds*/) noexcept
+  void paint(juce::Graphics& /*_g*/) noexcept override
   {
-    TRACER("SettingsEditorDisplay::paintDisplay");
+    TRACER("SettingsEditorDisplay::paint");
     if (cachedPadding != rawPadding) {
       cachedPadding = rawPadding;
       resized();

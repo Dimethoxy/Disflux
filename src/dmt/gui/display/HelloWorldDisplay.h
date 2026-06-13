@@ -24,7 +24,7 @@ namespace display {
 class HelloWorldDisplay : public dmt::gui::display::AbstractDisplay
 {
   using Label = dmt::gui::widget::Label;
-  // using Settings = dmt::Settings;
+  using Settings = dmt::Settings;
   using Fonts = dmt::utility::Fonts;
   using Colour = juce::Colour;
 
@@ -36,10 +36,14 @@ public:
     addAndMakeVisible(label);
   }
 
-  void extendResized(
-    const juce::Rectangle<int>& _displayBounds) noexcept override
+  void resized() noexcept override { label.setBounds(getLocalBounds()); }
+
+  void paint(juce::Graphics& _g) noexcept override
   {
-    label.setBounds(_displayBounds);
+    if (Settings::debugBounds) {
+      _g.setColour(juce::Colours::cyan);
+      _g.drawRect(getLocalBounds(), 1);
+    }
   }
 
 private:

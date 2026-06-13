@@ -45,14 +45,13 @@ namespace display {
 
 //==============================================================================
 /**
- * @brief Abstract base class for display components with shadow, border, and
- * repaint timer.
+ * @brief Abstract base class for display components with repaint timer.
  *
  * @details
  * This class provides a foundation for custom display components, handling
- * shadow rendering, border drawing, and periodic repainting. Subclasses must
- * implement extendResized, paintDisplay, and prepareNextFrame for their own
- * drawing and layout logic.
+ * periodic repainting. Subclasses must implement resized and paint for their
+ * own drawing and layout logic. Chrome (shadow/border) is handled by
+ * MultiDisplay.
  */
 class AbstractDisplay
   : public juce::Component
@@ -61,32 +60,7 @@ class AbstractDisplay
 {
   //============================================================================
   // Aliases for convenience
-  using Shadow = dmt::gui::widget::Shadow;
   using String = juce::String;
-
-  //============================================================================
-  // General
-  using Display = dmt::Settings::Display;
-  const juce::Colour& backgroundColour = Display::backgroundColour;
-  const juce::Colour& displayForegroundColour =
-    dmt::Settings::Panel::backgroundColour;
-
-  // Layout
-  const float& rawCornerSize = Display::cornerSize;
-  const float& rawPadding = Display::padding;
-
-  // Border
-  const bool& drawBorder = Display::drawBorder;
-  const juce::Colour& borderColour = Display::borderColour;
-  const float& rawBorderStrength = Display::borderStrength;
-
-  // Shadows
-  const bool& drawOuterShadow = Display::drawOuterShadow;
-  const bool& drawInnerShadow = Display::drawInnerShadow;
-  const juce::Colour& outerShadowColour = Display::outerShadowColour;
-  const juce::Colour& innerShadowColour = Display::innerShadowColour;
-  const float& outerShadowRadius = Display::outerShadowRadius;
-  const float& innerShadowRadius = Display::innerShadowRadius;
 
 public:
   //==============================================================================
@@ -94,17 +68,13 @@ public:
    * @brief Constructs an AbstractDisplay.
    *
    * @details
-   * Initializes shadow components and starts the repaint timer.
-   * Subclasses should implement their own layout and painting logic.
+   * Starts the repaint timer. Subclasses should implement their own
+   * layout and painting logic.
    */
   inline explicit AbstractDisplay(juce::String _displayName = "") noexcept
     : displayName(_displayName)
-    , outerShadow(drawOuterShadow, outerShadowColour, outerShadowRadius, false)
-    , innerShadow(drawInnerShadow, innerShadowColour, innerShadowRadius, true)
   {
     this->startRepaintTimer();
-    addAndMakeVisible(outerShadow);
-    addAndMakeVisible(innerShadow);
   }
 
   //============================================================================
@@ -114,126 +84,39 @@ public:
 
   //==============================================================================
   /**
-   * @brief Paints the component, including background, border, and display
-   * content.
+   * @brief Paints the component content.
    *
    * @param _g The graphics context.
    *
    * @details
-   * Handles all background and border drawing, then delegates to paintDisplay
-   * for custom content. Calls prepareNextFrame at the end of each paint.
-   * This method is final and cannot be overridden by subclasses.
+   * Subclasses should override this method to draw their custom content.
+   * Calls prepareNextFrame at the end of each paint.
    */
-  inline void paint(juce::Graphics& _g) override final
+  inline void paint(juce::Graphics& _g) noexcept override
   {
-    // Precalculation
-    const auto borderStrength = rawBorderStrength * size;
-    const auto cornerSize = rawCornerSize * size;
-    const auto padding = rawPadding * size;
-    const float outerCornerSize = cornerSize;
-    const float innerCornerSize = std::clamp(
-      outerCornerSize - (borderStrength * 0.5f), 0.0f, outerCornerSize);
-
-    // Draw background
-    _g.setColour(backgroundColour);
-    _g.fillRoundedRectangle(innerBounds.toFloat(), innerCornerSize);
-
-    // Draw display
-    paintDisplay(_g, innerBounds);
-
-    // Draw outer background to hide display overdraw
-    _g.setColour(displayForegroundColour);
-    _g.drawRect(getLocalBounds().toFloat(), padding);
-
-    // We need to draw the border again because drawing it once didn't cut it¬-
-    if (drawBorder) {
-      _g.setColour(borderColour);
-      const auto borderBounds = outerBounds.reduced(borderStrength / 2.0f);
-      _g.drawRoundedRectangle(
-        borderBounds.toFloat(), outerCornerSize, borderStrength);
-    }
-
     // Prepare next frame
     prepareNextFrame();
   }
 
   //==============================================================================
   /**
-   * @brief Handles resizing and layout of the component and its shadows.
+   * @brief Handles resizing.
    *
    * @details
-   * Updates bounds for outer/inner shadows and calls extendResized for
-   * subclass-specific layout. This method is final and cannot be overridden.
+   * Subclasses should override this method to layout their subcomponents.
    */
-  inline void resized() override final
+  inline void resized() noexcept override
   {
-    TRACER("DisfluxDisplay::resized");
-
-    const auto bounds = getLocalBounds();
-    const auto borderStrength = rawBorderStrength * size;
-    const auto cornerSize = rawCornerSize * size;
-    const auto padding = rawPadding * size;
-
-    outerBounds = bounds.reduced(static_cast<int>(padding));
-    innerBounds = outerBounds.reduced(static_cast<int>(borderStrength));
-    const float outerCornerSize = cornerSize;
-    const float innerCornerSize = std::clamp(
-      outerCornerSize - (borderStrength * 0.5f), 0.0f, outerCornerSize);
-
-    juce::Path outerShadowPath;
-    outerShadowPath.addRoundedRectangle(outerBounds, outerCornerSize);
-    outerShadow.setPath(outerShadowPath);
-    outerShadow.setBoundsRelative(0.0f, 0.0f, 1.0f, 1.0f);
-    outerShadow.toBack();
-
-    juce::Path innerShadowPath;
-    innerShadowPath.addRoundedRectangle(innerBounds, innerCornerSize);
-    innerShadow.setPath(innerShadowPath);
-    innerShadow.setBoundsRelative(0.0f, 0.0f, 1.0f, 1.0f);
-    innerShadow.toBack();
-
-    // Call the childs extendResized method
-    extendResized(drawBorder ? innerBounds : outerBounds);
   }
 
 protected:
-  //==============================================================================
-  /**
-   * @brief Extension point for subclasses to handle resizing and layout.
-   *
-   * @param _displayBounds The bounds of the display area.
-   *
-   * @details
-   * Subclasses must implement this to layout their own subcomponents.
-   */
-  virtual void extendResized(
-    const juce::Rectangle<int>& _displayBounds) noexcept
-  {
-  }
-
-  //==============================================================================
-  /**
-   * @brief Paints the display content.
-   *
-   * @param _g The graphics context.
-   * @param _displayBounds The bounds of the display area.
-   *
-   * @details
-   * Subclasses must implement this to draw their own content.
-   * Do not call this method directly.
-   */
-  virtual void paintDisplay(juce::Graphics& _g,
-                            const juce::Rectangle<int>& _displayBounds) noexcept
-  {
-  }
-
   //==============================================================================
   /**
    * @brief Prepares the next frame for display.
    *
    * @details
    * Runs after each paint to update any state needed for the next frame.
-   * Subclasses must implement this to perform any necessary updates before the
+   * Subclasses may override this to perform any necessary updates before the
    * next repaint. Do not draw or perform heavy calculations here.
    */
   virtual void prepareNextFrame() noexcept
@@ -256,17 +139,8 @@ private:
   }
 
   //==============================================================================
-  // Members initialized in the initializer list
-  Shadow outerShadow =
-    Shadow(drawOuterShadow, outerShadowColour, outerShadowRadius, false);
-  Shadow innerShadow =
-    Shadow(drawInnerShadow, innerShadowColour, innerShadowRadius, true);
-
-  //==============================================================================
-  // Other members
+  // Members
   String displayName;
-  juce::Rectangle<int> innerBounds;
-  juce::Rectangle<int> outerBounds;
 
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AbstractDisplay)
