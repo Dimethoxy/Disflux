@@ -100,7 +100,7 @@ public:
       g.drawRect(outerBounds, borderThickness);
     }
 
-    g.fillAll(juce::Colours::red);
+    // g.fillAll(juce::Colours::red);
   }
 
   //==============================================================================
