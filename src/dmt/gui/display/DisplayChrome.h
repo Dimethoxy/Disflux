@@ -156,6 +156,7 @@ protected:
 
     chromeComponent.setImage(chrome, juce::RectanglePlacement::stretchToFit);
     chromeComponent.setBounds(bounds);
+    chromeComponent.setInterceptsMouseClicks(false, false);
     chromeComponent.toFront(false);
   }
 

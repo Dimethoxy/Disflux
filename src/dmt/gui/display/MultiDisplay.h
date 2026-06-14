@@ -83,23 +83,24 @@ public:
 
   void resizeContent(const juce::Rectangle<int>& _contentBounds) override
   {
-    // Layout buttons in the button area
-    // for (auto& button : buttons) {
-    //   button->setBounds(buttonArea.removeFromLeft(buttonSize));
-    //   button->toFront(false);
-    // }
-
     // Layout all displays to fill the area above the buttons
-    // int rawButtonSize = 30;
-    // int buttonSize = rawButtonSize * size;
-    // int rawButtonPadding = 5;
-    // int buttonPadding = rawButtonPadding * size;
-    // auto buttonArea = bounds.removeFromBottom(buttonSize + 2 *
-    // buttonPadding); buttonArea = buttonArea.reduced(buttonPadding, 0);
+    int rawButtonSize = 30;
+    int buttonSize = rawButtonSize * size;
+    int rawButtonPadding = 5;
+    int buttonPadding = rawButtonPadding * size;
+    auto buttonArea = juce::Rectangle<int>(_contentBounds)
+                        .removeFromTop(buttonSize + 2 * buttonPadding);
+    buttonArea = buttonArea.reduced(buttonPadding, 0);
 
     // Layout displays to fill the display area
     for (auto& display : displays) {
       display->setBounds(_contentBounds);
+    }
+
+    // Layout buttons in the button area
+    for (auto& button : buttons) {
+      button->setBounds(buttonArea.removeFromLeft(buttonSize));
+      button->toFront(false);
     }
   }
   //==============================================================================
@@ -171,7 +172,7 @@ protected:
         buttonName, buttonNumber, "Switch to " + buttonName);
       button->onClick = [this, i]() { setActiveDisplay(i); };
       buttons.push_back(std::move(button));
-      addAndMakeVisible(button.get());
+      addAndMakeVisible(buttons[i].get());
     }
   }
 
