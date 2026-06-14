@@ -105,9 +105,7 @@ public:
    * @details
    * Subclasses should override this method to layout their subcomponents.
    */
-  inline void resized() noexcept override
-  {
-  }
+  inline void resized() noexcept override {}
 
 protected:
   //==============================================================================

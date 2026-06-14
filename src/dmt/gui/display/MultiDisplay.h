@@ -123,21 +123,12 @@ public:
   void resized() noexcept override
   {
     auto bounds = getLocalBounds();
-
-    // Layout all displays to fill the area above the buttons
-    int rawButtonSize = 30;
-    int buttonSize = rawButtonSize * scale;
-    int rawButtonPadding = 5;
-    int buttonPadding = rawButtonPadding * scale;
-    auto buttonArea = bounds.removeFromBottom(buttonSize + 2 * buttonPadding);
-    buttonArea = buttonArea.reduced(buttonPadding, 0);
-
     this->displayArea = bounds;
 
     // Update shadow paths and positions
-    const auto padding = rawPadding * scale;
-    const auto borderStrength = rawBorderStrength * scale;
-    const auto cornerSize = rawCornerSize * scale;
+    const auto padding = rawPadding * size;
+    const auto borderStrength = rawBorderStrength * size;
+    const auto cornerSize = rawCornerSize * size;
     const auto outerBounds =
       this->displayArea.reduced(static_cast<int>(padding));
     const auto innerBounds =
@@ -169,29 +160,74 @@ public:
     //   button->toFront(false);
     // }
 
-    // Chrome
-    chromeComponent.setBounds(outerBounds);
-    // drawChrome(outerBounds, outerCornerSize);
+    // Layout all displays to fill the area above the buttons
+    // int rawButtonSize = 30;
+    // int buttonSize = rawButtonSize * size;
+    // int rawButtonPadding = 5;
+    // int buttonPadding = rawButtonPadding * size;
+    // auto buttonArea = bounds.removeFromBottom(buttonSize + 2 *
+    // buttonPadding); buttonArea = buttonArea.reduced(buttonPadding, 0);
+
+    drawChrome(innerBounds,
+               outerBounds,
+               innerCornerSize,
+               outerCornerSize,
+               borderStrength);
   }
 
-  void drawChrome(juce::Rectangle<int> _outerBounds, float _outerCornerSize)
+  void drawChrome(const juce::Rectangle<int>& _innerBounds,
+                  const juce::Rectangle<int>& _outerBounds,
+                  float _innerCornerSize,
+                  float _outerCornerSize,
+                  float _borderStrength)
   {
+    const auto bounds = getLocalBounds();
+    const auto midBounds =
+      juce::Rectangle<int>(_outerBounds).reduced(_borderStrength * 0.5f);
+    const auto hiResWidth = static_cast<int>(bounds.getWidth() * scale);
+    const auto hiResHeight = static_cast<int>(bounds.getHeight() * scale);
+
+    // Prepare a high-resolution image for the chrome
+    chrome = Image(Image::ARGB, hiResWidth, hiResHeight, true);
     juce::Graphics g(chrome);
+    g.addTransform(juce::AffineTransform::scale(scale, scale));
 
-    // [Foreground Chroma]
-    // Draw outer frame to hide display overdraw
-    g.setColour(displayForegroundColour);
-    g.fillAll();
+    // First Pass: Draw the background
+    if (drawBorder) {
+      juce::Graphics::ScopedSaveState state(g);
 
-    // // Draw border
-    // if (drawBorder) {
-    //   _g.setColour(borderColour);
-    //   const auto borderBounds = outerBounds.reduced(borderStrength / 2.0f);
-    //   _g.drawRoundedRectangle(
-    //     borderBounds.toFloat(), outerCornerSize, borderStrength);
-    // }
+      juce::Path fillClippingPath;
+      fillClippingPath.setUsingNonZeroWinding(false);
+      fillClippingPath.addRectangle(bounds.toFloat());
+      fillClippingPath.addRoundedRectangle(midBounds.toFloat(),
+                                           _innerCornerSize);
+      g.reduceClipRegion(fillClippingPath);
+      g.setColour(displayForegroundColour);
+      g.fillRect(bounds);
+    }
+
+    // Second Pass: Draw the border
+    {
+      juce::Graphics::ScopedSaveState state(g);
+
+      juce::Path borderClippingPath;
+      borderClippingPath.setUsingNonZeroWinding(false);
+      borderClippingPath.addRectangle(bounds.toFloat());
+      borderClippingPath.addRoundedRectangle(_innerBounds.toFloat(),
+                                             _innerCornerSize);
+      g.reduceClipRegion(borderClippingPath);
+      if (drawBorder) {
+        g.setColour(borderColour);
+        g.fillRoundedRectangle(_outerBounds.toFloat(), _outerCornerSize);
+      } else {
+        g.setColour(displayForegroundColour);
+        g.fillRect(bounds);
+      }
+    }
 
     chromeComponent.setImage(chrome, juce::RectanglePlacement::stretchToFit);
+    chromeComponent.setBounds(bounds);
+    chromeComponent.toFront(false);
   }
 
   //==============================================================================
