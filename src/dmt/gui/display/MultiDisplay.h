@@ -85,11 +85,11 @@ public:
   void resizeContent(const juce::Rectangle<int>& _contentBounds) override
   {
     // Layout all displays to fill the area above the buttons
-    int rawButtonSize = 15;
+    int rawButtonSize = 10;
     int buttonSize = rawButtonSize * size;
-    int rawButtonPadding = 7;
+    int rawButtonPadding = 5;
     int buttonPadding = rawButtonPadding * size;
-    int rawButtonSpacing = 5;
+    int rawButtonSpacing = 3;
     int buttonSpacing = rawButtonSpacing * size;
     auto buttonArea = juce::Rectangle<int>(_contentBounds)
                         .removeFromTop(buttonSize + 2 * buttonPadding);
@@ -187,7 +187,7 @@ private:
   //==============================================================================
   // AudioProcessorValueTreeState::Listener implementation
   void parameterChanged(const juce::String& parameterID,
-                        float newValue) override
+                        float /*newValue*/) override
   {
     auto mappingIt = parameterDisplayMap.find(parameterID);
 
