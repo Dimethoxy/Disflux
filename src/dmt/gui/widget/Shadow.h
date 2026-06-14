@@ -214,6 +214,56 @@ public:
       drawOuterForPath(_g, _target);
   }
 
+  //==============================================================================
+  /**
+   * @brief Returns a const reference to the cached shadow image.
+   *
+   * @details
+   * The returned image matches the component size (in physical pixels, scaled
+   * by the current `scale`). The image is updated whenever the component is
+   * repainted. Call `refreshImage()` to force a synchronous update without
+   * having to wait for the next paint cycle.
+   */
+  inline const Image& getImage() const noexcept { return image; }
+
+  //==============================================================================
+  /**
+   * @brief Forces a synchronous refresh of the cached shadow image.
+   *
+   * @details
+   * Unlike `paint()`, this method does not require a `juce::Graphics` context
+   * and can be called from any code path (e.g. from a parent component's
+   * `resized()`) to ensure the cached image is up to date. If the shadow is
+   * not visible, the image is cleared to a 1x1 transparent image.
+   */
+  inline void refreshImage() noexcept
+  {
+    TRACER("Shadow::refreshImage");
+
+    if (!visibility) {
+      image = Image(PixelFormat::ARGB, 1, 1, true);
+      needsRepaint = false;
+      return;
+    }
+
+    refreshCachedImageIfNeeded(true);
+
+    if (!needsRepaint)
+      return;
+
+    juce::Graphics g(image);
+    g.addTransform(juce::AffineTransform::scale(scale, scale));
+    g.fillAll(juce::Colours::transparentBlack);
+    g.setColour(*colour);
+
+    if (inner)
+      drawInnerForPath(g, path);
+    else
+      drawOuterForPath(g, path);
+
+    needsRepaint = false;
+  }
+
 protected:
   //==============================================================================
   /**
