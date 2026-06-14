@@ -32,7 +32,7 @@
 //==============================================================================
 
 #include "dmt/gui/component/SettingsEditorComponent.h"
-#include "dmt/gui/display/AbstractDisplay.h"
+#include "dmt/gui/display/DisplayChrome.h"
 #include "dmt/utility/Settings.h"
 #include <JuceHeader.h>
 
@@ -41,9 +41,9 @@
 namespace dmt {
 namespace gui {
 namespace display {
-// TODO: Make this use the new display system with multithreading
+
 //==============================================================================
-class SettingsEditorDisplay : public dmt::gui::display::AbstractDisplay
+class SettingsEditorDisplay : public dmt::gui::display::DisplayChrome
 {
   using Settings = dmt::Settings;
   using SettingsEditorSettings = dmt::Settings::SettingsEditor;
@@ -63,36 +63,21 @@ public:
 
   ~SettingsEditorDisplay() override = default;
 
-  void resized() noexcept override
+  void resizeContent(
+    const juce::Rectangle<int>& _contentBounds) noexcept override
   {
-    TRACER("SettingsEditorDisplay::resized");
+    TRACER("SettingsEditorDisplay::resizeContent");
     const auto padding = rawPadding * size;
-    auto settingsBounds = getLocalBounds().reduced(static_cast<int>(padding));
+    auto settingsBounds = _contentBounds.reduced(static_cast<int>(padding));
     settingsEditor.setBounds(settingsBounds);
-  }
-
-  void paint(juce::Graphics& /*_g*/) noexcept override
-  {
-    TRACER("SettingsEditorDisplay::paint");
-    if (cachedPadding != rawPadding) {
-      cachedPadding = rawPadding;
-      resized();
-    }
-  }
-
-  void prepareNextFrame() noexcept override
-  {
-    TRACER("SettingsEditorDisplay::prepareNextFrame");
-    // Implement frame preparation logic here
   }
 
 private:
   SettingsEditor settingsEditor;
-  float cachedPadding = 0.0f;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SettingsEditorDisplay)
 };
 
-} // namespace component
+} // namespace display
 } // namespace gui
 } // namespace dmt
