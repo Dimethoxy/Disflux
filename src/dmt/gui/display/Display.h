@@ -31,6 +31,8 @@
 
 #include "./AbstractDisplay.h"
 #include "./DisfluxDisplay.h"
+#include "./DisplayChrome.h"
+#include "./HelloWorldDisplay.h"
 #include "./MultiDisplay.h"
 #include "./OscilloscopeDisplay.h"
 #include "./SettingsEditorDisplay.h"

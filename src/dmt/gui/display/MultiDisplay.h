@@ -30,9 +30,8 @@
 //==============================================================================
 
 #include "gui/display/AbstractDisplay.h"
-#include "gui/widget/Shadow.h"
+#include "gui/display/DisplayChrome.h"
 #include "gui/widget/SimpleButton.h"
-#include "utility/Scaleable.h"
 #include "utility/Settings.h"
 #include <JuceHeader.h>
 
@@ -49,8 +48,7 @@ namespace display {
  * @brief Container for multiple display components with switching capability.
  */
 class MultiDisplay
-  : public juce::Component
-  , public dmt::Scaleable<MultiDisplay>
+  : public dmt::gui::display::DisplayChrome
   , public juce::AudioProcessorValueTreeState::Listener
 {
   using String = juce::String;
@@ -62,46 +60,16 @@ class MultiDisplay
   using SimpleButtonPtr = std::unique_ptr<SimpleButton>;
   using SimpleButtonList = std::vector<SimpleButtonPtr>;
   using ParameterDisplayMap = std::unordered_map<juce::String, juce::String>;
-  using Shadow = dmt::gui::widget::Shadow;
-  using Image = juce::Image;
-  using ImageComponent = juce::ImageComponent;
-
-  //==============================================================================
-  // Chrome settings (moved from AbstractDisplay)
-  using DisplaySettings = dmt::Settings::Display;
-  const juce::Colour& backgroundColour = DisplaySettings::backgroundColour;
-  const juce::Colour& displayForegroundColour =
-    dmt::Settings::Panel::backgroundColour;
-
-  // Layout
-  const float& rawCornerSize = DisplaySettings::cornerSize;
-  const float& rawPadding = DisplaySettings::padding;
-
-  // Border
-  const bool& drawBorder = DisplaySettings::drawBorder;
-  const juce::Colour& borderColour = DisplaySettings::borderColour;
-  const float& rawBorderStrength = DisplaySettings::borderStrength;
-
-  // Shadows
-  const bool& drawOuterShadow = DisplaySettings::drawOuterShadow;
-  const bool& drawInnerShadow = DisplaySettings::drawInnerShadow;
-  const juce::Colour& outerShadowColour = DisplaySettings::outerShadowColour;
-  const juce::Colour& innerShadowColour = DisplaySettings::innerShadowColour;
-  const float& outerShadowRadius = DisplaySettings::outerShadowRadius;
-  const float& innerShadowRadius = DisplaySettings::innerShadowRadius;
 
 public:
   //==============================================================================
   explicit MultiDisplay(APVTS& _apvts,
                         DisplayList _displays,
                         ParameterDisplayMap _parameterDisplayMap = {})
-    : apvts(_apvts)
-    , outerShadow(drawOuterShadow, outerShadowColour, outerShadowRadius, false)
-    , innerShadow(drawInnerShadow, innerShadowColour, innerShadowRadius, true)
+    : DisplayChrome()
+    , apvts(_apvts)
   {
-    addAndMakeVisible(outerShadow);
-    addAndMakeVisible(innerShadow);
-    addAndMakeVisible(chromeComponent);
+
     setDisplays(std::move(_displays));
     fillButtonList();
     parameterDisplayMap = std::move(_parameterDisplayMap);
@@ -111,49 +79,10 @@ public:
   //============================================================================
   ~MultiDisplay() { removeParameterListeners(); }
 
-  //==============================================================================
-  void paint(juce::Graphics& _g) noexcept override
+  //============================================================================
+
+  void resizeContent(const juce::Rectangle<int>& _contentBounds) override
   {
-    // Draw background for the entire multi-display area
-    _g.setColour(backgroundColour);
-    _g.fillAll();
-  }
-
-  //==============================================================================
-  void resized() noexcept override
-  {
-    auto bounds = getLocalBounds();
-    this->displayArea = bounds;
-
-    // Update shadow paths and positions
-    const auto padding = rawPadding * size;
-    const auto borderStrength = rawBorderStrength * size;
-    const auto cornerSize = rawCornerSize * size;
-    const auto outerBounds =
-      this->displayArea.reduced(static_cast<int>(padding));
-    const auto innerBounds =
-      outerBounds.reduced(static_cast<int>(borderStrength));
-    const float outerCornerSize = cornerSize;
-    const float innerCornerSize = std::clamp(
-      outerCornerSize - (borderStrength * 0.5f), 0.0f, outerCornerSize);
-
-    juce::Path outerShadowPath;
-    outerShadowPath.addRoundedRectangle(outerBounds, outerCornerSize);
-    outerShadow.setPath(outerShadowPath);
-    outerShadow.setBoundsRelative(0.0f, 0.0f, 1.0f, 1.0f);
-    outerShadow.toFront(false);
-
-    juce::Path innerShadowPath;
-    innerShadowPath.addRoundedRectangle(innerBounds, innerCornerSize);
-    innerShadow.setPath(innerShadowPath);
-    innerShadow.setBoundsRelative(0.0f, 0.0f, 1.0f, 1.0f);
-    innerShadow.toBack();
-
-    // Layout displays to fill the display area
-    for (auto& display : displays) {
-      display->setBounds(innerBounds);
-    }
-
     // Layout buttons in the button area
     // for (auto& button : buttons) {
     //   button->setBounds(buttonArea.removeFromLeft(buttonSize));
@@ -168,68 +97,11 @@ public:
     // auto buttonArea = bounds.removeFromBottom(buttonSize + 2 *
     // buttonPadding); buttonArea = buttonArea.reduced(buttonPadding, 0);
 
-    drawChrome(innerBounds,
-               outerBounds,
-               innerCornerSize,
-               outerCornerSize,
-               borderStrength);
-  }
-
-  void drawChrome(const juce::Rectangle<int>& _innerBounds,
-                  const juce::Rectangle<int>& _outerBounds,
-                  float _innerCornerSize,
-                  float _outerCornerSize,
-                  float _borderStrength)
-  {
-    const auto bounds = getLocalBounds();
-    const auto midBounds =
-      juce::Rectangle<int>(_outerBounds).reduced(_borderStrength * 0.5f);
-    const auto hiResWidth = static_cast<int>(bounds.getWidth() * scale);
-    const auto hiResHeight = static_cast<int>(bounds.getHeight() * scale);
-
-    // Prepare a high-resolution image for the chrome
-    chrome = Image(Image::ARGB, hiResWidth, hiResHeight, true);
-    juce::Graphics g(chrome);
-    g.addTransform(juce::AffineTransform::scale(scale, scale));
-
-    // First Pass: Draw the background
-    if (drawBorder) {
-      juce::Graphics::ScopedSaveState state(g);
-
-      juce::Path fillClippingPath;
-      fillClippingPath.setUsingNonZeroWinding(false);
-      fillClippingPath.addRectangle(bounds.toFloat());
-      fillClippingPath.addRoundedRectangle(midBounds.toFloat(),
-                                           _innerCornerSize);
-      g.reduceClipRegion(fillClippingPath);
-      g.setColour(displayForegroundColour);
-      g.fillRect(bounds);
+    // Layout displays to fill the display area
+    for (auto& display : displays) {
+      display->setBounds(_contentBounds);
     }
-
-    // Second Pass: Draw the border
-    {
-      juce::Graphics::ScopedSaveState state(g);
-
-      juce::Path borderClippingPath;
-      borderClippingPath.setUsingNonZeroWinding(false);
-      borderClippingPath.addRectangle(bounds.toFloat());
-      borderClippingPath.addRoundedRectangle(_innerBounds.toFloat(),
-                                             _innerCornerSize);
-      g.reduceClipRegion(borderClippingPath);
-      if (drawBorder) {
-        g.setColour(borderColour);
-        g.fillRoundedRectangle(_outerBounds.toFloat(), _outerCornerSize);
-      } else {
-        g.setColour(displayForegroundColour);
-        g.fillRect(bounds);
-      }
-    }
-
-    chromeComponent.setImage(chrome, juce::RectanglePlacement::stretchToFit);
-    chromeComponent.setBounds(bounds);
-    chromeComponent.toFront(false);
   }
-
   //==============================================================================
   void setActiveDisplay(size_t index)
   {
@@ -334,16 +206,12 @@ private:
     return;
   }
 
+private:
   //==============================================================================
   APVTS& apvts;
   DisplayList displays;
   SimpleButtonList buttons;
   ParameterDisplayMap parameterDisplayMap;
-  juce::Rectangle<int> displayArea;
-  Shadow outerShadow;
-  Shadow innerShadow;
-  Image chrome;
-  ImageComponent chromeComponent;
 
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiDisplay)
