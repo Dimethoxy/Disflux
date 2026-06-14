@@ -52,6 +52,8 @@ class SimpleButton
   using Colour = juce::Colour;
   using Image = juce::Image;
 
+  const Colour& backgroundColour = Settings::Display::backgroundColour;
+
 public:
   SimpleButton(String _name, String _displayString, String _tooltip = "")
     : juce::Button(_name)
@@ -81,16 +83,24 @@ public:
                    bool isMouseOverButton,
                    bool isButtonDown) override
   {
+
+    const float borderThickness = 1.0f * size;
+    const float borderRadius = 3.0f * size;
+    const auto outerBounds = getLocalBounds().toFloat();
+    const auto innerBounds = outerBounds.reduced(borderThickness);
+
     if (isButtonDown) {
-      g.fillAll(juce::Colours::magenta);
-      return;
-    }
-    if (isActive) {
-      g.fillAll(juce::Colours::green);
-      return;
+      g.setColour(juce::Colours::white);
+      g.fillRect(innerBounds);
+    } else if (isActive) {
+      g.fillAll(juce::Colours::white);
+    } else {
+      g.fillAll(backgroundColour);
+      g.setColour(juce::Colours::white);
+      g.drawRect(outerBounds, borderThickness);
     }
 
-    g.fillAll(juce::Colours::yellow);
+    g.fillAll(juce::Colours::red);
   }
 
   //==============================================================================
