@@ -72,6 +72,7 @@ public:
 
     setDisplays(std::move(_displays));
     fillButtonList();
+    setActiveDisplay(0);
     parameterDisplayMap = std::move(_parameterDisplayMap);
     addParameterListeners();
   }
@@ -84,13 +85,15 @@ public:
   void resizeContent(const juce::Rectangle<int>& _contentBounds) override
   {
     // Layout all displays to fill the area above the buttons
-    int rawButtonSize = 30;
+    int rawButtonSize = 15;
     int buttonSize = rawButtonSize * size;
-    int rawButtonPadding = 5;
+    int rawButtonPadding = 7;
     int buttonPadding = rawButtonPadding * size;
+    int rawButtonSpacing = 5;
+    int buttonSpacing = rawButtonSpacing * size;
     auto buttonArea = juce::Rectangle<int>(_contentBounds)
                         .removeFromTop(buttonSize + 2 * buttonPadding);
-    buttonArea = buttonArea.reduced(buttonPadding, 0);
+    buttonArea = buttonArea.reduced(buttonPadding);
 
     // Layout displays to fill the display area
     for (auto& display : displays) {
@@ -101,6 +104,7 @@ public:
     for (auto& button : buttons) {
       button->setBounds(buttonArea.removeFromLeft(buttonSize));
       button->toFront(false);
+      buttonArea.removeFromLeft(buttonSpacing);
     }
   }
   //==============================================================================
@@ -116,14 +120,21 @@ public:
       display->setVisible(false);
 
     // set all buttons to active false
-    for (auto& button : buttons)
-      button->setToggleState(false, juce::dontSendNotification);
+    for (auto& button : buttons) {
+      button.get()->setPassiveState();
+    }
 
     // show the selected display
-    displays[index]->setVisible(true);
+    if (displays.size() > index)
+      displays[index]->setVisible(true);
+    else
+      jassertfalse; // Invalid index
 
     // set the corresponding button to the selected state
-    buttons[index]->setToggleState(true, juce::dontSendNotification);
+    if (displays.size() > index)
+      buttons[index]->setActiveState();
+    else
+      jassertfalse; // Invalid index
   }
 
 protected:
@@ -136,10 +147,6 @@ protected:
       // add child but don't make visible yet, as we only want to show display
       // 1
       addChildComponent(display.get());
-
-    // make the first display visible
-    if (!this->displays.empty())
-      this->displays[0]->setVisible(true);
   }
 
   //==============================================================================

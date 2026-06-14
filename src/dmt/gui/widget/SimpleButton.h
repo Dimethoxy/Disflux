@@ -65,9 +65,9 @@ public:
     // No custom resizing logic needed for SimpleButton
   }
 
-  void setActiveState(bool _isActive)
+  void setActiveState()
   {
-    this->isActive = _isActive;
+    this->isActive = true;
     repaint();
   }
 
