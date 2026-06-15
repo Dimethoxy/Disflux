@@ -33,7 +33,6 @@
 #include "gui/display/HelloWorldDisplay.h"
 #include "gui/display/ImpulseResponseDisplay.h"
 #include "gui/display/MultiDisplay.h"
-#include "gui/display/OpenGLDisplayRenderer.h"
 #include "gui/display/OscilloscopeDisplay.h"
 #include <JuceHeader.h>
 
@@ -63,9 +62,7 @@ public:
         [&] {
           std::vector<std::unique_ptr<AbstractDisplay>> displays;
           displays.push_back(std::make_unique<HelloWorldDisplay>());
-          displays.push_back(std::make_unique<ImpulseResponseDisplay>(
-            *this,
-            std::make_unique<dmt::gui::display::SoftwareDisplayRenderer>()));
+          displays.push_back(std::make_unique<ImpulseResponseDisplay>());
           displays.push_back(std::make_unique<OscilloscopeDisplay<float>>(
             _fifoBuffer, _apvts, true));
           return displays;

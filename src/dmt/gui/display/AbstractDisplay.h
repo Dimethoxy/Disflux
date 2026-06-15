@@ -71,8 +71,8 @@ public:
    * Starts the repaint timer. Subclasses should implement their own
    * layout and painting logic.
    */
-  inline explicit AbstractDisplay(juce::String _displayName = "") noexcept
-    : displayName(_displayName)
+  inline explicit AbstractDisplay(juce::String _tooltipName = "") noexcept
+    : tooltipName(_tooltipName)
   {
     this->startRepaintTimer();
   }
@@ -107,6 +107,19 @@ public:
    */
   inline void resized() noexcept override {}
 
+  //==============================================================================
+  /**
+   * @brief Returns the tooltip name for this display.
+   *
+   * @details
+   * This is used by MultiDisplay to show the correct tooltip when hovering the
+   * button for this display.
+   */
+  [[nodiscard]] inline juce::String getTooltipName() const noexcept
+  {
+    return tooltipName;
+  }
+
 protected:
   //==============================================================================
   /**
@@ -138,7 +151,7 @@ private:
 
   //==============================================================================
   // Members
-  String displayName;
+  String tooltipName;
 
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AbstractDisplay)

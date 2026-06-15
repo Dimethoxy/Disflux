@@ -91,7 +91,6 @@ public:
     innerShadow.setPath(innerShadowPath);
     innerShadow.setBoundsRelative(0.0f, 0.0f, 1.0f, 1.0f);
     innerShadow.toFront(false);
-
     resizeContent(innerBounds);
 
     drawChrome(innerBounds,
@@ -99,18 +98,11 @@ public:
                innerCornerSize,
                outerCornerSize,
                borderStrength);
-
-    drawOverlay(innerBounds);
-  }
-
-  virtual void resizeContent(const juce::Rectangle<int>& _contentBounds) = 0;
-
-  const juce::Image& getChromeOverlay() const noexcept
-  {
-    return chromeOverlayCropped;
   }
 
 protected:
+  virtual void resizeContent(const juce::Rectangle<int>& _contentBounds) = 0;
+
   void drawChrome(const juce::Rectangle<int>& _innerBounds,
                   const juce::Rectangle<int>& _outerBounds,
                   float _innerCornerSize,
@@ -167,38 +159,11 @@ protected:
     chromeComponent.toFront(false);
   }
 
-  void drawOverlay(juce::Rectangle<int> _innerBounds)
-  {
-    const auto bounds = getLocalBounds();
-    const auto hiResWidth = int(bounds.getWidth() * scale);
-    const auto hiResHeight = int(bounds.getHeight() * scale);
-    const auto hiResInnerWidth = int(_innerBounds.getWidth() * scale);
-    const auto hiResInnerHeight = int(_innerBounds.getHeight() * scale);
-    const auto hiResInnerX = int(_innerBounds.getX() * scale);
-    const auto hiResInnerY = int(_innerBounds.getY() * scale);
-
-    chromeOverlay = Image(Image::ARGB, hiResWidth, hiResHeight, true);
-    juce::Graphics g(chromeOverlay);
-    g.addTransform(juce::AffineTransform::scale(scale, scale));
-    chromeComponent.paintEntireComponent(g, true);
-    if (drawOuterShadow)
-      outerShadow.paintEntireComponent(g, true);
-    if (drawInnerShadow)
-      innerShadow.paintEntireComponent(g, true);
-
-    chromeOverlayCropped = chromeOverlay.getClippedImage(juce::Rectangle<int>(
-      hiResInnerX, hiResInnerY, hiResInnerWidth, hiResInnerHeight));
-  }
-
 private:
   Shadow outerShadow;
   Shadow innerShadow;
   Image chrome;
   ImageComponent chromeComponent;
-
-  // Used to overlay over OpenGL displays
-  Image chromeOverlay;
-  Image chromeOverlayCropped;
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DisplayChrome)
 };

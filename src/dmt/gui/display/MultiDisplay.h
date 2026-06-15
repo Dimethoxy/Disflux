@@ -175,7 +175,7 @@ protected:
     // create a button for each display
     for (size_t i = 0; i < displays.size(); ++i) {
       String buttonNumber = String(i + 1);
-      String buttonName = "Display" + buttonNumber + "Button";
+      String buttonName = displays[i]->getTooltipName();
       auto button = std::make_unique<SimpleButton>(
         buttonName, buttonNumber, "Switch to " + buttonName);
       button->onClick = [this, i]() { setActiveDisplay(i); };
