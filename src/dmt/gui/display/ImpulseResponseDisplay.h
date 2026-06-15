@@ -29,11 +29,13 @@ class ImpulseResponseDisplay
   using Settings = dmt::Settings;
   using Fonts = dmt::utility::Fonts;
   using Colour = juce::Colour;
+  using Image = juce::Image;
 
 public:
-  explicit ImpulseResponseDisplay()
+  explicit ImpulseResponseDisplay(const Image& _chromeOverlay)
     : AbstractDisplay()
     , label("Impulse Response", fonts.bold, rawFontSize, juce::Colours::white)
+    , chromeOverlay(_chromeOverlay)
   {
     // addAndMakeVisible(label);
     openGLContext.setRenderer(this);
@@ -63,25 +65,18 @@ public:
   void renderOpenGL() override
   {
     juce::OpenGLHelpers::clear(juce::Colours::black);
-
     juce::OpenGLContext::getCurrentContext()->extensions.glUseProgram(
       shaderProgram->getProgramID());
-
     auto& gl = openGLContext.extensions;
-
     gl.glEnableVertexAttribArray(positionAttributeID);
-
     gl.glBindBuffer(juce::gl::GL_ARRAY_BUFFER, vbo);
-
     gl.glVertexAttribPointer(positionAttributeID,
                              2,
                              juce::gl::GL_FLOAT,
                              juce::gl::GL_FALSE,
                              sizeof(float) * 2,
                              nullptr);
-
     juce::gl::glDrawArrays(juce::gl::GL_TRIANGLES, 0, 3);
-
     gl.glDisableVertexAttribArray(positionAttributeID);
   }
 
@@ -93,7 +88,13 @@ public:
       _g.setColour(juce::Colours::cyan);
       _g.drawRect(getLocalBounds(), 1);
     }
-    _g.fillAll(juce::Colours::cyan);
+
+    // Draw the chrome overlay on top of the OpenGL content
+    const int w1 = this->getWidth();
+    const int w2 = chromeOverlay.getWidth();
+    _g.drawImage(chromeOverlay,
+                 getLocalBounds().toFloat(),
+                 juce::RectanglePlacement::centred);
   }
 
   void openGLContextClosing() override
@@ -103,11 +104,9 @@ public:
     gl.glDeleteBuffers(1, &vbo);
   }
 
-private:
-  juce::OpenGLContext openGLContext;
-  std::unique_ptr<juce::OpenGLShaderProgram> shaderProgram;
-  int positionAttributeID = -1;
-  GLuint vbo = 0;
+  void getChromeOverlay(Image& _overlay) { _overlay = chromeOverlay; }
+
+protected:
   void createTriangle()
   {
     float vertices[] = { -0.5f, -0.5f, 0.5f, -0.5f, 0.0f, 0.5f };
@@ -139,10 +138,19 @@ private:
         }
     )";
 
+private:
   Label label;
   Fonts fonts;
   float rawFontSize = 24.0f;
 
+  const Image& chromeOverlay;
+
+  juce::OpenGLContext openGLContext;
+  std::unique_ptr<juce::OpenGLShaderProgram> shaderProgram;
+  int positionAttributeID = -1;
+  GLuint vbo = 0;
+
+  //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ImpulseResponseDisplay)
 };
 } // namespace display
