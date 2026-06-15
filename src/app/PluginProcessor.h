@@ -24,6 +24,7 @@ public:
   //==============================================================================
   dmt::dsp::data::FifoAudioBuffer<float> oscilloscopeBuffer;
   dmt::dsp::effect::DisfluxProcessor disfluxProcessor;
+  dmt::dsp::effect::DisfluxProcessor disfluxImpulseProcessor;
 
 private:
   //==============================================================================

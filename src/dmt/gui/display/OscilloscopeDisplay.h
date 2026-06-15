@@ -240,7 +240,7 @@ protected:
     rightOscilloscope.setAmplitude(amplitude);
   }
   //==============================================================================
-  virtual void parameterChanged(const String& _parameterID, float _newValue)
+  void parameterChanged(const String& _parameterID, float _newValue)
   {
     if (_parameterID == "OscilloscopeZoom") {
       setZoom(_newValue);

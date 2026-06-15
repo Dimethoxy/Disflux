@@ -12,6 +12,13 @@ PluginProcessor::PluginProcessor()
                      dmt::Settings::Audio::useOutputHighpass,
                      dmt::Settings::Audio::outputHighpassFrequency,
                      dmt::Settings::Audio::smoothingInterval)
+  , disfluxImpulseProcessor(apvts,
+                            dmt::Settings::Audio::frequencySmoothness,
+                            dmt::Settings::Audio::pinchSmoothness,
+                            dmt::Settings::Audio::spreadSmoothness,
+                            dmt::Settings::Audio::useOutputHighpass,
+                            dmt::Settings::Audio::outputHighpassFrequency,
+                            dmt::Settings::Audio::smoothingInterval)
 {
 }
 
@@ -31,6 +38,7 @@ PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
   juce::ignoreUnused(sampleRate, samplesPerBlock);
 
   disfluxProcessor.prepare(sampleRate);
+  disfluxImpulseProcessor.prepare(sampleRate);
 }
 
 //==============================================================================

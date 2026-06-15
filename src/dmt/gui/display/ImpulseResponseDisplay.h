@@ -34,6 +34,7 @@
 //==============================================================================
 
 #include "gui/display/AbstractDisplay.h"
+#include "gui/display/ImpulseResponseBuilder.h"
 #include "gui/widget/Label.h"
 #include "utility/Fonts.h"
 #include "utility/Settings.h"
@@ -47,6 +48,7 @@ namespace display {
 
 //==============================================================================
 
+template<typename ProcessorType>
 class ImpulseResponseDisplay : public dmt::gui::display::AbstractDisplay
 {
   using Label = dmt::gui::widget::Label;
@@ -54,8 +56,16 @@ class ImpulseResponseDisplay : public dmt::gui::display::AbstractDisplay
   using Settings = dmt::Settings;
 
 public:
-  explicit ImpulseResponseDisplay()
+  explicit ImpulseResponseDisplay(
+    ProcessorType& _processor,
+    juce::AudioProcessorValueTreeState& _apvts,
+    int _impulseSize,
+    juce::Array<juce::Identifier> _parametersToWatch)
     : AbstractDisplay("Impulse Response")
+    , impulseResponseBuilder(_processor,
+                             _apvts,
+                             _impulseSize,
+                             _parametersToWatch)
   {
   }
 
@@ -68,6 +78,8 @@ public:
   void paint(juce::Graphics& _g) noexcept override {}
 
 private:
+  ImpulseResponseBuilder<ProcessorType> impulseResponseBuilder;
+
   juce::OpenGLContext openGLContext;
 
   //==========================================================================

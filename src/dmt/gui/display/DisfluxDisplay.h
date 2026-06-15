@@ -41,7 +41,6 @@
 namespace dmt {
 namespace gui {
 namespace display {
-
 //==============================================================================
 
 /**
@@ -52,6 +51,7 @@ namespace display {
 class alignas(64) DisfluxDisplay : public dmt::gui::display::MultiDisplay
 {
   using MultiDisplay = dmt::gui::display::MultiDisplay;
+  using DisfluxProcessor = dmt::dsp::effect::DisfluxProcessor;
 
 public:
   using FifoAudioBuffer = dmt::dsp::data::FifoAudioBuffer<float>;
@@ -62,7 +62,8 @@ public:
         [&] {
           std::vector<std::unique_ptr<AbstractDisplay>> displays;
           displays.push_back(std::make_unique<HelloWorldDisplay>());
-          displays.push_back(std::make_unique<ImpulseResponseDisplay>());
+          displays.push_back(
+            std::make_unique<ImpulseResponseDisplay<DisfluxProcessor>>());
           displays.push_back(std::make_unique<OscilloscopeDisplay<float>>(
             _fifoBuffer, _apvts, true));
           return displays;
