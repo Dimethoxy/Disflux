@@ -62,8 +62,7 @@ public:
         [&] {
           std::vector<std::unique_ptr<AbstractDisplay>> displays;
           displays.push_back(std::make_unique<HelloWorldDisplay>());
-          displays.push_back(
-            std::make_unique<ImpulseResponseDisplay>(getChromeOverlay()));
+          displays.push_back(std::make_unique<ImpulseResponseDisplay>(*this));
           displays.push_back(std::make_unique<OscilloscopeDisplay<float>>(
             _fifoBuffer, _apvts, true));
           return displays;
@@ -75,6 +74,6 @@ public:
 private:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DisfluxDisplay)
 };
-} // namespace component
+} // namespace display
 } // namespace gui
 } // namespace dmt

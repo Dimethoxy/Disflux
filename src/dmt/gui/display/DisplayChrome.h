@@ -100,26 +100,15 @@ public:
                outerCornerSize,
                borderStrength);
 
-    updateChromeOverlay(innerBounds, bounds);
+    drawOverlay(innerBounds);
   }
 
   virtual void resizeContent(const juce::Rectangle<int>& _contentBounds) = 0;
 
-  //==============================================================================
-  /**
-   * @brief Returns a monolithic overlay image of the entire chrome.
-   *
-   * @details
-   * The returned image contains the chrome (background + border) and both
-   * shadows composed into a single image at physical pixel resolution
-   * (scaled by the current `scale`). The interior of `innerBounds` is left
-   * transparent, so an OpenGL display can draw this image on top of itself
-   * and have the GL content show through the transparent region.
-   *
-   * The image is regenerated every time `resized()` runs, so it is always in
-   * sync with the most recent chrome layout.
-   */
-  const juce::Image& getChromeOverlay() const noexcept { return chromeOverlay; }
+  const juce::Image& getChromeOverlay() const noexcept
+  {
+    return chromeOverlayCropped;
+  }
 
 protected:
   void drawChrome(const juce::Rectangle<int>& _innerBounds,
@@ -178,82 +167,27 @@ protected:
     chromeComponent.toFront(false);
   }
 
-  //==============================================================================
-  /**
-   * @brief Composes the chrome + shadows into a single overlay image.
-   *
-   * @param _innerBounds The inner content bounds, in logical coordinates.
-   * @param _bounds The full component bounds, in logical coordinates.
-   *
-   * @details
-   * Copies the existing `chrome` image (background + border) and the cached
-   * images of the two `Shadow` components into a single ARGB image sized to
-   * the full chrome area at physical pixel resolution. The interior of
-   * `innerBounds` is left transparent so an OpenGL display can composite
-   * this image on top of its own content.
-   *
-   * The shadows are refreshed synchronously via `Shadow::refreshImage()` so
-   * the cached images are guaranteed to be current at composition time, even
-   * though `Shadow::paint()` has not yet run on this message loop iteration.
-   */
-  void updateChromeOverlay(const juce::Rectangle<int>& _innerBounds,
-                           const juce::Rectangle<int>& _bounds)
+  void drawOverlay(juce::Rectangle<int> _innerBounds)
   {
-    chromeOverlayInnerBounds = _innerBounds;
+    const auto bounds = getLocalBounds();
+    const auto hiResWidth = int(bounds.getWidth() * scale);
+    const auto hiResHeight = int(bounds.getHeight() * scale);
+    const auto hiResInnerWidth = int(_innerBounds.getWidth() * scale);
+    const auto hiResInnerHeight = int(_innerBounds.getHeight() * scale);
+    const auto hiResInnerX = int(_innerBounds.getX() * scale);
+    const auto hiResInnerY = int(_innerBounds.getY() * scale);
 
-    if (_bounds.getWidth() <= 0 || _bounds.getHeight() <= 0)
-      return;
-
-    const auto hiResWidth = static_cast<int>(_bounds.getWidth() * scale);
-    const auto hiResHeight = static_cast<int>(_bounds.getHeight() * scale);
-
-    // Synchronously refresh the shadow cached images so we can copy from
-    // them without having to wait for the next paint cycle.
-    outerShadow.refreshImage();
-    innerShadow.refreshImage();
-
-    // Allocate (or reuse) the overlay image at the chrome's physical size.
     chromeOverlay = Image(Image::ARGB, hiResWidth, hiResHeight, true);
-    chromeOverlay.clear(chromeOverlay.getBounds(),
-                        juce::Colours::transparentBlack);
-
     juce::Graphics g(chromeOverlay);
+    g.addTransform(juce::AffineTransform::scale(scale, scale));
+    chromeComponent.paintEntireComponent(g, true);
+    if (drawOuterShadow)
+      outerShadow.paintEntireComponent(g, true);
+    if (drawInnerShadow)
+      innerShadow.paintEntireComponent(g, true);
 
-    // Outer shadow
-    if (drawOuterShadow && outerShadow.getImage().isValid())
-      g.drawImage(outerShadow.getImage(),
-                  0,
-                  0,
-                  hiResWidth,
-                  hiResHeight,
-                  0,
-                  0,
-                  outerShadow.getImage().getWidth(),
-                  outerShadow.getImage().getHeight());
-
-    // Top Chrome (background + border)
-    if (chrome.isValid())
-      g.drawImage(chrome,
-                  0,
-                  0,
-                  hiResWidth,
-                  hiResHeight,
-                  0,
-                  0,
-                  chrome.getWidth(),
-                  chrome.getHeight());
-
-    // Inner shadow
-    if (drawInnerShadow && innerShadow.getImage().isValid())
-      g.drawImage(innerShadow.getImage(),
-                  0,
-                  0,
-                  hiResWidth,
-                  hiResHeight,
-                  0,
-                  0,
-                  innerShadow.getImage().getWidth(),
-                  innerShadow.getImage().getHeight());
+    chromeOverlayCropped = chromeOverlay.getClippedImage(juce::Rectangle<int>(
+      hiResInnerX, hiResInnerY, hiResInnerWidth, hiResInnerHeight));
   }
 
 private:
@@ -261,9 +195,10 @@ private:
   Shadow innerShadow;
   Image chrome;
   ImageComponent chromeComponent;
-  Image chromeOverlay;
-  juce::Rectangle<int> chromeOverlayInnerBounds;
 
+  // Used to overlay over OpenGL displays
+  Image chromeOverlay;
+  Image chromeOverlayCropped;
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DisplayChrome)
 };

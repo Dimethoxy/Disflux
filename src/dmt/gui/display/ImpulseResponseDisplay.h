@@ -32,10 +32,11 @@ class ImpulseResponseDisplay
   using Image = juce::Image;
 
 public:
-  explicit ImpulseResponseDisplay(const Image& _chromeOverlay)
+  explicit ImpulseResponseDisplay(
+    const dmt::gui::display::DisplayChrome& _displayChrome)
     : AbstractDisplay()
     , label("Impulse Response", fonts.bold, rawFontSize, juce::Colours::white)
-    , chromeOverlay(_chromeOverlay)
+    , displayChrome(_displayChrome)
   {
     // addAndMakeVisible(label);
     openGLContext.setRenderer(this);
@@ -89,12 +90,10 @@ public:
       _g.drawRect(getLocalBounds(), 1);
     }
 
-    // Draw the chrome overlay on top of the OpenGL content
-    const int w1 = this->getWidth();
-    const int w2 = chromeOverlay.getWidth();
-    _g.drawImage(chromeOverlay,
-                 getLocalBounds().toFloat(),
-                 juce::RectanglePlacement::centred);
+    // paint display chrome
+    const auto bounds = getLocalBounds();
+    const auto chromeOverlay = displayChrome.getChromeOverlay();
+    _g.drawImage(chromeOverlay, bounds.toFloat());
   }
 
   void openGLContextClosing() override
@@ -103,8 +102,6 @@ public:
     shaderProgram.reset();
     gl.glDeleteBuffers(1, &vbo);
   }
-
-  void getChromeOverlay(Image& _overlay) { _overlay = chromeOverlay; }
 
 protected:
   void createTriangle()
@@ -143,7 +140,7 @@ private:
   Fonts fonts;
   float rawFontSize = 24.0f;
 
-  const Image& chromeOverlay;
+  const dmt::gui::display::DisplayChrome& displayChrome;
 
   juce::OpenGLContext openGLContext;
   std::unique_ptr<juce::OpenGLShaderProgram> shaderProgram;
