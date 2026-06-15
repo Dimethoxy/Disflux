@@ -14,11 +14,13 @@
  * License:
  * This code is licensed under the GPLv3 license. You are permitted to use and
  * modify this code under the terms of this license.
- * You must adhere GPLv3 license for any project using this code or parts of it.
+ * You must adhere GPLv3 license for any project and parts of it.
  * You are not allowed to use this code in any closed-source project.
  *
  * Description:
- * Specialized display component inheriting from AbstractDisplay.
+ * SoftwareDisplayRenderer provides CPU-based software rendering via
+ * juce::Graphics. Implements the DisplayRenderer strategy interface.
+ * Use this when OpenGL is unavailable or when simple 2D drawing suffices.
  *
  * Authors:
  * Lunix-420 (Primary Author)
@@ -29,12 +31,7 @@
 
 //==============================================================================
 
-#include "dsp/data/FifoAudioBuffer.h"
-#include "gui/display/HelloWorldDisplay.h"
-#include "gui/display/ImpulseResponseDisplay.h"
-#include "gui/display/MultiDisplay.h"
-#include "gui/display/OpenGLDisplayRenderer.h"
-#include "gui/display/OscilloscopeDisplay.h"
+#include "gui/display/DisplayRenderer.h"
 #include <JuceHeader.h>
 
 //==============================================================================
@@ -46,37 +43,44 @@ namespace display {
 //==============================================================================
 
 /**
- * @class DisfluxDisplay
- * @brief Specialized display component inheriting from
- * AbstractDisplay.
+ * @brief Software-based rendering engine.
+ *
+ * @details
+ * All drawing is performed through juce::Graphics callbacks provided
+ * by the shell. No OpenGL context is required. Subclasses override
+ * renderContent to define what appears in the display area.
  */
-class alignas(64) DisfluxDisplay : public dmt::gui::display::MultiDisplay
+class SoftwareDisplayRenderer : public DisplayRenderer
 {
-  using MultiDisplay = dmt::gui::display::MultiDisplay;
-
 public:
-  using FifoAudioBuffer = dmt::dsp::data::FifoAudioBuffer<float>;
-  DisfluxDisplay(FifoAudioBuffer& _fifoBuffer,
-                 AudioProcessorValueTreeState& _apvts)
-    : MultiDisplay(
-        _apvts,
-        [&] {
-          std::vector<std::unique_ptr<AbstractDisplay>> displays;
-          displays.push_back(std::make_unique<HelloWorldDisplay>());
-          displays.push_back(std::make_unique<ImpulseResponseDisplay>(
-            *this,
-            std::make_unique<dmt::gui::display::SoftwareDisplayRenderer>()));
-          displays.push_back(std::make_unique<OscilloscopeDisplay<float>>(
-            _fifoBuffer, _apvts, true));
-          return displays;
-        }(),
-        { { "dis1uxFrequency", "ImpulseResponsePhaseRotationDisplay" } })
+  //==========================================================================
+  virtual ~SoftwareDisplayRenderer() = default;
+
+  //==========================================================================
+  /**
+   * @brief Draws the audio visualization content.
+   *
+   * @param _g The graphics context
+   * @param _bounds The rectangle to draw within
+   *
+   * @details
+   * Subclasses override this to perform their software rendering.
+   * Default implementation clears the background.
+   */
+  virtual void renderContent(juce::Graphics& _g, const juce::Rectangle<int>& _bounds)
   {
+    // Default: clear background only
+    _g.fillAll();
   }
 
-private:
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DisfluxDisplay)
+  //==========================================================================
+  bool requiresOpenGL() const override { return false; }
 };
+
+//==============================================================================
+
 } // namespace display
 } // namespace gui
 } // namespace dmt
+
+//==============================================================================
