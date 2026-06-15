@@ -43,6 +43,7 @@ public:
     openGLContext.attachTo(*this);
     openGLContext.setContinuousRepainting(true);
     openGLContext.setComponentPaintingEnabled(true);
+    setOpaque(false);
   }
 
   ~ImpulseResponseDisplay() override { openGLContext.detach(); }
@@ -65,7 +66,7 @@ public:
 
   void renderOpenGL() override
   {
-    juce::OpenGLHelpers::clear(juce::Colours::black);
+    juce::OpenGLHelpers::clear(dmt::Settings::Display::backgroundColour);
     juce::OpenGLContext::getCurrentContext()->extensions.glUseProgram(
       shaderProgram->getProgramID());
     auto& gl = openGLContext.extensions;

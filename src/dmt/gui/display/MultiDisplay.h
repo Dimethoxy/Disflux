@@ -107,6 +107,7 @@ public:
       buttonArea.removeFromLeft(buttonSpacing);
     }
   }
+
   //==============================================================================
   void setActiveDisplay(size_t index)
   {
