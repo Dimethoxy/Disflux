@@ -33,7 +33,6 @@
 #include "gui/widget/MinMaxRenderer.h"
 #include "gui/widget/PathStrokeRenderer.h"
 #include <JuceHeader.h>
-#include <memory>
 
 //==============================================================================
 
@@ -52,14 +51,14 @@ namespace widget {
  * buffers, optimized for real-time use in GUI applications. It leverages a
  * background thread to render the waveform into a JUCE image, which can be
  * efficiently displayed in the GUI. The design ensures thread safety and
- * minimal locking overhead, using a read-write lock for image access.
+ * minimal overhead using lock-free double buffering for image access.
  *
  * The oscilloscope is intended to be used with a lock-free ring buffer for
  * audio data, and supports customization of amplitude, thickness, and
  * samples-per-pixel for flexible display scaling.
  *
  * The rendering thread is started upon construction and stopped on destruction.
- * The image is updated periodically, and can be retrieved via getImage().
+ * The image is updated periodically, and can be retrieved via getFrontImage().
  */
 template<typename SampleType>
 class alignas(64) Oscilloscope : public juce::Thread
@@ -72,7 +71,6 @@ public:
   using String = juce::String;
   using Thread = juce::Thread;
   using PixelFormat = juce::Image::PixelFormat;
-  using ReadWriteLock = juce::ReadWriteLock;
   using Settings = dmt::Settings;
   using Renderer = OscilloscopeRenderer<SampleType>;
 
@@ -94,7 +92,7 @@ public:
     , ringBuffer(_ringBuffer)
     , channel(_channel)
     , size(_sizeFactor)
-    , renderer(std::make_unique<MinMaxRenderer<SampleType>>())
+    , renderer(std::make_shared<MinMaxRenderer<SampleType>>())
   {
     startThread();
   }
@@ -110,17 +108,18 @@ public:
 
   //==============================================================================
   /**
-   * @brief Retrieves a copy of the current oscilloscope image.
+   * @brief Retrieves the current front image for GUI rendering.
    *
-   * @return A copy of the rendered JUCE image.
+   * @return A reference to the front buffer image.
    *
    * @details
-   * The returned image is thread-safe and can be used in the GUI.
+   * The render thread only writes to the back buffer, so the front image is
+   * safe for concurrent GUI reads.
    */
-  [[nodiscard]] inline juce::Image getImage() const
+  [[nodiscard]] inline const juce::Image& getFrontImage() const noexcept
   {
-    const ScopedReadLock readLock(imageLock);
-    return image.createCopy();
+    const int frontIndex = frontBufferIndex.load(std::memory_order_acquire);
+    return images[static_cast<size_t>(frontIndex)];
   }
 
   //==============================================================================
@@ -134,8 +133,11 @@ public:
    */
   inline void setBounds(juce::Rectangle<int> _newBounds)
   {
-    resizeImage(_newBounds.getWidth(), _newBounds.getHeight());
     bounds = _newBounds;
+
+    renderWidth.store(_newBounds.getWidth(), std::memory_order_relaxed);
+    renderHeight.store(_newBounds.getHeight(), std::memory_order_relaxed);
+    resizePending.store(true, std::memory_order_release);
   }
 
   //==============================================================================
@@ -160,7 +162,7 @@ public:
    */
   inline void setRawSamplesPerPixel(float _newRawSamplesPerPixel) noexcept
   {
-    rawSamplesPerPixel = _newRawSamplesPerPixel;
+    rawSamplesPerPixel.store(_newRawSamplesPerPixel, std::memory_order_relaxed);
   }
 
   //==============================================================================
@@ -174,7 +176,7 @@ public:
    */
   inline void setAmplitude(float _newAmplitude) noexcept
   {
-    amplitude = _newAmplitude;
+    amplitude.store(_newAmplitude, std::memory_order_relaxed);
   }
 
   //==============================================================================
@@ -188,7 +190,7 @@ public:
    */
   inline void setThickness(float _newThickness) noexcept
   {
-    thickness = _newThickness;
+    thickness.store(_newThickness, std::memory_order_relaxed);
   }
 
   //==============================================================================
@@ -198,14 +200,16 @@ public:
    * @param _newRenderer A unique pointer to the new renderer implementation.
    *
    * @details
-   * Swaps the current rendering strategy under the write lock to ensure
-   * thread safety with the rendering thread. The previous renderer is
-   * destroyed when the new one is set.
+   * Swaps the current rendering strategy atomically to avoid contention with
+   * the rendering thread. The previous renderer is destroyed when the new one
+   * is set.
    */
   inline void setRenderer(std::unique_ptr<Renderer> _newRenderer)
   {
-    const ScopedWriteLock writeLock(imageLock);
-    renderer = std::move(_newRenderer);
+    std::atomic_store_explicit(
+      &renderer,
+      std::shared_ptr<Renderer>(std::move(_newRenderer)),
+      std::memory_order_release);
   }
 
   //==============================================================================
@@ -216,7 +220,7 @@ protected:
    *
    * @details
    * Periodically updates the oscilloscope image by rendering the latest audio
-   * samples. Uses a write lock to ensure exclusive access to the image.
+   * samples. Uses a back buffer to avoid GUI contention.
    * The wait interval is set high to minimize CPU usage; rendering is not
    * continuous but event-driven.
    */
@@ -224,7 +228,12 @@ protected:
   {
     while (!threadShouldExit()) {
       wait(10000);
-      const ScopedWriteLock writeLock(imageLock);
+
+      if (resizePending.exchange(false, std::memory_order_acq_rel)) {
+        resizeImage(renderWidth.load(std::memory_order_relaxed),
+                    renderHeight.load(std::memory_order_relaxed));
+      }
+
       render();
     }
   }
@@ -242,23 +251,36 @@ protected:
   inline void resizeImage(const int _width, const int _height)
   {
     TRACER("Oscilloscope::resizeImage");
-    const ScopedWriteLock writeLock(imageLock);
 
     // Avoid illegal sizes
     if (_width <= 0 || _height <= 0) {
       return;
     }
 
-    image = Image(PixelFormat::ARGB, _width + 10, _height, true);
+    for (auto& image : images) {
+#if !OS_IS_WINDOWS
+      image = Image(PixelFormat::ARGB, _width + 10, _height, true);
+#else
+      image = Image(PixelFormat::ARGB,
+                    _width + 10,
+                    _height,
+                    true,
+                    juce::SoftwareImageType{});
+#endif
+    }
+
+    frontBufferIndex.store(0, std::memory_order_release);
     subPixelOffset = 0.0f;
 
-    juce::Graphics imageGraphics(image);
-    imageGraphics.setColour(juce::Colours::white);
-    imageGraphics.drawLine(0,
-                           static_cast<float>(_height) / 2.0f,
-                           static_cast<float>(_width + 10),
-                           static_cast<float>(_height) / 2.0f,
-                           3.0f);
+    for (auto& image : images) {
+      juce::Graphics imageGraphics(image);
+      imageGraphics.setColour(juce::Colours::white);
+      imageGraphics.drawLine(0,
+                             static_cast<float>(_height) / 2.0f,
+                             static_cast<float>(_width + 10),
+                             static_cast<float>(_height) / 2.0f,
+                             3.0f);
+    }
   }
 
   //==============================================================================
@@ -273,58 +295,80 @@ protected:
   inline void render()
   {
     TRACER("Oscilloscope::render");
-    const int width = bounds.getWidth();
-    const int height = bounds.getHeight();
+
+    const int width = renderWidth.load(std::memory_order_relaxed);
+    const int height = renderHeight.load(std::memory_order_relaxed);
+
+    if (width <= 0 || height <= 0)
+      return;
+
     const int halfHeight = height / 2;
-    float samplesPerPixel = rawSamplesPerPixel * size;
+
+    const float samplesPerPixel =
+      rawSamplesPerPixel.load(std::memory_order_relaxed) * size;
+
+    if (samplesPerPixel <= 0.0f)
+      return;
 
     const int bufferSize = ringBuffer.getNumSamples();
     const int readPosition = ringBuffer.getReadPosition(channel);
     const int samplesToRead = bufferSize - readPosition;
 
     const int maxSamplesToDraw =
-      static_cast<int>(std::floor(samplesPerPixel * static_cast<float>(width)));
+      (int)std::floor(samplesPerPixel * (float)width);
+
     const int samplesToDraw = jmin(samplesToRead, maxSamplesToDraw);
     const int firstSamplesToDraw = readPosition;
 
-    const float exactPixelsToDraw =
-      static_cast<float>(samplesToDraw) / samplesPerPixel;
+    const float exactPixelsToDraw = (float)samplesToDraw / samplesPerPixel;
+
     const float totalShift = exactPixelsToDraw + subPixelOffset;
-    const int pixelToDraw = static_cast<int>(totalShift);
+    const int pixelToDraw = (int)totalShift;
+
+    if (pixelToDraw <= 0)
+      return;
+
     ringBuffer.incrementReadPosition(channel, samplesToDraw);
 
-    // Image move
-    const int destX = 0 - pixelToDraw;
-    image.moveImageSection(destX,      // destX
-                           0,          // destY
-                           0,          // srcX
-                           0,          // srcY
-                           width + 10, // width
-                           height);    // height
+    const int currentFront = frontBufferIndex.load(std::memory_order_acquire);
+    const int backIndex = currentFront == 0 ? 1 : 0;
 
-    // Clear the new part of the image
-    juce::Rectangle<int> clearRect(
-      width - pixelToDraw + 10, 0, pixelToDraw, height);
-    image.clear(clearRect, juce::Colours::transparentBlack);
+    auto& backImage = images[(size_t)backIndex];
 
-    // Delegate drawing to the active renderer
-    juce::Graphics imageGraphics(image);
+    backImage = images[(size_t)currentFront].createCopy();
+
+    // Left scrolling
+    const int shift = jmin(pixelToDraw, width);
+    if (shift > 0) {
+      backImage.moveImageSection(0, 0, shift, 0, width - shift, height);
+      backImage.clear(juce::Rectangle<int>(width - shift, 0, shift, height),
+                      juce::Colours::transparentBlack);
+    }
+
+    // Render new audio data
+    juce::Graphics g(backImage);
+
     const typename Renderer::RenderContext context{
       firstSamplesToDraw,
       samplesToDraw,
-      static_cast<float>(width - pixelToDraw) + subPixelOffset,
+      (float)(width - shift) + subPixelOffset,
       1.0f / samplesPerPixel,
       halfHeight,
-      amplitude,
-      thickness,
+      amplitude.load(std::memory_order_relaxed),
+      thickness.load(std::memory_order_relaxed),
       size
     };
-    subPixelOffset = totalShift - static_cast<float>(pixelToDraw);
-    renderer->draw(imageGraphics, ringBuffer, channel, context);
+
+    subPixelOffset = totalShift - (float)pixelToDraw;
+
+    if (auto currentRenderer =
+          std::atomic_load_explicit(&renderer, std::memory_order_acquire)) {
+      currentRenderer->draw(g, ringBuffer, channel, context);
+    }
+
+    frontBufferIndex.store(backIndex, std::memory_order_release);
   }
 
-  //==============================================================================
-private:
   //==============================================================================
   // Members initialized in the initializer list
   RingBuffer& ringBuffer;
@@ -332,15 +376,29 @@ private:
 
   //==============================================================================
   // Other members
-  juce::Rectangle<int> bounds = juce::Rectangle<int>(0, 0, 1, 1);
-  Image image = Image(PixelFormat::ARGB, 1, 1, true);
-  ReadWriteLock imageLock;
 
-  std::unique_ptr<Renderer> renderer;
+  juce::Rectangle<int> bounds = juce::Rectangle<int>(0, 0, 1, 1);
+
+#if !OS_IS_WINDOWS
+  std::array<Image, 2> images = { Image(PixelFormat::ARGB, 1, 1, true),
+                                  Image(PixelFormat::ARGB, 1, 1, true) };
+#else
+  std::array<Image, 2> images = {
+    Image(PixelFormat::ARGB, 1, 1, true, juce::SoftwareImageType{}),
+    Image(PixelFormat::ARGB, 1, 1, true, juce::SoftwareImageType{})
+  };
+#endif
+
+  std::atomic<int> frontBufferIndex{ 0 };
+  std::atomic<int> renderWidth{ 1 };
+  std::atomic<int> renderHeight{ 1 };
+  std::atomic<bool> resizePending{ true };
+
+  std::shared_ptr<Renderer> renderer;
   float subPixelOffset = 0.0f;
-  float rawSamplesPerPixel = 10.0f;
-  float amplitude = 1.0f;
-  float thickness = 3.0f;
+  std::atomic<float> rawSamplesPerPixel{ 10.0f };
+  std::atomic<float> amplitude{ 1.0f };
+  std::atomic<float> thickness{ 3.0f };
   const float& size;
 
   //==============================================================================

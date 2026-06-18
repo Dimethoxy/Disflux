@@ -68,7 +68,7 @@ public:
     Idle
   };
 
-  constexpr AhdEnvelope() noexcept = default;
+  AhdEnvelope() noexcept = default;
 
   inline void setParameters(const juce::AudioProcessorValueTreeState& apvts,
                             juce::String prefix) noexcept
@@ -235,6 +235,8 @@ private:
   float sampleRate = -1.0f;
   Parameters params;
   size_t sampleIndex = 0;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AhdEnvelope)
 };
 
 //==============================================================================

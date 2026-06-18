@@ -101,7 +101,12 @@ public:
   /**
    * @brief Destructor for BorderButton.
    */
-  ~BorderButton() override = default;
+  ~BorderButton() override
+  {
+    TRACER("BorderButton::~BorderButton");
+    // Stop the repaint timer to clean up resources
+    stopRepaintTimer();
+  }
 
   //==============================================================================
   /**

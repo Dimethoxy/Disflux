@@ -46,6 +46,12 @@ struct DigitalWaveform
   static constexpr float twoPi = juce::MathConstants<float>::twoPi;
   static constexpr float pi = juce::MathConstants<float>::pi;
 
+  //============================================================================
+  /**
+   * @brief Construct a new Digital Waveform object
+   */
+  DigitalWaveform() = default;
+
   //==============================================================================
   /**
    * @brief Enumeration of waveform types.
@@ -142,6 +148,8 @@ struct DigitalWaveform
   }
 
   //==============================================================================
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DigitalWaveform)
 };
 
 //==============================================================================

@@ -111,6 +111,16 @@ public:
   }
 
   /**
+   * @brief Destructor for `RotarySliderComponent`.
+   */
+  ~RotarySliderComponent()
+  {
+    TRACER("RotarySliderComponent::~RotarySliderComponent");
+    // Remove slider listener
+    slider.removeListener(this);
+  }
+
+  /**
    * @brief Handles component resizing and lays out child widgets.
    *
    * @details

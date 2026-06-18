@@ -128,6 +128,8 @@ class Alerts
   const bool& drawInnerShadow = AlertSettings::drawInnerShadow;
 
 public:
+  // Track last repaint time for frame-independent timing
+  double lastRepaintTimeMs = juce::Time::getMillisecondCounterHiRes();
   //==============================================================================
   /**
    * @brief Alert type enumeration.
@@ -173,6 +175,12 @@ public:
     setInterceptsMouseClicks(false, false);
     startRepaintTimer();
   }
+
+  //==============================================================================
+  /**
+   * @brief Destructor for `Alerts`.
+   */
+  inline ~Alerts() { stopRepaintTimer(); }
 
   //==============================================================================
   /**
@@ -284,8 +292,11 @@ public:
   inline void repaintTimerCallback() noexcept override
   {
     TRACER("Alerts::repaintTimerCallback");
+    double nowMs = juce::Time::getMillisecondCounterHiRes();
+    double elapsedSec = (nowMs - lastRepaintTimeMs) * 0.001;
+    lastRepaintTimeMs = nowMs;
     for (int i = static_cast<int>(alerts.size()); --i >= 0;) {
-      alerts.getReference(i).age += Settings::framerate / 1000.0f;
+      alerts.getReference(i).age += static_cast<float>(elapsedSec);
       if (alerts.getReference(i).age >= maxAge)
         alerts.remove(i);
     }

@@ -306,6 +306,8 @@ private:
   int note = 0;
   bool isPrepared = false;
   std::vector<std::function<void()>> onNoteReceivers;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NeutrinoSynthVoice)
 };
 
 //==============================================================================

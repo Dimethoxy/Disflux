@@ -317,6 +317,8 @@ private:
   juce::IIRFilter outputHighpassLeft;
   juce::IIRFilter outputHighpassRight;
   float lastHighpassFrequency = -1.0f;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DisfluxProcessor)
 };
 
 //==============================================================================

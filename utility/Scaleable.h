@@ -215,21 +215,57 @@ public:
    */
   [[nodiscard]] float getScaleFactor() const noexcept
   {
-    // TODO: Component Scale factor is fucked, for now we just use the main
-    // display's scale factor using the fallback
-    /*
+
     const auto* component = static_cast<const juce::Component*>(getSelf());
+    auto& displays = juce::Desktop::getInstance().getDisplays();
 
+    // 1. Try to get the scale factor from the host peer
+    float hostScale = -1.0f;
     if (component != nullptr) {
-      const auto componentScale =
-        juce::Component::getApproximateScaleFactorForComponent(component);
-
-      if (std::isfinite(componentScale) && componentScale > 0.0f)
-        return componentScale;
+      if (auto* peer = component->getPeer())
+        hostScale = peer->getPlatformScaleFactor();
     }
-    */
 
-    return getFallbackScaleFactor();
+    // 2. Try to get the scale factor from the component itself
+    float componentScale = -1.0f;
+    if (component != nullptr) {
+      componentScale =
+        juce::Component::getApproximateScaleFactorForComponent(component);
+    }
+
+    // 3. Try to resolve display from component position
+    float displayScale = -1.0f;
+    if (component != nullptr) {
+      const auto screenPos = component->getScreenPosition();
+
+      if (auto* d = displays.getDisplayForPoint(screenPos)) {
+        displayScale = static_cast<float>(d->scale);
+      }
+    }
+
+    // 4. Fallback to primary display
+    float primaryScale = -1.0f;
+    if (auto* primary = displays.getPrimaryDisplay()) {
+      primaryScale = static_cast<float>(primary->scale);
+    }
+
+    // Very hacky heuristic to determine the most likely correct scale factor
+    using juce::approximatelyEqual;
+
+    if (!approximatelyEqual(hostScale, 1.0f) && hostScale > 0.0f)
+      return hostScale;
+
+    if (!approximatelyEqual(componentScale, 1.0f) && componentScale > 0.0f)
+      return componentScale;
+
+    if (!approximatelyEqual(displayScale, 1.0f) && displayScale > 0.0f)
+      return displayScale;
+
+    if (!approximatelyEqual(primaryScale, 1.0f) && primaryScale > 0.0f)
+      return primaryScale;
+
+    // If none is greater than 1, just return 1 (no scaling)
+    return 1.0f;
   }
 
 private:
@@ -246,32 +282,6 @@ private:
   inline const Derived* getSelf() const noexcept
   {
     return static_cast<const Derived*>(this);
-  }
-
-  //============================================================================
-  /**
-   * @brief Get a fallback platform DPI scaling factor.
-   *
-   * Used when the component is not yet attached to a hierarchy.
-   */
-  static float getFallbackScaleFactor() noexcept
-  {
-    // Find the main display
-    auto* mainDisplay =
-      juce::Desktop::getInstance().getDisplays().getPrimaryDisplay();
-
-    if (mainDisplay == nullptr) {
-      jassertfalse; // Could not find main display
-      return 1.0f;
-    }
-
-    // Get the scale factor from the main display
-    const auto fallbackScale = static_cast<float>(mainDisplay->scale);
-
-    if (std::isfinite(fallbackScale) && fallbackScale > 0.0f)
-      return fallbackScale;
-
-    return 1.0f;
   }
 
   /**

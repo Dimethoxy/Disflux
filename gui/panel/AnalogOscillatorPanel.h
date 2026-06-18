@@ -18,62 +18,39 @@
  * Your are not allowed to use this code in any closed-source project.
  *
  * Description:
- * FolderManager is responsible for managing preset folders within the plugin's
- * preset system. It listens to changes in the AudioProcessorValueTreeState to
- * update the current folder and maintain a list of available folders. It also
- * ensures that a default directory for presets exists and is accessible.
+ * AnalogOscillatorPanel is a GUI component that provides controls for an analog
+ * oscillator.
  *
- * Authors:
- * Lunix-420 (Primary Author)
+ * Authors: Lunix-420 (Primary Author)
  */
 //==============================================================================
 
 #pragma once
 
+//==============================================================================
+
+#include "gui/panel/AbstractPanel.h"
 #include <JuceHeader.h>
 
 //==============================================================================
 
 namespace dmt {
 namespace gui {
-namespace preset {
-class FolderManager : juce::ValueTree::Listener
+namespace panel {
+
+//==============================================================================
+class AnalogOscillatorPanel : public dmt::gui::panel::AbstractPanel
 {
 public:
-  inline static const juce::File& defaultDirectory =
-    juce::File::getSpecialLocation(
-      juce::File::SpecialLocationType::commonDocumentsDirectory)
-      .getChildFile(ProjectInfo::companyName)
-      .getChildFile(ProjectInfo::projectName);
-
-  inline static const juce::String& folderNameProperty = "folderName";
-
-  FolderManager(juce::AudioProcessorValueTreeState& apvts)
-    : valueTreeState(apvts)
-  {
-    // Create default directory
-    if (!defaultDirectory.exists()) {
-      const auto result = defaultDirectory.createDirectory();
-      if (result.failed()) {
-        DBG("Could not create preset directory: " + result.getErrorMessage());
-        jassertfalse;
-      }
-    }
-    valueTreeState.state.addListener(this);
-    currentFolder.referTo(
-      valueTreeState.state.getPropertyAsValue(folderNameProperty, nullptr));
+  AnalogOscillatorPanel(/*juce::AudioProcessorValueTreeState& apvts*/)
+    : AbstractPanel("Classic Oscillator")
+  { //
   }
 
-  ~FolderManager() override { valueTreeState.state.removeListener(this); }
-
 private:
-  //==============================================================================
-  juce::AudioProcessorValueTreeState& valueTreeState;
-  juce::StringArray folderList;
-  juce::Value currentFolder;
-
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FolderManager)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AnalogOscillatorPanel)
 };
-} // namespace preset
+//==============================================================================
+} // namespace panels
 } // namespace gui
 } // namespace dmt

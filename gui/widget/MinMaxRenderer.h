@@ -69,6 +69,10 @@ class MinMaxRenderer : public OscilloscopeRenderer<SampleType>
 {
   //============================================================================
 public:
+  MinMaxRenderer() = default;
+
+  //============================================================================
+public:
   using RingBuffer = typename OscilloscopeRenderer<SampleType>::RingBuffer;
   using RenderContext =
     typename OscilloscopeRenderer<SampleType>::RenderContext;
@@ -258,6 +262,8 @@ private:
 
     return path;
   }
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MinMaxRenderer)
 };
 
 } // namespace widget

@@ -262,6 +262,8 @@ private:
   // They do the actual filtering of the audio.
   FilterArray leftFilters;
   FilterArray rightFilters;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LowpassProcessor)
 };
 
 //==============================================================================

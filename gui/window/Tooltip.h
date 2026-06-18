@@ -110,7 +110,7 @@ public:
   /**
    * @brief Destructor.
    */
-  inline ~Tooltip() override = default;
+  inline ~Tooltip() { stopRepaintTimer(); }
 
   //==============================================================================
   /**
