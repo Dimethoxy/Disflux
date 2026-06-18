@@ -130,7 +130,6 @@ public:
   void onCategorySelectedCallback(TreeAdapter::Category& category)
   {
     TRACER("SettingsEditor::onCategorySelectedCallback");
-
     valueEditorList.setCategory(category);
     valueEditorList.setOptimalSize(editorViewport.getWidth());
   }
