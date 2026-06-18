@@ -72,6 +72,10 @@ public:
     settingsEditor.setBounds(settingsBounds);
   }
 
+  virtual void paintDisplay(juce::Graphics& _g, juce::Rectangle<float> _bounds) {
+    
+  }
+
 private:
   SettingsEditor settingsEditor;
 

@@ -124,7 +124,7 @@ public:
     }
   }
   //==============================================================================
-  void paint(juce::Graphics& g) noexcept override
+  virtual void paintDisplay(juce::Graphics& g)
   {
     TRACER("OscilloscopeDisplay::paint");
 

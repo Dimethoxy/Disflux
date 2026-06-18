@@ -92,11 +92,23 @@ public:
    * Subclasses should override this method to draw their custom content.
    * Calls prepareNextFrame at the end of each paint.
    */
-  inline void paint(juce::Graphics& _g) noexcept override
+  inline void paint(juce::Graphics& _g) noexcept override final
   {
+    // Paint the display content
+    paintDisplay(_g);
+
     // Prepare next frame
-    prepareNextFrame();
+    prepareNextFrame(); 
   }
+
+  //==============================================================================
+  /**
+   * @brief Paints the display content.
+   * 
+   * @param _g The graphics context.
+   * @param _bounds The bounds of the display content.
+   */
+  virtual void paintDisplay(juce::Graphics& _g) = 0;
 
   //==============================================================================
   /**

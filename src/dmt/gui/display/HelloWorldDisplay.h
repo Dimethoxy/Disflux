@@ -38,7 +38,7 @@ public:
 
   void resized() noexcept override { label.setBounds(getLocalBounds()); }
 
-  void paint(juce::Graphics& _g) noexcept override
+  virtual void paintDisplay(juce::Graphics& _g, juce::Rectangle<float> _bounds)
   {
     if (Settings::debugBounds) {
       _g.setColour(juce::Colours::cyan);

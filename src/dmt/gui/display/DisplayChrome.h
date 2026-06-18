@@ -60,7 +60,7 @@ public:
     addAndMakeVisible(chromeComponent);
   }
 
-  void paint(juce::Graphics& _g) noexcept override
+  void paint(juce::Graphics& _g) noexcept override final
   {
     // Draw background for the entire multi-display area
     _g.setColour(backgroundColour);

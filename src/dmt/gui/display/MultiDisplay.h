@@ -100,6 +100,11 @@ public:
       display->setBounds(_contentBounds);
     }
 
+    // if we only have one display we can just skip the button layout
+    if (displays.size() <= 1) {
+      return;
+    }
+
     // Layout buttons in the button area
     for (auto& button : buttons) {
       button->setBounds(buttonArea.removeFromLeft(buttonSize));
@@ -107,7 +112,7 @@ public:
       buttonArea.removeFromLeft(buttonSpacing);
     }
   }
-
+  
   //==============================================================================
   void setActiveDisplay(size_t index)
   {
@@ -132,10 +137,8 @@ public:
       jassertfalse; // Invalid index
 
     // set the corresponding button to the selected state
-    if (displays.size() > index)
+    if (displays.size() > index && buttons.size() > 0)
       buttons[index]->setActiveState();
-    else
-      jassertfalse; // Invalid index
   }
 
 protected:
@@ -169,6 +172,12 @@ protected:
   //==============================================================================
   void fillButtonList()
   {
+    // if we only have one display we can just skip the button creation
+    if (displays.size() <= 1) {
+      buttons.clear();
+      return;
+    }
+
     // clear existing buttons
     buttons.clear();
 
