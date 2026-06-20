@@ -30,8 +30,6 @@
 //==============================================================================
 
 #include "dsp/data/FifoAudioBuffer.h"
-#include "gui/display/HelloWorldDisplay.h"
-#include "gui/display/ImpulseResponseDisplay.h"
 #include "gui/display/MultiDisplay.h"
 #include "gui/display/OscilloscopeDisplay.h"
 #include <JuceHeader.h>
@@ -61,14 +59,12 @@ public:
         _apvts,
         [&] {
           std::vector<std::unique_ptr<AbstractDisplay>> displays;
-          displays.push_back(std::make_unique<HelloWorldDisplay>());
-          displays.push_back(
-            std::make_unique<ImpulseResponseDisplay<DisfluxProcessor>>());
           displays.push_back(std::make_unique<OscilloscopeDisplay<float>>(
             _fifoBuffer, _apvts, true));
           return displays;
         }(),
-        { { "dis1uxFrequency", "ImpulseResponsePhaseRotationDisplay" } })
+        // Display mapper
+        { { "", "" } })
   {
   }
 
