@@ -70,8 +70,6 @@ public:
                       bool _useDefaultSettings = false)
     : apvts(_apvts)
     , ringBuffer(2, 4096)
-    : apvts(_apvts)
-    , ringBuffer(2, 4096)
     , fifoBuffer(_fifoBuffer)
     , leftOscilloscope(ringBuffer, 0, size)
     , rightOscilloscope(ringBuffer, 1, size)
@@ -90,21 +88,6 @@ public:
       setThickness(dmt::Settings::Oscilloscope::defaultThickness);
       setHeight(dmt::Settings::Oscilloscope::defaultGain);
     }
-  }
-
-  ~OscilloscopeDisplay() override
-  {
-    // Remove parameter listeners
-    if (!useDefaultSettings) {
-      // Assuming you have access to the AudioProcessorValueTreeState instance
-      // here, you would remove the listeners. This is just a placeholder.
-      apvts.removeParameterListener("OscilloscopeZoom", this);
-      apvts.removeParameterListener("OscilloscopeThickness", this);
-      apvts.removeParameterListener("OscilloscopeGain", this);
-    }
-
-    // Stop the repaint timer
-    stopRepaintTimer();
   }
 
   ~OscilloscopeDisplay() override
@@ -179,10 +162,9 @@ public:
 
     // Draw oscilloscope images
     g.drawImageAt(leftOscilloscope.getFrontImage(),
-    g.drawImageAt(leftOscilloscope.getFrontImage(),
                   leftOscilloscope.getBounds().getX(),
                   leftOscilloscope.getBounds().getY());
-    g.drawImageAt(rightOscilloscope.getFrontImage(),
+
     g.drawImageAt(rightOscilloscope.getFrontImage(),
                   rightOscilloscope.getBounds().getX(),
                   rightOscilloscope.getBounds().getY());
@@ -276,7 +258,6 @@ protected:
   }
   //==============================================================================
 private:
-  AudioProcessorValueTreeState& apvts;
   AudioProcessorValueTreeState& apvts;
   RingAudioBuffer ringBuffer;
   FifoAudioBuffer& fifoBuffer;
