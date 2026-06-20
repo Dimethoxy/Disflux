@@ -13,7 +13,7 @@ namespace model {
 //==============================================================================
 
 static inline juce::AudioProcessorParameterGroup
-heretikParameterGroup(juce::String parentUid)
+heretikParameterGroup(juce::String parentUid, int versionHint)
 {
   using ParameterInt = juce::AudioParameterInt;
   using ParameterFloat = juce::AudioParameterFloat;
@@ -26,21 +26,21 @@ heretikParameterGroup(juce::String parentUid)
     uid,       // group ID
     "Heretik", // group name
     "|",       // separator
-    std::make_unique<ParameterFloat>(uid + "PreGain",
+    std::make_unique<ParameterFloat>(juce::ParameterID(uid + "PreGain", versionHint),
                                      "PreGain",
                                      NormalisableRange(-32.0f, // rangeStart
                                                        32.0f,  // rangeEnd
                                                        0.01f,  // intervalValue
                                                        1.0f),  // skewFactor
                                      0.0f),                    // defaultValue
-    std::make_unique<ParameterFloat>(uid + "Spread",
+    std::make_unique<ParameterFloat>(juce::ParameterID(uid + "Spread", versionHint),
                                      "Spread",
                                      NormalisableRange(0.0f,  // rangeStart
                                                        1.0f,  // rangeEnd
                                                        0.01f, // intervalValue
                                                        1.0f), // skewFactor
                                      0.5f),                   // defaultValue
-    std::make_unique<ParameterFloat>(uid + "Range",
+    std::make_unique<ParameterFloat>(juce::ParameterID(uid + "Range", versionHint),
                                      "Range",
                                      NormalisableRange(0.0f,  // rangeStart
                                                        16.0f, // rangeEnd
@@ -48,28 +48,30 @@ heretikParameterGroup(juce::String parentUid)
                                                        1.0f), // skewFactor
                                      8.0f),                   // defaultValue
     // defaultValue
-    std::make_unique<ParameterFloat>(uid + "Mix",
+    std::make_unique<ParameterFloat>(juce::ParameterID(uid + "Mix", versionHint),
                                      "Mix",
                                      NormalisableRange(0.0f,  // rangeStart
                                                        1.0f,  // rangeEnd
                                                        0.01f, // intervalValue
                                                        1.0f), // skewFactor
                                      0.5f),                   // defaultValue
-    std::make_unique<ParameterFloat>(uid + "Distortion",
+    std::make_unique<ParameterFloat>(juce::ParameterID(uid + "Distortion", versionHint),
                                      "Distortion",
                                      NormalisableRange(0.0f,  // rangeStart
                                                        1.0f,  // rangeEnd
                                                        0.01f, // intervalValue
                                                        1.0f), // skewFactor
                                      0.1f),                   // defaultValue
-    std::make_unique<ParameterFloat>(uid + "Drive",
+    //==============================================================================
+    // Heretik Drive parameters
+    std::make_unique<ParameterFloat>(juce::ParameterID(uid + "Drive", versionHint),
                                      "Drive",
                                      NormalisableRange(0.0f,  // rangeStart
                                                        1.0f,  // rangeEnd
                                                        0.01f, // intervalValue
                                                        1.0f), // skewFactor
                                      0.5f),                   // defaultValue
-    std::make_unique<AudioParameterChoice>(uid + "DriveType",
+    std::make_unique<AudioParameterChoice>(juce::ParameterID(uid + "DriveType", versionHint),
                                            "Drive Type",
                                            juce::StringArray{ "Hard Clipping",
                                                               "Soft Clipping",
@@ -84,14 +86,16 @@ heretikParameterGroup(juce::String parentUid)
                                                               "Harmonic",
                                                               "Weird" },
                                            0), // defaultItemIndex
-    std::make_unique<ParameterFloat>(uid + "DriveBias",
+    std::make_unique<ParameterFloat>(juce::ParameterID(uid + "DriveBias", versionHint),
                                      "Drive Bias",
                                      NormalisableRange(-1.0f, // rangeStart
                                                        1.0f,  // rangeEnd
                                                        0.01f, // intervalValue
                                                        1.0f), // skewFactor
                                      0.0f),                   // defaultValue
-    std::make_unique<ParameterFloat>(uid + "Feedback",
+    //==============================================================================
+    // Heretik Feedback parameters
+    std::make_unique<ParameterFloat>(juce::ParameterID(uid + "Feedback", versionHint),
                                      "Feedback",
                                      NormalisableRange(0.0f,  // rangeStart
                                                        1.0f,  // rangeEnd
@@ -99,11 +103,11 @@ heretikParameterGroup(juce::String parentUid)
                                                        1.0f), // skewFactor
                                      0.0f),                   // defaultValue
     std::make_unique<AudioParameterChoice>(
-      uid + "FeedbackFilterSlope",                  // parameter ID
-      "Feedback Filter Slope",                      // parameter name
-      juce::StringArray{ Unit::multiFilterSlopes }, // choices
-      0),                                           // defaultItemIndex
-    std::make_unique<ParameterFloat>(uid + "FeedbackFilterCutoff",
+      juce::ParameterID(uid + "FeedbackFilterSlope", versionHint), // parameter ID
+      "Feedback Filter Slope",                                     // parameter name
+      juce::StringArray{ Unit::multiFilterSlopes },                // choices
+      0),                                                          // defaultItemIndex
+    std::make_unique<ParameterFloat>(juce::ParameterID(uid + "FeedbackFilterCutoff", versionHint),
                                      "Feedback Filter Cutoff",
                                      NormalisableRange(20.0f,    // rangeStart
                                                        20000.0f, // rangeEnd

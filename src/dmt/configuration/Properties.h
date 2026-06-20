@@ -42,8 +42,8 @@ namespace configuration {
 //==============================================================================
 
 using SettingValue = dmt::configuration::Container::SettingValue;
-using SettingsOverwride = std::pair<String, SettingValue>;
-using SettingsOverrides = std::vector<SettingsOverwride>;
+using SettingsOverride = std::pair<String, SettingValue>;
+using SettingsOverrides = std::vector<SettingsOverride>;
 using SettingsReplacement = std::pair<SettingValue, SettingValue>;
 using SettingsReplacements = std::vector<SettingsReplacement>;
 //==============================================================================
@@ -66,7 +66,7 @@ public:
   /**
    * @brief Initialize the properties with options and settings.
    */
-  void initialize(SettingsOverrides _overwrites = {},
+  void initialize(SettingsOverrides _overrides = {},
                   SettingsReplacements _replacements = {}) noexcept
   {
     auto options = dmt::configuration::getOptions();
@@ -76,7 +76,7 @@ public:
     // Build fallback property set from defaults
     fallbackPropertySet = dmt::Settings::container.toPropertySet();
     // Apply overrides and replacements to fallback only
-    applyOverrides(&fallbackPropertySet, _overwrites);
+    applyOverrides(&fallbackPropertySet, _overrides);
     applyReplacements(&fallbackPropertySet, _replacements);
     settings->setFallbackPropertySet(&fallbackPropertySet);
 
@@ -140,9 +140,9 @@ public:
 
 protected:
   void applyOverrides(juce::PropertySet* settings,
-                      const SettingsOverrides& _overwrites)
+                      const SettingsOverrides& _overrides)
   {
-    for (const auto& [key, value] : _overwrites) {
+    for (const auto& [key, value] : _overrides) {
       if (std::holds_alternative<String>(value)) {
         settings->setValue(key, std::get<String>(value));
       } else if (std::holds_alternative<int>(value)) {

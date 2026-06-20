@@ -86,23 +86,23 @@ struct Fonts
   //==============================================================================
   // Preloaded typefaces
 
-  Typeface::Ptr displayTypeface = Typeface::createSystemTypefaceFor(
+  alignas(8) Typeface::Ptr displayTypeface = Typeface::createSystemTypefaceFor(
     static_cast<const void*>(BinaryData::SedgwickAveDisplayRegular_ttf),
     static_cast<size_t>(BinaryData::SedgwickAveDisplayRegular_ttfSize));
 
-  Typeface::Ptr lightTypeface = Typeface::createSystemTypefaceFor(
+  alignas(8) Typeface::Ptr lightTypeface = Typeface::createSystemTypefaceFor(
     static_cast<const void*>(BinaryData::PoppinsLight_ttf),
     static_cast<size_t>(BinaryData::PoppinsLight_ttfSize));
 
-  Typeface::Ptr regularTypeface = Typeface::createSystemTypefaceFor(
+  alignas(8) Typeface::Ptr regularTypeface = Typeface::createSystemTypefaceFor(
     static_cast<const void*>(BinaryData::PoppinsRegular_ttf),
     static_cast<size_t>(BinaryData::PoppinsRegular_ttfSize));
 
-  Typeface::Ptr mediumTypeface = Typeface::createSystemTypefaceFor(
+  alignas(8) Typeface::Ptr mediumTypeface = Typeface::createSystemTypefaceFor(
     static_cast<const void*>(BinaryData::PoppinsMedium_ttf),
     static_cast<size_t>(BinaryData::PoppinsMedium_ttfSize));
 
-  Typeface::Ptr boldTypeface = Typeface::createSystemTypefaceFor(
+  alignas(8) Typeface::Ptr boldTypeface = Typeface::createSystemTypefaceFor(
     static_cast<const void*>(BinaryData::PoppinsBold_ttf),
     static_cast<size_t>(BinaryData::PoppinsBold_ttfSize));
 

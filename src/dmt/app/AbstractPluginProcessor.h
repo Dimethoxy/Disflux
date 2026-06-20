@@ -12,7 +12,9 @@ public:
   //==============================================================================
   AbstractPluginProcessor(
     std::function<juce::AudioProcessorValueTreeState::ParameterLayout()>
-      createParameterLayout)
+      createParameterLayout,
+    dmt::configuration::SettingsOverrides overrides = {},
+    dmt::configuration::SettingsReplacements replacements = {})
     : AudioProcessor(
         BusesProperties()
 #if !JucePlugin_IsMidiEffect
@@ -27,7 +29,7 @@ public:
 #if PERFETTO
     MelatoninPerfetto::get().beginSession();
 #endif
-    properties.initialize();
+    properties.initialize(overrides, replacements);
   }
 
   //==============================================================================
@@ -155,6 +157,31 @@ public:
   float sizeFactor = 1.0f;
   float getSizeFactor() const { return sizeFactor; }
   void setSizeFactor(float newSize) { sizeFactor = newSize; }
+
+  //==============================================================================
+  // Window State Management
+
+  void saveWindowState(int width, int height, bool isHeaderHidden)
+  {
+    apvts.state.setProperty("windowWidth", width, nullptr);
+    apvts.state.setProperty("windowHeight", height, nullptr);
+    apvts.state.setProperty("isHeaderHidden", isHeaderHidden, nullptr);
+  }
+
+  int getSavedWindowWidth() const
+  {
+    return static_cast<int>(apvts.state.getProperty("windowWidth", -1));
+  }
+
+  int getSavedWindowHeight() const
+  {
+    return static_cast<int>(apvts.state.getProperty("windowHeight", -1));
+  }
+
+  bool getSavedHeaderHiddenState() const
+  {
+    return static_cast<bool>(apvts.state.getProperty("isHeaderHidden", false));
+  }
 
   //==============================================================================
 private:

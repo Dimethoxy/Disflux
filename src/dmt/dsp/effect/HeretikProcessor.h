@@ -152,6 +152,13 @@ protected:
                             sampleRate / 1000.0f);
   }
 
+  float processSaturation(float _sample, float _drive) const noexcept
+  { 
+    float raw = std::atan(_sample * _drive);
+    float normalizer = std::atan(_drive);
+    return raw / normalizer;
+  }
+
 private:
   //==============================================================================
   juce::AudioProcessorValueTreeState& apvts;

@@ -64,6 +64,17 @@ public:
 
   virtual ~Layout() = default;
 
+  // Set the column and row separator fractions for the grid layout
+  void setColumnSeparators(const GridSeparatorLayout& _columnSeparators)
+  {
+    columnSeparators = _columnSeparators;
+  }
+
+  void setRowSeparators(const GridSeparatorLayout& _rowSeparators)
+  {
+    rowSeparators = _rowSeparators;
+  }
+
   // JUCE paint
   void paint(juce::Graphics& g) override {}
 
