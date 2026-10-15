@@ -45,7 +45,7 @@ We are dedicated to providing high-quality audio tools to the community for free
 
 ## 🛠️ Compiling
 
-If you want to compile Plasma from source yourself, follow these steps:
+If you want to compile Disflux from source yourself, follow these steps:
 
 ### 1. Prerequisites
 
