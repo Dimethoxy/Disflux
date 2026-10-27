@@ -3,6 +3,7 @@
 #==============================================================================
 
 cmake_minimum_required(VERSION 3.30)
+cmake_policy(SET CMP0169 OLD)
 file(READ "${CMAKE_CURRENT_LIST_DIR}/VERSION.md" FILE_VERSION)
 string(STRIP "${FILE_VERSION}" FILE_VERSION)
 project(Disflux VERSION ${FILE_VERSION})
@@ -20,7 +21,7 @@ include(cmake/get_cpm.cmake)
 CPMAddPackage(
     NAME JUCE
     GITHUB_REPOSITORY juce-framework/JUCE
-    GIT_TAG 8.0.13
+    GIT_TAG 8.0.14
     SOURCE_DIR ${EXT_DIR}/juce
 )
 CPMAddPackage(
@@ -31,13 +32,13 @@ CPMAddPackage(
 )
 CPMAddPackage(
     NAME MELATONIN_PERFETTO
-    GITHUB_REPOSITORY Lunix-420/melatonin_perfetto
+    GITHUB_REPOSITORY HessDavid/melatonin_perfetto
     GIT_TAG main
     SOURCE_DIR ${EXT_DIR}/melatonin_perfetto
 )
 CPMAddPackage(
     NAME MELATONIN_BLUR
-    GITHUB_REPOSITORY Lunix-420/melatonin_blur
+    GITHUB_REPOSITORY HessDavid/melatonin_blur
     GIT_TAG main
     SOURCE_DIR ${EXT_DIR}/melatonin_blur
 )

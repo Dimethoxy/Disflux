@@ -1,6 +1,27 @@
 name: Build Snapshot
 on:
   workflow_dispatch:
+    inputs:
+      build-windows:
+        description: "Build Windows"
+        required: false
+        default: true
+        type: boolean
+      build-macos:
+        description: "Build macOS"
+        required: false
+        default: true
+        type: boolean
+      build-ubuntu:
+        description: "Build Ubuntu Linux"
+        required: false
+        default: true
+        type: boolean
+      build-archlinux:
+        description: "Build Arch Linux"
+        required: false
+        default: true
+        type: boolean
   push:
     branches:
       - main
@@ -34,6 +55,7 @@ jobs:
   # Windows Build
   #=========================================================================================
   build-windows:
+    if: ${{ inputs.build-windows != false }}
     runs-on: windows-latest
     steps:
       - name: Export Variables
@@ -118,6 +140,7 @@ jobs:
   # macOS Build
   #=========================================================================================
   build-macos:
+    if: ${{ inputs.build-macos != false }}
     runs-on: macos-latest
     steps:
       - name: Export Variables
@@ -255,6 +278,7 @@ jobs:
   # Ubuntu Linux Build
   #=========================================================================================
   build-ubuntu:
+    if: ${{ inputs.build-ubuntu != false }}
     runs-on: ubuntu-latest
     steps:
       - name: Export Variables
@@ -369,6 +393,7 @@ jobs:
   # Arch Linux Build
   #=========================================================================================
   build-archlinux:
+    if: ${{ inputs.build-archlinux != false }}
     runs-on: ubuntu-latest
     container:
       image: archlinux:latest
@@ -433,6 +458,13 @@ jobs:
   # Release the project
   #=========================================================================================
   release:
+    # Runs even if some platforms are skipped, but only if at least one platform built
+    if: >-
+      always() &&
+      (needs.build-windows.result == 'success' ||
+       needs.build-macos.result == 'success' ||
+       needs.build-ubuntu.result == 'success' ||
+       needs.build-archlinux.result == 'success')
     runs-on: ubuntu-latest
     needs: [build-windows, build-ubuntu, build-macos, build-archlinux]
     env:
@@ -447,11 +479,12 @@ jobs:
 
       - name: Package Artifacts
         run: |
-          mv artifacts-windows/*.exe .
-          mv artifacts-macos/*.pkg .
-          mv artifacts-ubuntu/*.deb .
-          mv artifacts-ubuntu/*.zip .
-          mv artifacts-archlinux/*.pkg.tar.zst .
+          # Only the selected platforms are present
+          [ -d artifacts-windows ] && mv artifacts-windows/*.exe .
+          [ -d artifacts-macos ] && mv artifacts-macos/*.pkg .
+          [ -d artifacts-ubuntu ] && mv artifacts-ubuntu/*.deb .
+          [ -d artifacts-ubuntu ] && mv artifacts-ubuntu/*.zip .
+          [ -d artifacts-archlinux ] && mv artifacts-archlinux/*.pkg.tar.zst .
         shell: bash
 
       - name: Create Release
@@ -468,8 +501,7 @@ jobs:
       - name: Upload Artifacts
         run: |
           ls -la
-          gh release upload "Snapshot" ${{env.BUNDLE_NAME}}-snapshot-windows.exe --clobber
-          gh release upload "Snapshot" ${{env.BUNDLE_NAME}}-snapshot-linux-arch.pkg.tar.zst --clobber
-          gh release upload "Snapshot" ${{env.BUNDLE_NAME}}-snapshot-linux-ubuntu.deb --clobber
-          gh release upload "Snapshot" ${{env.BUNDLE_NAME}}-snapshot-linux-vanilla.zip --clobber
-          gh release upload "Snapshot" ${{env.BUNDLE_NAME}}-snapshot-macos.pkg --clobber
+          # Upload only the package for each platform that was built
+          for f in ${{env.BUNDLE_NAME}}-snapshot-*; do
+            [ -f "$f" ] && gh release upload "Snapshot" "$f" --clobber
+          done

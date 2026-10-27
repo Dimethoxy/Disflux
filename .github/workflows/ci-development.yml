@@ -21,6 +21,21 @@ on:
           - Debug
           - Release
           - RelWithDebInfo
+      build-windows:
+        description: "Build Windows"
+        required: false
+        default: true
+        type: boolean
+      build-macos:
+        description: "Build macOS"
+        required: false
+        default: true
+        type: boolean
+      build-ubuntu:
+        description: "Build Ubuntu Linux"
+        required: false
+        default: true
+        type: boolean
 
 defaults:
   run:
@@ -46,6 +61,7 @@ jobs:
   # Windows Build
   #=========================================================================================
   build-windows:
+    if: ${{ inputs.build-windows != false }}
     runs-on: windows-latest
     steps:
       - name: Export Variables
@@ -137,6 +153,7 @@ jobs:
   # macOS Build
   #=========================================================================================
   build-macos:
+    if: ${{ inputs.build-macos != false }}
     runs-on: macos-latest
     steps:
       - name: Export Variables
@@ -274,6 +291,7 @@ jobs:
   # Ubuntu Linux Build
   #=========================================================================================
   build-ubuntu:
+    if: ${{ inputs.build-ubuntu != false }}
     runs-on: ubuntu-latest
     steps:
       - name: Export Variables
